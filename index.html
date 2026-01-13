@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChaClub — Сообщество Чайных Мастеров</title>
+    <title>ChaClub — Соцсеть Чайных Мастеров</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -35,18 +35,17 @@
         }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(34,139,34,0.4); }
         .btn-secondary { background: linear-gradient(45deg, #DAA520, #F4A460) !important; }
-        .btn-outline { background: transparent !important; color: #228B22; border: 2px solid #228B22; }
         .btn-danger { background: linear-gradient(45deg, #DC143C, #B22222) !important; }
         .btn-admin { background: linear-gradient(45deg, #8B4513, #A0522D) !important; }
         
         .post-card { 
             background: white; border-radius: 15px; padding: 20px; margin: 15px 0;
             border-left: 5px solid #228B22; box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            cursor: pointer;
         }
-        .post-header { font-weight: bold; color: #8B4513; margin-bottom: 10px; }
+        .post-header { font-weight: bold; color: #8B4513; margin-bottom: 10px; cursor: pointer; }
         .post-tea { font-size: 16px; color: #228B22; margin-bottom: 8px; }
         .post-brew { background: #E8F5E8; padding: 8px; border-radius: 10px; font-weight: bold; }
+        .post-image { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin: 10px 0; }
         .post-actions { display: flex; justify-content: space-between; margin-top: 15px; }
         .action-btn { background: none; border: none; font-size: 20px; cursor: pointer; }
         
@@ -61,18 +60,21 @@
         .tea-type-btn { padding: 10px 15px; border: 2px solid #D2E8CF; background: white; 
                        border-radius: 20px; cursor: pointer; transition: all 0.3s; }
         .tea-type-btn.active { background: #228B22; color: white; border-color: #228B22; }
-        #feed, #profileFeed { max-height: 500px; overflow-y: auto; }
-        .back-btn { background: linear-gradient(45deg, #808080, #A9A9A9); font-size: 14px; padding: 10px; }
         
+        #feed, #profileFeed, #chatMessages { max-height: 500px; overflow-y: auto; }
+        .back-btn { background: linear-gradient(45deg, #808080, #A9A9A9); font-size: 14px; padding: 10px; }
+        .chat-message { background: #F0F8F0; padding: 15px; margin: 10px 0; border-radius: 15px; }
+        .chat-message.me { background: #228B22; color: white; margin-left: 20px; }
         .admin-list { max-height: 300px; overflow-y: auto; }
-        .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #F0F8F0; margin: 10px 0; border-radius: 10px; }
+        .admin-item { display: flex; justify-content: space-between; padding: 15px; background: #F0F8F0; margin: 10px 0; border-radius: 10px; }
+        .photo-preview { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin: 10px 0; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>🍵 ChaClub</h1>
-            <div style="font-size: 14px; opacity: 0.8;">Сообщество Чайных Мастеров</div>
+            <div style="font-size: 14px; opacity: 0.8;">Соцсеть Чайных Мастеров</div>
         </div>
 
         <!-- ГЛАВНЫЙ ЭКРАН -->
@@ -80,14 +82,17 @@
             <h3>📜 Лента мастеров</h3>
             <div id="feed"></div>
             <button class="btn" onclick="showNewPost()">✨ Новый пост</button>
-            <button class="btn btn-secondary" onclick="showTeaGuide()">📚 Руководство</button>
+            <button class="btn btn-secondary" onclick="showChat()">💬 Чат</button>
             <button class="btn btn-secondary" onclick="showProfile()">👤 Мой профиль</button>
-            <button class="btn btn-admin" onclick="showAdmin()" id="adminBtn">⚙️ Админ</button>
+            <button class="btn btn-admin" onclick="showAdmin()" id="adminBtn" style="display:none;">⚙️ Админ</button>
         </div>
 
-        <!-- НОВЫЙ ПОСТ -->
+        <!-- НОВЫЙ ПОСТ С ФОТО -->
         <div class="screen" id="newPost">
             <h3>✨ Новый чайный пост</h3>
+            <input type="file" id="postPhoto" accept="image/*" style="display:none;" onchange="previewPhoto()">
+            <div class="photo-preview" id="photoPreview" style="display:none;"></div>
+            <button class="btn btn-secondary" onclick="document.getElementById('postPhoto').click()">📸 Добавить фото</button>
             <textarea class="input" id="postText" placeholder="Что заварили сегодня? Опишите сессию..."></textarea>
             <div>Тип чая:</div>
             <div class="tea-type">
@@ -104,17 +109,18 @@
             <button class="btn back-btn" onclick="showMain()">← Назад</button>
         </div>
 
-        <!-- ЛИЧНЫЙ ПРОФИЛЬ / КАНАЛ -->
+        <!-- ЛИЧНЫЙ ПРОФИЛЬ -->
         <div class="screen" id="profileScreen">
             <div class="profile-header">
                 <div class="profile-avatar" id="profileAvatar">👤</div>
                 <h2 id="profileName">@tea_master</h2>
-                <div style="font-size: 14px; opacity: 0.8; margin-bottom: 20px;" id="profileBio">Чайный мастер</div>
+                <div style="font-size: 14px; opacity: 0.8; margin-bottom: 10px;" id="profileBio">Чайный мастер</div>
+                <div style="font-size: 14px; color: #666;" id="profileSpecialty"></div>
                 <div class="profile-stats">
                     <div class="stat"><div style="font-size: 24px;" id="profilePosts">0</div>Постов</div>
                     <div class="stat"><div style="font-size: 24px;" id="profileFollowers">12</div>Подписчиков</div>
                 </div>
-                <button class="btn btn-secondary" onclick="showProfileSettings()" id="editProfileBtn">✏️ Настроить</button>
+                <button class="btn btn-secondary" onclick="showProfileSettings()">✏️ Настроить профиль</button>
             </div>
             <div id="profileFeed"></div>
             <button class="btn back-btn" onclick="showMain()">← Лента</button>
@@ -125,40 +131,31 @@
             <h3>⚙️ Настройки профиля</h3>
             <input class="input" id="profileNameInput" placeholder="Имя профиля">
             <textarea class="input" id="profileBioInput" placeholder="Био: ваш чайный путь..."></textarea>
-            <input class="input" id="profileTeaSpecialty" placeholder="Специализация (Пуэр, Улун...)">
+            <input class="input" id="profileTeaSpecialty" placeholder="Специализация">
             <input class="input" id="profileExperience" placeholder="Опыт (лет):" type="number">
             <button class="btn" onclick="saveProfile()">💾 Сохранить</button>
             <button class="btn back-btn" onclick="showProfileScreen()">← Профиль</button>
         </div>
 
-        <!-- АДМИН ПАНЕЛЬ -->
+        <!-- ЧАТ -->
+        <div class="screen" id="chatScreen">
+            <h3>💬 Общий чат</h3>
+            <div id="chatMessages"></div>
+            <div style="display: flex; gap: 10px;">
+                <input class="input" id="chatInput" placeholder="Написать в чат..." style="flex:1;">
+                <button class="btn" onclick="sendChatMessage()" style="padding:15px 20px; flex-shrink:0;">Отправить</button>
+            </div>
+            <button class="btn back-btn" onclick="showMain()">← Лента</button>
+        </div>
+
+        <!-- АДМИН ПАНЕЛЬ (ТОЛЬКО ДЛЯ ТЕБЯ) -->
         <div class="screen" id="adminPanel">
-            <h3>👑 Админ панель (6902824637)</h3>
+            <h3>👑 Админ панель</h3>
+            <p style="background:#228B22;color:white;padding:10px;border-radius:10px;">Только для ID: 6902824637</p>
             <div class="admin-list" id="adminUsers"></div>
             <button class="btn btn-danger" onclick="deleteAllPosts()">🗑️ Удалить все посты</button>
-            <button class="btn" onclick="toggleAdminMode()">👁️ Режим модерации</button>
+            <button class="btn btn-danger" onclick="deleteAllChats()">🗑️ Очистить чат</button>
             <button class="btn back-btn" onclick="showMain()">← Главная</button>
-        </div>
-
-        <!-- РУКОВОДСТВО ПО ЧАЯМ -->
-        <div class="screen" id="teaGuide">
-            <h3>📚 6 основных видов чая</h3>
-            <div style="font-size: 14px; line-height: 1.5; max-height: 400px; overflow-y: auto;">
-                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0;" onclick="showTeaDetails('white')">🍃 Белый чай</div>
-                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0;" onclick="showTeaDetails('green')">🍵 Зелёный чай</div>
-                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0;" onclick="showTeaDetails('yellow')">🌾 Жёлтый чай</div>
-                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0;" onclick="showTeaDetails('oolong')">🌀 Улун</div>
-                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0;" onclick="showTeaDetails('red')">🔴 Красный чай</div>
-                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0;" onclick="showTeaDetails('black')">⚫ Чёрный чай</div>
-                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0;" onclick="showTeaDetails('puer')">🌲 Пуэр</div>
-            </div>
-            <button class="btn back-btn" onclick="showMain()">← Назад</button>
-        </div>
-
-        <div class="screen" id="teaDetails" style="display: none;">
-            <h3 id="teaTitle"></h3>
-            <div id="teaInfo" style="font-size: 14px; line-height: 1.6; padding: 20px; background: #F0F8F0; border-radius: 15px;"></div>
-            <button class="btn back-btn" onclick="showTeaGuide()">← К типам</button>
         </div>
     </div>
 
@@ -171,144 +168,101 @@
             username: 'tea_master_' + Math.floor(Math.random() * 1000) 
         };
         
-        // 🔥 ТВОЙ TELEGRAM ID - ПОЛНЫЙ АДМИН ДОСТУП
-        const ADMIN_IDS = [6902824637];
+        // 🔥 АДМИН ТОЛЬКО ТЫ!
+        const ADMIN_ID = 6902824637;
         
-        let posts = [];
-        let users = {};
-        let currentTeaType = '';
-        let currentProfileUser = null;
-        let isAdminMode = false;
-
-        // 6 видов чая
-        const teaTypes = {
-            white: {title: "🍃 Белый чай", info: "Белый чай — самый нежный. Минимальная обработка. 75-85°C, 2-3 мин, 3-5 проливов."},
-            green: {title: "🍵 Зелёный чай", info: "Фиксация паром. 70-85°C, 1-2 мин, 2-4 пролива."},
-            yellow: {title: "🌾 Жёлтый чай", info: "Редкий. 'Тюнь хуан'. 80-90°C, 2-3 мин, 3 пролива."},
-            oolong: {title: "🌀 Улун", info: "Частично ферментирован. 85-100°C, 20-60 сек, 6-10 проливов."},
-            red: {title: "🔴 Красный чай", info: "'Хун ча'. 90-100°C, 2-3 мин, 3-5 проливов."},
-            black: {title: "⚫ Чёрный чай", info: "Полная ферментация. 95-100°C, 3-5 мин, 2-3 пролива."},
-            puer: {title: "🌲 Пуэр", info: "Постферментация. Шэн 85-95°C, Шу 95-100°C, 10-20 проливов."}
-        };
+        let posts = [], chats = [], users = {};
+        let currentTeaType = '', currentProfileUser = null;
 
         // Инициализация
         function initUser() {
             if (!users[user.id]) {
                 users[user.id] = {
                     id: user.id,
-                    username: user.username || 'tea_master',
+                    username: user.username || `user_${user.id.slice(-4)}`,
                     name: 'Чайный мастер',
-                    bio: 'Любитель качественного чая ☕',
-                    specialty: 'Пуэр',
-                    experience: 2,
+                    bio: 'Любитель чая ☕',
+                    specialty: '',
+                    experience: 0,
                     posts: 0,
-                    followers: 12,
+                    followers: Math.floor(Math.random() * 50) + 10,
                     avatar: '👤'
                 };
             }
             loadData();
+            
+            // Админка ТОЛЬКО ДЛЯ ТЕБЯ
+            if (user.id == ADMIN_ID) {
+                document.getElementById('adminBtn').style.display = 'block';
+            }
         }
 
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
             document.getElementById(screenId).style.display = 'block';
+            tg.MainButton.hide();
         }
 
         function showMain() {
             showScreen('mainScreen');
             renderFeed();
-            tg.MainButton.setText('✨ Новый пост').show().onClick(() => showNewPost());
+            tg.MainButton.setText('✨ Новый пост').show().onClick(showNewPost);
         }
 
         function renderFeed() {
             const feed = document.getElementById('feed');
-            feed.innerHTML = '';
-            const allPosts = getDemoPosts().concat(posts).slice(0, 10);
-            
-            allPosts.forEach(post => {
-                const postEl = document.createElement('div');
-                postEl.className = 'post-card';
-                postEl.onclick = (e) => {
-                    if (e.target.tagName !== 'BUTTON') showUserProfile(post.userId);
-                };
-                postEl.innerHTML = `
-                    <div class="post-header">
-                        ${post.author} 
-                        ${ADMIN_IDS.includes(user.id) ? `<button class="btn-danger" style="padding:5px 10px;font-size:12px;float:right;" onclick="event.stopPropagation();deletePost('${post.id}')">Удалить</button>` : ''}
-                    </div>
+            feed.innerHTML = posts.slice(0, 20).map(post => `
+                <div class="post-card">
+                    <div class="post-header" onclick="showUserProfile(${post.userId})">@${post.author}</div>
+                    ${post.image ? `<img src="${post.image}" class="post-image" onclick="tg.showAlert('📸 Фото чая')>` : ''}
                     <div class="post-tea">${post.teaType}</div>
                     <div class="post-brew">${post.brew}</div>
-                    <div style="font-size: 14px; opacity: 0.8;">${post.text}</div>
+                    <div style="font-size: 14px; opacity: 0.8; margin: 10px 0;">${post.text}</div>
                     <div class="post-actions">
                         <button class="action-btn">❤️ ${post.likes || 0}</button>
-                        <button class="action-btn">💬</button>
+                        <button class="action-btn">💬 ${post.comments || 0}</button>
                     </div>
-                `;
-                feed.appendChild(postEl);
-            });
+                    ${user.id == ADMIN_ID ? `<button class="btn btn-danger" style="font-size:12px;padding:5px;margin-top:10px;" onclick="deletePost(${post.id})">Удалить</button>` : ''}
+                </div>
+            `).reverse().join('');
         }
 
         function showUserProfile(userId) {
             currentProfileUser = userId;
-            const profileUser = users[userId] || users[user.id];
-            
+            const profileUser = users[userId];
             document.getElementById('profileAvatar').textContent = profileUser.avatar;
             document.getElementById('profileName').textContent = '@' + profileUser.username;
             document.getElementById('profileBio').textContent = profileUser.bio;
+            document.getElementById('profileSpecialty').textContent = profileUser.specialty ? `🎯 ${profileUser.specialty}` : '';
             document.getElementById('profilePosts').textContent = profileUser.posts;
             document.getElementById('profileFollowers').textContent = profileUser.followers;
-            document.getElementById('editProfileBtn').style.display = userId == user.id ? 'block' : 'none';
-            
             renderProfileFeed(userId);
             showScreen('profileScreen');
         }
 
         function renderProfileFeed(userId) {
             const feed = document.getElementById('profileFeed');
-            feed.innerHTML = '';
-            const userPosts = posts.filter(p => p.userId === userId);
-            
-            if (userPosts.length === 0) {
-                feed.innerHTML = '<div style="text-align:center; opacity:0.6;">Пока нет постов</div>';
-                return;
-            }
-            
-            userPosts.forEach(post => {
-                const postEl = document.createElement('div');
-                postEl.className = 'post-card';
-                postEl.innerHTML = `
+            const userPosts = posts.filter(p => p.userId == userId);
+            feed.innerHTML = userPosts.length ? userPosts.map(post => `
+                <div class="post-card">
+                    ${post.image ? `<img src="${post.image}" class="post-image">` : ''}
                     <div class="post-tea">${post.teaType}</div>
                     <div class="post-brew">${post.brew}</div>
                     <div style="font-size: 14px; opacity: 0.8;">${post.text}</div>
-                    <div class="post-actions">
-                        <button class="action-btn">❤️ ${post.likes || 0}</button>
-                    </div>
-                `;
-                feed.appendChild(postEl);
-            });
+                </div>
+            `).join('') : '<div style="text-align:center;opacity:0.6;padding:40px;">Пока нет постов ☕</div>';
         }
 
-        function showProfile() {
-            showUserProfile(user.id);
-        }
-
-        function showProfileSettings() {
-            const profileUser = users[user.id];
-            document.getElementById('profileNameInput').value = profileUser.name;
-            document.getElementById('profileBioInput').value = profileUser.bio;
-            document.getElementById('profileTeaSpecialty').value = profileUser.specialty;
-            document.getElementById('profileExperience').value = profileUser.experience;
-            showScreen('profileSettings');
-        }
-
-        function saveProfile() {
-            users[user.id].name = document.getElementById('profileNameInput').value || 'Чайный мастер';
-            users[user.id].bio = document.getElementById('profileBioInput').value || 'Любитель чая';
-            users[user.id].specialty = document.getElementById('profileTeaSpecialty').value || 'Пуэр';
-            users[user.id].experience = parseInt(document.getElementById('profileExperience').value) || 0;
-            saveData();
-            showUserProfile(user.id);
-            tg.showAlert('✅ Профиль сохранён!');
+        function previewPhoto() {
+            const file = document.getElementById('postPhoto').files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('photoPreview').src = e.target.result;
+                    document.getElementById('photoPreview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
         function showNewPost() {
@@ -326,32 +280,89 @@
         function publishPost() {
             if (!currentTeaType) return tg.showAlert('Выберите тип чая!');
             
-            const text = document.getElementById('postText').value || 'Медитация с чаем ☕';
-            const brew = document.getElementById('brewInfo').value || 'заварили по правилам';
+            const text = document.getElementById('postText').value || 'Чайная сессия ☕';
+            const brew = document.getElementById('brewInfo').value || 'по правилам';
+            const file = document.getElementById('postPhoto').files[0];
             
             const post = {
                 id: Date.now(),
                 userId: user.id,
-                author: '@' + users[user.id].username,
-                teaType: teaTypes[currentTeaType].title,
+                author: users[user.id].username,
+                teaType: `🍵 ${document.querySelector('.tea-type-btn.active')?.textContent || 'Чай'}`,
                 brew,
                 text,
+                image: file ? URL.createObjectURL(file) : null,
                 likes: 0,
-                timestamp: new Date().toLocaleString()
+                comments: 0
             };
             
             posts.unshift(post);
             users[user.id].posts++;
+            saveData();
             
+            // Очистка формы
             document.getElementById('postText').value = '';
             document.getElementById('brewInfo').value = '';
+            document.getElementById('photoPreview').style.display = 'none';
+            document.getElementById('postPhoto').value = '';
             currentTeaType = '';
             document.querySelectorAll('.tea-type-btn').forEach(btn => btn.classList.remove('active'));
             
-            saveData();
             showMain();
             tg.HapticFeedback.notificationOccurred('success');
-            tg.showAlert('✅ Пост опубликован!');
+        }
+
+        function showChat() {
+            showScreen('chatScreen');
+            renderChat();
+            tg.MainButton.setText('Отправить').show().onClick(sendChatMessage);
+        }
+
+        function renderChat() {
+            document.getElementById('chatMessages').innerHTML = chats.map(chat => 
+                `<div class="chat-message ${chat.userId == user.id ? 'me' : ''}">
+                    <strong>@${chat.author}:</strong> ${chat.text}
+                </div>`
+            ).join('');
+            document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+        }
+
+        function sendChatMessage() {
+            const text = document.getElementById('chatInput').value.trim();
+            if (!text) return;
+            
+            chats.push({
+                id: Date.now(),
+                userId: user.id,
+                author: users[user.id].username,
+                text,
+                timestamp: new Date().toLocaleTimeString()
+            });
+            
+            document.getElementById('chatInput').value = '';
+            saveData();
+            renderChat();
+        }
+
+        function showProfile() { showUserProfile(user.id); }
+        function showProfileSettings() {
+            const u = users[user.id];
+            document.getElementById('profileNameInput').value = u.name;
+            document.getElementById('profileBioInput').value = u.bio;
+            document.getElementById('profileTeaSpecialty').value = u.specialty;
+            document.getElementById('profileExperience').value = u.experience;
+            showScreen('profileSettings');
+        }
+        
+        function saveProfile() {
+            const u = users[user.id];
+            u.name = document.getElementById('profileNameInput').value || u.name;
+            u.bio = document.getElementById('profileBioInput').value || u.bio;
+            u.specialty = document.getElementById('profileTeaSpecialty').value;
+            u.experience = parseInt(document.getElementById('profileExperience').value) || 0;
+            saveData();
+            showProfile();
+            tg.showAlert('✅ Профиль обновлён!');
         }
 
         function showAdmin() {
@@ -360,26 +371,16 @@
         }
 
         function renderAdminPanel() {
-            const adminList = document.getElementById('adminUsers');
-            adminList.innerHTML = '';
-            Object.values(users).forEach(userData => {
-                const userEl = document.createElement('div');
-                userEl.className = 'admin-item';
-                userEl.innerHTML = `
-                    <div><strong>@${userData.username}</strong> (${userData.posts} постов)</div>
-                    <button class="btn btn-danger" style="padding:8px 12px;font-size:12px;" onclick="banUser('${userData.id}')">Бан</button>
-                `;
-                adminList.appendChild(userEl);
-            });
-        }
-
-        function deleteAllPosts() {
-            if (confirm('Удалить ВСЕ посты?')) {
-                posts = [];
-                saveData();
-                renderFeed();
-                tg.showAlert('🗑️ Все посты удалены');
-            }
+            const list = document.getElementById('adminUsers');
+            list.innerHTML = Object.values(users).map(u => `
+                <div class="admin-item">
+                    <div>
+                        <strong>@${u.username}</strong><br>
+                        <small>${u.posts} постов • ${u.followers} подписчиков</small>
+                    </div>
+                    <button class="btn btn-danger" style="padding:8px 12px;font-size:12px;" onclick="banUser(${u.id})">БАН</button>
+                </div>
+            `).join('');
         }
 
         function deletePost(postId) {
@@ -389,43 +390,45 @@
             tg.showAlert('✅ Пост удалён');
         }
 
+        function deleteAllPosts() {
+            if (confirm('Удалить ВСЕ посты?')) {
+                posts = [];
+                saveData();
+                renderFeed();
+                tg.showAlert('🗑️ Лента очищена');
+            }
+        }
+
+        function deleteAllChats() {
+            if (confirm('Очистить чат?')) {
+                chats = [];
+                saveData();
+                renderChat();
+                tg.showAlert('🗑️ Чат очищен');
+            }
+        }
+
         function banUser(userId) {
             if (userId == user.id) return tg.showAlert('Нельзя забанить себя!');
             delete users[userId];
             posts = posts.filter(p => p.userId != userId);
+            chats = chats.filter(c => c.userId != userId);
             saveData();
             renderAdminPanel();
             tg.showAlert('👋 Пользователь забанен');
         }
 
-        function getDemoPosts() {
-            return [
-                {id: 1, userId: 999, author: '@tea_master_ivan', teaType: 'Шу Пуэр Дик Гуй', brew: '95°C × 15с × 12 проливов', text: '12 проливов шоколада!', likes: 42},
-                {id: 2, userId: 888, author: '@puer_lord', teaType: 'Шэн Мэнку 2012', brew: '90°C × 10с × 15 проливов', text: '300-летние деревья!', likes: 28}
-            ];
-        }
-
         function saveData() {
-            localStorage.setItem('chaClubPosts', JSON.stringify(posts));
-            localStorage.setItem('chaClubUsers', JSON.stringify(users));
+            localStorage.setItem('chaClubData', JSON.stringify({posts, chats, users}));
         }
 
         function loadData() {
-            const savedPosts = localStorage.getItem('chaClubPosts');
-            const savedUsers = localStorage.getItem('chaClubUsers');
-            if (savedPosts) posts = JSON.parse(savedPosts);
-            if (savedUsers) users = JSON.parse(savedUsers);
-        }
-
-        function showTeaGuide() { showScreen('teaGuide'); }
-        function showTeaDetails(type) {
-            document.getElementById('teaTitle').textContent = teaTypes[type].title;
-            document.getElementById('teaInfo').textContent = teaTypes[type].info;
-            showScreen('teaDetails');
-        }
-
-        function showProfileScreen() {
-            showUserProfile(currentProfileUser || user.id);
+            try {
+                const data = JSON.parse(localStorage.getItem('chaClubData') || '{}');
+                posts = data.posts || [];
+                chats = data.chats || [];
+                users = data.users || {};
+            } catch(e) {}
         }
 
         // Инициализация
