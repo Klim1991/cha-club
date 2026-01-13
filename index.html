@@ -27,8 +27,6 @@ body {
   padding: 20px;
   box-shadow: 0 12px 36px rgba(0,0,0,.15);
 }
-.screen.active { display: block; }
-
 h1 { text-align: center; margin-bottom: 16px; }
 
 .btn {
@@ -46,34 +44,14 @@ h1 { text-align: center; margin-bottom: 16px; }
 .btn.secondary {
   background: linear-gradient(135deg, #daa520, #f4a460);
 }
-
-.post {
-  background: #f8faf8;
-  border-radius: 14px;
-  padding: 14px;
-  margin-top: 12px;
-  box-shadow: 0 4px 14px rgba(0,0,0,.08);
-}
-.post .author {
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-textarea {
-  width: 100%;
-  height: 120px;
-  border-radius: 14px;
-  padding: 12px;
-  border: 1px solid #ccc;
-  font-family: inherit;
-}
 </style>
 </head>
 
 <body>
+
 <div class="container">
 
-<!-- WELCOME -->
-<div id="welcomeScreen" class="screen active">
+<div id="welcomeScreen" class="screen">
   <h1>🍵 ChaClub</h1>
   <p style="text-align:center;margin-bottom:20px;">
     Добро пожаловать, <strong id="welcomeUser">@user</strong>
@@ -81,147 +59,73 @@ textarea {
   <button id="enterBtn" class="btn">🚀 Войти в ChaClub</button>
 </div>
 
-<!-- MAIN -->
 <div id="mainScreen" class="screen">
   <h1>📜 Лента</h1>
-  <div id="feed"></div>
-  <button id="newPostBtn" class="btn">✨ Новый пост</button>
   <button id="profileBtn" class="btn secondary">👤 Профиль</button>
 </div>
 
-<!-- NEW POST -->
-<div id="newPostScreen" class="screen">
-  <h1>✨ Новый пост</h1>
-  <textarea id="postText" placeholder="Расскажите о чайной сессии..."></textarea>
-  <button id="publishBtn" class="btn">🌿 Опубликовать</button>
-  <button id="backFromPostBtn" class="btn secondary">← Назад</button>
-</div>
-
-<!-- PROFILE -->
 <div id="profileScreen" class="screen">
   <h1>👤 Профиль</h1>
-  <p><strong id="profileUsername"></strong></p>
-  <p id="profilePosts"></p>
-  <button id="backFromProfileBtn" class="btn secondary">← Назад</button>
+  <p id="profileName"></p>
+  <button id="backBtn" class="btn secondary">← Назад</button>
 </div>
 
 </div>
 
 <script>
-/* ================= TELEGRAM ================= */
+/* ===== TELEGRAM ===== */
 const tg = window.Telegram?.WebApp || null;
 if (tg) {
   tg.ready();
   tg.expand();
 }
 
-/* ================= STORAGE ================= */
-const storage = {
-  async save(key, value) {
-    if (tg?.CloudStorage) {
-      return new Promise(res => {
-        tg.CloudStorage.setItem(key, JSON.stringify(value), res);
-      });
-    }
-    localStorage.setItem(key, JSON.stringify(value));
-  },
-  async load(key) {
-    if (tg?.CloudStorage) {
-      return new Promise(res => {
-        tg.CloudStorage.getItem(key, (err, val) => {
-          res(val ? JSON.parse(val) : null);
-        });
-      });
-    }
-    const v = localStorage.getItem(key);
-    return v ? JSON.parse(v) : null;
+/* ===== STATE ===== */
+const app = {
+  user: tg?.initDataUnsafe?.user || {
+    username: "guest_" + Math.floor(Math.random() * 1000)
   }
 };
 
-/* ================= STATE ================= */
-const app = {
-  user: tg?.initDataUnsafe?.user || {
-    id: Date.now(),
-    username: "guest_" + Math.floor(Math.random()*1000)
-  },
-  posts: []
-};
+/* ===== INIT ===== */
+window.addEventListener("DOMContentLoaded", init);
 
-/* ================= INIT ================= */
-window.addEventListener("load", init);
-
-async function init() {
+function init() {
   bindUI();
-  await loadData();
   updateWelcome();
-  renderFeed();
+  showScreen("welcomeScreen");
 }
 
-/* ================= UI ================= */
+/* ===== UI ===== */
 function bindUI() {
-  qs("enterBtn").onclick = () => show("mainScreen");
-  qs("newPostBtn").onclick = () => show("newPostScreen");
-  qs("profileBtn").onclick = showProfile;
-  qs("publishBtn").onclick = publishPost;
-  qs("backFromPostBtn").onclick = () => show("mainScreen");
-  qs("backFromProfileBtn").onclick = () => show("mainScreen");
+  document.getElementById("enterBtn").onclick = () => {
+    showScreen("mainScreen");
+  };
+
+  document.getElementById("profileBtn").onclick = () => {
+    document.getElementById("profileName").textContent =
+      "@" + app.user.username;
+    showScreen("profileScreen");
+  };
+
+  document.getElementById("backBtn").onclick = () => {
+    showScreen("mainScreen");
+  };
 }
 
-function qs(id) { return document.getElementById(id); }
-
-function show(id) {
-  document.querySelectorAll(".screen")
-    .forEach(s => s.classList.remove("active"));
-  qs(id).classList.add("active");
-}
-
-/* ================= DATA ================= */
-async function loadData() {
-  const savedPosts = await storage.load("cha_posts");
-  if (savedPosts) app.posts = savedPosts;
-}
-
-async function saveData() {
-  await storage.save("cha_posts", app.posts);
-}
-
-/* ================= LOGIC ================= */
-function updateWelcome() {
-  qs("welcomeUser").textContent = "@" + app.user.username;
-}
-
-function renderFeed() {
-  const feed = qs("feed");
-  feed.innerHTML = app.posts.length
-    ? app.posts.map(p => `
-      <div class="post">
-        <div class="author">@${p.author}</div>
-        <div>${p.text}</div>
-      </div>
-    `).join("")
-    : `<p style="text-align:center;opacity:.6;">Пока нет постов ☕</p>`;
-}
-
-async function publishPost() {
-  const text = qs("postText").value.trim();
-  if (!text) return alert("Напишите текст");
-  app.posts.unshift({
-    id: Date.now(),
-    author: app.user.username,
-    text
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => {
+    s.style.display = "none";
   });
-  qs("postText").value = "";
-  await saveData();
-  renderFeed();
-  show("mainScreen");
+  document.getElementById(id).style.display = "block";
 }
 
-function showProfile() {
-  qs("profileUsername").textContent = "@" + app.user.username;
-  qs("profilePosts").textContent =
-    "Постов: " + app.posts.filter(p => p.author === app.user.username).length;
-  show("profileScreen");
+/* ===== LOGIC ===== */
+function updateWelcome() {
+  document.getElementById("welcomeUser").textContent =
+    "@" + app.user.username;
 }
 </script>
+
 </body>
 </html>
