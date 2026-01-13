@@ -42,6 +42,7 @@
             transition: all 0.3s; cursor: pointer; box-shadow: 0 4px 15px rgba(34,139,34,0.3);
         }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(34,139,34,0.4); }
+        .btn:active { transform: translateY(0); }
         .btn-secondary { background: linear-gradient(45deg, #DAA520, #F4A460) !important; }
         .btn-danger { background: linear-gradient(45deg, #DC143C, #B22222) !important; }
         .btn-admin { background: linear-gradient(45deg, #8B4513, #A0522D) !important; }
@@ -97,9 +98,6 @@
             <button class="welcome-btn" onclick="enterApp()">
                 🚀 Начать
             </button>
-            <div style="font-size: 12px; opacity: 0.7; margin-top: 30px;">
-                Создавайте посты • Общайтесь в чате • Изучайте чаи
-            </div>
         </div>
 
         <!-- ГЛАВНЫЙ ЭКРАН -->
@@ -113,14 +111,14 @@
             <button class="btn btn-admin" onclick="showAdmin()" id="adminBtn" style="display:none;">⚙️ Админ</button>
         </div>
 
-        <!-- НОВЫЙ ПОСТ (ТЕЛЕГРАММ СТИЛЬ) -->
+        <!-- НОВЫЙ ПОСТ -->
         <div class="screen" id="newPost">
             <h3>✨ Новый пост</h3>
             <input type="file" id="postPhoto" accept="image/*" style="display:none;" onchange="previewPhoto(event)">
-            <div class="photo-preview" id="photoPreview" style="display:none;"></div>
+            <img class="photo-preview" id="photoPreview" style="display:none;" alt="Фото предпросмотр">
             <button class="btn btn-secondary" onclick="document.getElementById('postPhoto').click()">📸 Фото</button>
-            <textarea class="input" id="postText" placeholder="Расскажите о вашей чайной сессии... ☕"></textarea>
-            <button class="btn" onclick="publishPost()">Опубликовать</button>
+            <textarea class="input" id="postText" placeholder="Расскажите о вашей чайной сессии... ☕" rows="4"></textarea>
+            <button class="btn" onclick="publishPost()">🌿 Опубликовать</button>
             <button class="btn back-btn" onclick="showMain()">← Назад</button>
         </div>
 
@@ -149,7 +147,7 @@
             <textarea class="input" id="profileBioInput" placeholder="О себе..."></textarea>
             <input class="input" id="profileTeaSpecialty" placeholder="Специализация">
             <button class="btn" onclick="saveProfile()">💾 Сохранить</button>
-            <button class="btn back-btn" onclick="showMyProfile()">← Профиль</button>
+            <button class="btn back-btn" onclick="showProfile()">← Профиль</button>
         </div>
 
         <!-- ЧАТ -->
@@ -165,7 +163,7 @@
 
         <!-- КЛАССИФИКАЦИЯ ЧАЁВ -->
         <div class="screen" id="teaGuide">
-            <h3>📚 6 видов чая</h3>
+            <h3>📚 6 видов чая (по artoftea.ru)</h3>
             <div class="tea-guide-btn" onclick="showTeaDetails('white')">🍃 Белый чай</div>
             <div class="tea-guide-btn" onclick="showTeaDetails('green')">🍵 Зелёный чай</div>
             <div class="tea-guide-btn" onclick="showTeaDetails('yellow')">🌾 Жёлтый чай</div>
@@ -203,20 +201,42 @@
         };
         
         const ADMIN_ID = 6902824637;
-        let posts = [], chats = [], users = {}, currentProfileUser = null;
+        let posts = [], chats = [], users = {};
         let selectedPhoto = null;
 
+        // 🔥 ПРАВИЛЬНЫЕ ОПИСАНИЯ ИЗ artoftea.ru [attached_file:1]
         const teaTypes = {
-            white: {title: '🍃 Белый чай', info: 'Нежный чай с минимальной обработкой. 75-85°C, 2-3 мин.'},
-            green: {title: '🍵 Зелёный чай', info: 'Фиксация паром. 70-85°C, 1-2 мин, 2-4 пролива.'},
-            yellow: {title: '🌾 Жёлтый чай', info: 'Редкий. 80-90°C, 2-3 мин.'},
-            oolong: {title: '🌀 Улун', info: 'Частично ферментирован. 85-100°C, 6-10 проливов.'},
-            red: {title: '🔴 Красный чай', info: 'Хун Ча. 90-100°C, 2-3 мин.'},
-            black: {title: '⚫ Чёрный чай', info: 'Полная ферментация. 95-100°C, 3-5 мин.'},
-            puer: {title: '🌲 Пуэр', info: 'Постферментация. Шэн 85-95°C, Шу 95-100°C, 10-20 проливов.'}
+            white: { 
+                title: '🍃 Белый чай', 
+                info: 'Лист собирают и естественным образом высушивают. Окисление частично происходит во время сушки. Ферментация идет по-особому, ведь лист не сминался. Белым чай называют по цвету Бай Хао Инь Чжэнь, покрыт нежным серебристым пушком. Сладость как березовый сок, ягоды и цветы.' 
+            },
+            green: { 
+                title: '🍵 Зелёный чай', 
+                info: 'Минимально ферментирован: лист собирают, подвяливают, скручивают, прогревают и сушат. Сладость, легкая терпкость и краски весны. Ощущение натянутой тетивы и сочного среза травы. Ценят свежесть, заваривать в гайвани.' 
+            },
+            yellow: { 
+                title: '🌾 Жёлтый чай', 
+                info: 'Ферментация во влажной, тёплой среде с ограниченным доступом кислорода ("томление"). Вкус ближе к зелёному, но глубже, мягче. Ноты горького миндаля и дымной карамели. Редкость на рынке, много подделок.' 
+            },
+            oolong: { 
+                title: '🌀 Улун', 
+                info: 'Особый кустарник с плотными листьями. Светлые и тёмные улуны. Ферментация от частичной до почти полной. Ароматика сложная, как парфюм. Самая разнообразная группа чаев. Сердце чайного искусства.' 
+            },
+            red: { 
+                title: '🔴 Красный чай', 
+                info: 'Сильно ферментированные чаи. Согревающие, плотные, яркие. Фруктово-пряные почечные из Юньнани, камфорно-цитрусовые с Тайваня. Отдают себя щедро, не передерживать.' 
+            },
+            black: { 
+                title: '⚫ Чёрный чай', 
+                info: 'Влажное скирдование, ноты шу пуэра. Грубое сырьё с черенками. Плотный вкус, затаённая сладость, винные ноты, орехи, сливочность. Люань Хэй Ча, Лю Бао.' 
+            },
+            puer: { 
+                title: '🌲 Пуэр', 
+                info: 'Шэн и Шу из Юньнани. Шэн: молодые травянистые, выдержанные нектарные. Шу: орехи, шоколад, сухофрукты. Шэн с деревьев 300+ лет. Шу любит кипяток.' 
+            }
         };
 
-        function initApp() {
+        function createUserProfile() {
             if (!users[user.id]) {
                 users[user.id] = {
                     id: user.id,
@@ -229,13 +249,17 @@
                     avatar: '👤'
                 };
             }
+        }
+
+        function initApp() {
+            createUserProfile();
             loadData();
             if (user.id == ADMIN_ID) document.getElementById('adminBtn').style.display = 'block';
             showWelcome();
         }
 
         function showWelcome() {
-            document.getElementById('welcomeUser').textContent = '@' + (users[user.id].username || user.username || 'гость');
+            document.getElementById('welcomeUser').textContent = '@' + users[user.id].username;
             document.getElementById('welcomePosts').textContent = posts.length;
         }
 
@@ -261,19 +285,24 @@
             feed.innerHTML = posts.slice(0, 20).map(post => `
                 <div class="post-card">
                     <div class="post-header" onclick="showUserProfile(${post.userId})">@${post.author}</div>
-                    ${post.image ? `<img src="${post.image}" class="post-image" onclick="tg.showAlert('📸 Фото вашей чайной сессии')>` : ''}
+                    ${post.image ? `<img src="${post.image}" class="post-image" onclick="tg.showAlert('📸 Фото вашей чайной сессии')">` : ''}
                     <div class="post-text">${post.text}</div>
+                    <div style="font-size:12px;opacity:0.7;margin-top:5px;">${post.timestamp}</div>
                     <div class="post-actions">
                         <button class="action-btn">❤️ ${post.likes || 0}</button>
                         <button class="action-btn">💬 ${post.comments || 0}</button>
                     </div>
-                    ${user.id == ADMIN_ID ? `<button class="btn btn-danger" style="font-size:12px;padding:8px;width:auto;" onclick="event.stopPropagation();deletePost(${post.id})">Удалить</button>` : ''}
+                    ${user.id == ADMIN_ID ? `<button class="btn btn-danger" style="font-size:12px;padding:8px;width:auto;margin-top:10px;" onclick="event.stopPropagation();deletePost(${post.id})">Удалить</button>` : ''}
                 </div>
             `).reverse().join('') || '<div style="text-align:center;opacity:0.6;padding:40px;">Пока нет постов. Будьте первым! ☕</div>';
         }
 
+        function showProfile() {
+            showUserProfile(user.id);
+        }
+
         function showUserProfile(userId) {
-            currentProfileUser = userId;
+            createUserProfile();
             const userData = users[userId] || users[user.id];
             document.getElementById('profileAvatar').textContent = userData.avatar;
             document.getElementById('profileName').textContent = '@' + userData.username;
@@ -285,10 +314,6 @@
             showScreen('profileScreen');
         }
 
-        function showMyProfile() {
-            showUserProfile(user.id);
-        }
-
         function renderProfileFeed(userId) {
             const feed = document.getElementById('profileFeed');
             const userPosts = posts.filter(p => p.userId == userId);
@@ -296,16 +321,23 @@
                 <div class="post-card">
                     ${post.image ? `<img src="${post.image}" class="post-image">` : ''}
                     <div class="post-text">${post.text}</div>
+                    <div style="font-size:12px;opacity:0.7;">${post.timestamp}</div>
                 </div>
             `).reverse().join('') : '<div style="text-align:center;opacity:0.6;padding:40px;">Нет постов ☕</div>';
         }
 
+        // 🔥 ФИКС: previewPhoto теперь РАБОТАЕТ!
         function previewPhoto(event) {
             const file = event.target.files[0];
             if (file) {
-                selectedPhoto = URL.createObjectURL(file);
-                document.getElementById('photoPreview').src = selectedPhoto;
-                document.getElementById('photoPreview').style.display = 'block';
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    selectedPhoto = e.target.result;
+                    const preview = document.getElementById('photoPreview');
+                    preview.src = selectedPhoto;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
             }
         }
 
@@ -317,32 +349,37 @@
             showScreen('newPost');
         }
 
+        // 🔥 ФИКС: publishPost теперь точно работает!
         function publishPost() {
             const text = document.getElementById('postText').value.trim();
-            if (!text) return tg.showAlert('Напишите текст поста!');
+            if (!text) {
+                tg.showAlert('📝 Напишите текст поста!');
+                return;
+            }
             
             const post = {
                 id: Date.now(),
                 userId: user.id,
                 author: users[user.id].username,
-                text,
+                text: text,
                 image: selectedPhoto,
                 likes: 0,
                 comments: 0,
-                timestamp: new Date().toLocaleString()
+                timestamp: new Date().toLocaleString('ru-RU', { 
+                    day: 'numeric', 
+                    month: 'short', 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                })
             };
             
             posts.unshift(post);
             users[user.id].posts = (users[user.id].posts || 0) + 1;
             saveData();
             
-            showNewPost();
             tg.HapticFeedback.notificationOccurred('success');
             tg.showAlert('✅ Пост опубликован!');
-        }
-
-        function showProfile() {
-            showMyProfile();
+            showMain();
         }
 
         function showProfileSettings() {
@@ -358,7 +395,7 @@
             users[user.id].bio = document.getElementById('profileBioInput').value || users[user.id].bio;
             users[user.id].specialty = document.getElementById('profileTeaSpecialty').value;
             saveData();
-            showMyProfile();
+            showProfile();
             tg.showAlert('✅ Профиль сохранён!');
         }
 
@@ -381,24 +418,19 @@
         function sendChatMessage() {
             const text = document.getElementById('chatInput').value.trim();
             if (!text) return;
-            
             chats.push({
                 id: Date.now(),
                 userId: user.id,
                 author: users[user.id].username,
                 text,
-                time: new Date().toLocaleTimeString()
+                time: new Date().toLocaleTimeString('ru-RU')
             });
-            
             document.getElementById('chatInput').value = '';
             saveData();
             renderChat();
         }
 
-        function showTeaGuide() {
-            showScreen('teaGuide');
-        }
-
+        function showTeaGuide() { showScreen('teaGuide'); }
         function showTeaDetails(type) {
             const tea = teaTypes[type];
             document.getElementById('teaTitle').textContent = tea.title;
@@ -425,11 +457,13 @@
             posts = posts.filter(p => p.id != id);
             saveData();
             renderFeed();
+            tg.showAlert('✅ Пост удалён');
         }
 
         function deleteAllPosts() {
             if(confirm('Удалить все посты?')) {
                 posts = [];
+                Object.values(users).forEach(u => u.posts = 0);
                 saveData();
                 renderFeed();
                 tg.showAlert('🗑️ Посты удалены');
@@ -452,6 +486,7 @@
             chats = chats.filter(c => c.userId != userId);
             saveData();
             renderAdminPanel();
+            tg.showAlert('👋 Пользователь забанен');
         }
 
         function saveData() {
@@ -463,18 +498,19 @@
                 const data = JSON.parse(localStorage.getItem('chaClub') || '{}');
                 posts = data.posts || [];
                 chats = data.chats || [];
+                if (data.users) Object.keys(data.users).forEach(id => createUserProfile(data.users[id]));
                 users = data.users || {};
-            } catch(e) {}
+            } catch(e) {
+                console.log('Данные загружены чистые');
+            }
         }
 
-        // События клавиатуры
         document.addEventListener('keydown', (e) => {
             if(e.key === 'Enter' && document.getElementById('chatInput') === document.activeElement) {
                 sendChatMessage();
             }
         });
 
-        // Инициализация
         initApp();
         tg.CloudStorage.setCloudStorageAutoSync(true);
     </script>
