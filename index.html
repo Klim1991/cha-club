@@ -3,181 +3,225 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🍵 ChaClub — Соцсеть Чайных Мастеров</title>
+<title>🍵 ChaClub</title>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: linear-gradient(135deg, #f5f5f3, #e8f5e8);
-    color: #2d5016;
-    min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #f5f5f3, #e8f5e8);
+  color: #2d5016;
+  min-height: 100vh;
 }
 .container {
-    max-width: 420px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 16px;
 }
 .screen {
-    display: none;
-    background: white;
-    border-radius: 20px;
-    padding: 24px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.12);
+  display: none;
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 12px 36px rgba(0,0,0,.15);
 }
 .screen.active { display: block; }
 
-h1 {
-    text-align: center;
-    margin-bottom: 16px;
-}
+h1 { text-align: center; margin-bottom: 16px; }
 
 .btn {
-    width: 100%;
-    padding: 16px;
-    margin-top: 12px;
-    border-radius: 16px;
-    border: none;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    background: linear-gradient(135deg, #228b22, #32cd32);
-    color: white;
+  width: 100%;
+  padding: 16px;
+  margin-top: 12px;
+  border-radius: 16px;
+  border: none;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(135deg, #228b22, #32cd32);
+  color: white;
+}
+.btn.secondary {
+  background: linear-gradient(135deg, #daa520, #f4a460);
 }
 
-.btn.secondary {
-    background: linear-gradient(135deg, #daa520, #f4a460);
+.post {
+  background: #f8faf8;
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.08);
+}
+.post .author {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+textarea {
+  width: 100%;
+  height: 120px;
+  border-radius: 14px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  font-family: inherit;
 }
 </style>
 </head>
 
 <body>
-
 <div class="container">
 
 <!-- WELCOME -->
 <div id="welcomeScreen" class="screen active">
-    <h1>🍵 ChaClub</h1>
-    <p style="text-align:center;margin-bottom:20px;">
-        Добро пожаловать, <strong id="welcomeUser">@user</strong>
-    </p>
-    <button id="enterAppBtn" class="btn">
-        🚀 Войти в ChaClub
-    </button>
+  <h1>🍵 ChaClub</h1>
+  <p style="text-align:center;margin-bottom:20px;">
+    Добро пожаловать, <strong id="welcomeUser">@user</strong>
+  </p>
+  <button id="enterBtn" class="btn">🚀 Войти в ChaClub</button>
 </div>
 
 <!-- MAIN -->
 <div id="mainScreen" class="screen">
-    <h1>📜 Общая лента</h1>
-    <button id="newPostBtn" class="btn">✨ Новый пост</button>
-    <button id="profileBtn" class="btn secondary">👤 Профиль</button>
+  <h1>📜 Лента</h1>
+  <div id="feed"></div>
+  <button id="newPostBtn" class="btn">✨ Новый пост</button>
+  <button id="profileBtn" class="btn secondary">👤 Профиль</button>
 </div>
 
 <!-- NEW POST -->
 <div id="newPostScreen" class="screen">
-    <h1>✨ Новый пост</h1>
-    <textarea id="postTextInput"
-        style="width:100%;height:120px;border-radius:12px;padding:12px;"
-        placeholder="Расскажите о чайной сессии..."></textarea>
-    <button id="publishPostBtn" class="btn">🌿 Опубликовать</button>
-    <button id="backMainBtn" class="btn secondary">← Назад</button>
+  <h1>✨ Новый пост</h1>
+  <textarea id="postText" placeholder="Расскажите о чайной сессии..."></textarea>
+  <button id="publishBtn" class="btn">🌿 Опубликовать</button>
+  <button id="backFromPostBtn" class="btn secondary">← Назад</button>
 </div>
 
 <!-- PROFILE -->
 <div id="profileScreen" class="screen">
-    <h1>👤 Профиль</h1>
-    <p id="profileName"></p>
-    <button id="backProfileBtn" class="btn secondary">← Назад</button>
+  <h1>👤 Профиль</h1>
+  <p><strong id="profileUsername"></strong></p>
+  <p id="profilePosts"></p>
+  <button id="backFromProfileBtn" class="btn secondary">← Назад</button>
 </div>
 
 </div>
 
 <script>
 /* ================= TELEGRAM ================= */
-const tg = window.Telegram?.WebApp;
+const tg = window.Telegram?.WebApp || null;
 if (tg) {
-    tg.ready();
-    tg.expand();
+  tg.ready();
+  tg.expand();
 }
+
+/* ================= STORAGE ================= */
+const storage = {
+  async save(key, value) {
+    if (tg?.CloudStorage) {
+      return new Promise(res => {
+        tg.CloudStorage.setItem(key, JSON.stringify(value), res);
+      });
+    }
+    localStorage.setItem(key, JSON.stringify(value));
+  },
+  async load(key) {
+    if (tg?.CloudStorage) {
+      return new Promise(res => {
+        tg.CloudStorage.getItem(key, (err, val) => {
+          res(val ? JSON.parse(val) : null);
+        });
+      });
+    }
+    const v = localStorage.getItem(key);
+    return v ? JSON.parse(v) : null;
+  }
+};
 
 /* ================= STATE ================= */
 const app = {
-    user: tg?.initDataUnsafe?.user || {
-        id: Date.now(),
-        username: "guest_" + Math.floor(Math.random() * 1000)
-    },
-    posts: []
+  user: tg?.initDataUnsafe?.user || {
+    id: Date.now(),
+    username: "guest_" + Math.floor(Math.random()*1000)
+  },
+  posts: []
 };
 
 /* ================= INIT ================= */
-window.addEventListener("load", initApp);
+window.addEventListener("load", init);
 
-function initApp() {
-    bindButtons();
-    updateWelcome();
+async function init() {
+  bindUI();
+  await loadData();
+  updateWelcome();
+  renderFeed();
 }
 
-/* ================= BUTTONS ================= */
-function bindButtons() {
-    document.getElementById("enterAppBtn")
-        .addEventListener("click", enterApp);
-
-    document.getElementById("newPostBtn")
-        .addEventListener("click", () => show("newPostScreen"));
-
-    document.getElementById("profileBtn")
-        .addEventListener("click", showProfile);
-
-    document.getElementById("publishPostBtn")
-        .addEventListener("click", publishPost);
-
-    document.getElementById("backMainBtn")
-        .addEventListener("click", () => show("mainScreen"));
-
-    document.getElementById("backProfileBtn")
-        .addEventListener("click", () => show("mainScreen"));
+/* ================= UI ================= */
+function bindUI() {
+  qs("enterBtn").onclick = () => show("mainScreen");
+  qs("newPostBtn").onclick = () => show("newPostScreen");
+  qs("profileBtn").onclick = showProfile;
+  qs("publishBtn").onclick = publishPost;
+  qs("backFromPostBtn").onclick = () => show("mainScreen");
+  qs("backFromProfileBtn").onclick = () => show("mainScreen");
 }
 
-/* ================= NAV ================= */
+function qs(id) { return document.getElementById(id); }
+
 function show(id) {
-    document.querySelectorAll(".screen")
-        .forEach(s => s.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".screen")
+    .forEach(s => s.classList.remove("active"));
+  qs(id).classList.add("active");
 }
 
-function enterApp() {
-    show("mainScreen");
+/* ================= DATA ================= */
+async function loadData() {
+  const savedPosts = await storage.load("cha_posts");
+  if (savedPosts) app.posts = savedPosts;
+}
+
+async function saveData() {
+  await storage.save("cha_posts", app.posts);
 }
 
 /* ================= LOGIC ================= */
 function updateWelcome() {
-    document.getElementById("welcomeUser").textContent =
-        "@" + (app.user.username || "user");
+  qs("welcomeUser").textContent = "@" + app.user.username;
 }
 
-function publishPost() {
-    const text = document.getElementById("postTextInput").value.trim();
-    if (!text) {
-        alert("Напишите текст поста");
-        return;
-    }
-    app.posts.push({
-        id: Date.now(),
-        text
-    });
-    document.getElementById("postTextInput").value = "";
-    alert("Пост опубликован!");
-    show("mainScreen");
+function renderFeed() {
+  const feed = qs("feed");
+  feed.innerHTML = app.posts.length
+    ? app.posts.map(p => `
+      <div class="post">
+        <div class="author">@${p.author}</div>
+        <div>${p.text}</div>
+      </div>
+    `).join("")
+    : `<p style="text-align:center;opacity:.6;">Пока нет постов ☕</p>`;
+}
+
+async function publishPost() {
+  const text = qs("postText").value.trim();
+  if (!text) return alert("Напишите текст");
+  app.posts.unshift({
+    id: Date.now(),
+    author: app.user.username,
+    text
+  });
+  qs("postText").value = "";
+  await saveData();
+  renderFeed();
+  show("mainScreen");
 }
 
 function showProfile() {
-    document.getElementById("profileName").textContent =
-        "@" + (app.user.username || "user");
-    show("profileScreen");
+  qs("profileUsername").textContent = "@" + app.user.username;
+  qs("profilePosts").textContent =
+    "Постов: " + app.posts.filter(p => p.author === app.user.username).length;
+  show("profileScreen");
 }
 </script>
-
 </body>
 </html>
