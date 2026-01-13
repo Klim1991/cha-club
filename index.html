@@ -32,22 +32,20 @@
             border: none; padding: 15px 20px; border-radius: 15px; 
             font-size: 16px; font-weight: bold; width: 100%; margin: 8px 0;
             cursor: pointer; box-shadow: 0 4px 15px rgba(34,139,34,0.3);
-            touch-action: manipulation;
+            touch-action: manipulation; user-select: none;
         }
         .btn:active { transform: scale(0.98); }
         .btn-secondary { background: linear-gradient(45deg, #DAA520, #F4A460) !important; }
         .btn-danger { background: linear-gradient(45deg, #DC143C, #B22222) !important; }
         .btn-small { width: auto !important; padding: 10px 16px !important; margin: 4px; font-size: 14px !important; }
+        .btn-tea { background: linear-gradient(45deg, #8B4513, #A0522D) !important; }
         
-        .post-card { 
-            background: white; border-radius: 15px; padding: 20px; margin: 15px 0;
-            border-left: 5px solid #228B22; box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-            cursor: pointer;
-        }
+        .post-card { background: white; border-radius: 15px; padding: 20px; margin: 15px 0;
+            border-left: 5px solid #228B22; box-shadow: 0 5px 20px rgba(0,0,0,0.08); }
         .post-actions button { 
             background: #F0F8F0; border: 2px solid #D2E8CF; color: #228B22; 
             padding: 12px; border-radius: 12px; font-size: 18px; font-weight: bold;
-            min-width: 70px; margin: 0 5px; cursor: pointer;
+            min-width: 70px; margin: 0 5px; cursor: pointer; border: none;
         }
         .post-actions button:active { background: #228B22 !important; color: white !important; }
         .post-actions button.liked { background: #FF6B6B !important; color: white !important; }
@@ -58,18 +56,13 @@
             width: 100%; padding: 15px; border-radius: 15px; border: 1px solid #D2E8CF; 
             background: white; font-size: 16px; margin: 10px 0; box-sizing: border-box;
         }
-        textarea { height: 120px; resize: vertical; }
-        .profile-avatar { 
-            width: 90px; height: 90px; border-radius: 50%; background: #D2E8CF; 
-            margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; 
-            font-size: 35px; border: 4px solid #228B22; cursor: pointer;
-        }
+        .tea-info { background: #FFF8DC; padding: 20px; border-radius: 15px; line-height: 1.6; }
         #mainScreen { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- ЭКРАН ПРИВЕТСТВИЯ -->
+        <!-- ПРИВЕТСТВИЕ -->
         <div class="screen" id="welcomeScreen">
             <div class="header">
                 <h1>🍵 ChaClub</h1>
@@ -83,7 +76,7 @@
                     🌿 Постов: <strong id="welcomePosts">0</strong>
                 </div>
             </div>
-            <button class="btn" onclick="enterApp()" style="padding: 20px; font-size: 18px;">
+            <button id="enterBtn" class="btn" style="padding: 20px; font-size: 18px;">
                 🚀 Войти в соцсеть
             </button>
         </div>
@@ -91,14 +84,15 @@
         <!-- ГЛАВНАЯ -->
         <div class="screen" id="mainScreen">
             <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                <button class="btn btn-small" onclick="setPostTarget('public')">🌐 Общая</button>
-                <button class="btn btn-small btn-secondary" onclick="setPostTarget('profile')">👤 Мой</button>
+                <button id="publicFeedBtn" class="btn btn-small">🌐 Общая</button>
+                <button id="profileFeedBtn" class="btn btn-small btn-secondary">👤 Мой</button>
             </div>
             <h3 id="feedTitle">📜 Лента</h3>
             <div id="feed"></div>
-            <button class="btn" onclick="showNewPost()">✨ Новый пост</button>
-            <button class="btn btn-secondary" onclick="showProfile()">👤 Профиль</button>
-            <button class="btn btn-secondary" onclick="showNotifications()">🔔 (<span id="notifCount">0</span>)</button>
+            <button id="newPostBtn" class="btn">✨ Новый пост</button>
+            <button id="profileBtn" class="btn btn-secondary">👤 Профиль</button>
+            <button id="teaBtn" class="btn btn-tea">☕ О чае и заваривании</button>
+            <button id="notificationsBtn" class="btn btn-secondary">🔔 (<span id="notifCount">0</span>)</button>
         </div>
 
         <!-- НОВЫЙ ПОСТ -->
@@ -107,52 +101,53 @@
             <div style="background: #E8F5E8; padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 14px;">
                 <strong id="postTargetText">Общая лента</strong>
             </div>
-            <input type="file" id="postPhotoInput" accept="image/*" style="display:none;" onchange="previewPhoto(event)">
+            <input type="file" id="postPhotoInput" accept="image/*" style="display:none;">
             <div id="photoPreview" style="display:none; width:100%; height:200px; object-fit:cover; border-radius:15px; margin:15px 0;"></div>
-            <button class="btn btn-secondary" onclick="document.getElementById('postPhotoInput').click()">📸 Фото</button>
+            <button id="photoBtn" class="btn btn-secondary">📸 Фото</button>
             <textarea id="postText" class="input" placeholder="Ваша чайная сессия... ☕"></textarea>
-            <button class="btn" onclick="publishPost()">🌿 Опубликовать</button>
-            <button class="btn back-btn" onclick="showMainScreen()">← Назад</button>
+            <button id="publishBtn" class="btn">🌿 Опубликовать</button>
+            <button id="backToMainBtn" class="btn back-btn">← Назад</button>
         </div>
 
-        <!-- ПРОФИЛЬ -->
+        <!-- О ЧАЕ И ЗАВАРИВАНИИ [attached_file:1] -->
+        <div class="screen" id="teaScreen">
+            <h3>☕ Как правильно заваривать чай</h3>
+            <div class="tea-info">
+                <h4>🎯 Гайвань — сердце чайной церемонии</h4>
+                <p>Повторно заливая гайвань кипятком, чай необходимо настоять <strong>2−3 секунды</strong> и слить настой в сливник, а из него разлить по пиалам.</p>
+                
+                <h4>⏱️ Каждый пролив</h4>
+                <p>Каждый последующий пролив увеличиваем на несколько секунд. Свежий китайский чай очень насыщенный и моментально отдает себя воде.</p>
+                
+                <h4>✨ Признаки готовности</h4>
+                <p>Яркие ноты на крышке гайвани, приятный цвет настоя — чай заварился!</p>
+                
+                <h4>🥋 Техника слива</h4>
+                <p>Берите гайвань за краешки <strong>большим и средним пальцем</strong>, указательным плотно прижмите крышку. Отодвиньте крышку на себя на <strong>2-3 мм</strong> — настой польется через щель.</p>
+            </div>
+            <button id="backToMainFromTea" class="btn back-btn">← Главная</button>
+        </div>
+
+        <!-- ПРОФИЛЬ (упрощенный) -->
         <div class="screen" id="profileScreen">
             <div style="text-align:center; padding: 30px 0; background: linear-gradient(135deg, #F0F8F0, #E8F5E8); border-radius: 20px;">
-                <div class="profile-avatar" id="profileAvatar" onclick="showProfileSettings()">👤</div>
+                <div style="width:90px;height:90px;border-radius:50%;background:#D2E8CF;margin:0 auto 15px;display:flex;align-items:center;justify-content:center;font-size:35px;border:4px solid #228B22;">
+                    👤
+                </div>
                 <h2 id="profileName">@username</h2>
-                <div id="profileBio" style="font-size:14px; opacity:0.8;">Чайный мастер</div>
+                <div style="font-size:14px; opacity:0.8;">Чайный мастер</div>
                 <div style="font-size:14px; color:#666; margin-top:10px;">
-                    Постов: <strong id="profilePostCount">0</strong> | 
-                    Лайков: <strong id="profileLikeCount">0</strong>
+                    Постов: <strong id="profilePostCount">0</strong> | Лайков: <strong id="profileLikeCount">0</strong>
                 </div>
             </div>
             <h4>Мои посты</h4>
             <div id="profileFeed"></div>
-            <button class="btn back-btn" onclick="showMainScreen()">← Лента</button>
-        </div>
-
-        <!-- НАСТРОЙКИ -->
-        <div class="screen" id="profileSettingsScreen">
-            <h3>⚙️ Настройки</h3>
-            <input id="nameInput" class="input" placeholder="Имя">
-            <input id="usernameInput" class="input" placeholder="@username">
-            <input type="file" id="avatarInput" accept="image/*" style="display:none;" onchange="previewAvatar(event)">
-            <div id="avatarPreview" style="width:80px;height:80px;border-radius:50%;margin:15px auto;display:none;"></div>
-            <button class="btn btn-secondary" onclick="document.getElementById('avatarInput').click()">🖼️ Аватар</button>
-            <button class="btn" onclick="saveProfile()">💾 Сохранить</button>
-            <button class="btn back-btn" onclick="showProfileScreen()">← Профиль</button>
-        </div>
-
-        <!-- УВЕДОМЛЕНИЯ -->
-        <div class="screen" id="notificationsScreen">
-            <h3>🔔 Уведомления</h3>
-            <div id="notificationsList" style="max-height:60vh;overflow-y:auto;"></div>
-            <button class="btn back-btn" onclick="showMainScreen()">← Главная</button>
+            <button id="backToMainFromProfile" class="btn back-btn">← Лента</button>
         </div>
     </div>
 
     <script>
-        // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+        // Глобальные переменные
         const tg = window.Telegram.WebApp;
         tg.ready(); tg.expand();
         
@@ -164,12 +159,40 @@
             postTarget: 'public'
         };
 
-        // ✅ ИНИЦИАЛИЗАЦИЯ — ВСЕ КНОПКИ РАБОТАЮТ!
+        // ✅ Инициализация ДОМ элементов
+        function initButtons() {
+            // Главная кнопка входа
+            document.getElementById('enterBtn').addEventListener('click', enterApp);
+            
+            // Главный экран
+            document.getElementById('publicFeedBtn').addEventListener('click', () => setPostTarget('public'));
+            document.getElementById('profileFeedBtn').addEventListener('click', () => setPostTarget('profile'));
+            document.getElementById('newPostBtn').addEventListener('click', showNewPost);
+            document.getElementById('profileBtn').addEventListener('click', showProfile);
+            document.getElementById('teaBtn').addEventListener('click', showTeaGuide);
+            document.getElementById('notificationsBtn').addEventListener('click', showNotifications);
+            
+            // Новый пост
+            document.getElementById('photoBtn').addEventListener('click', () => document.getElementById('postPhotoInput').click());
+            document.getElementById('postPhotoInput').addEventListener('change', previewPhoto);
+            document.getElementById('publishBtn').addEventListener('click', publishPost);
+            document.getElementById('backToMainBtn').addEventListener('click', showMainScreen);
+            
+            // Чай
+            document.getElementById('backToMainFromTea').addEventListener('click', showMainScreen);
+            
+            // Профиль
+            document.getElementById('backToMainFromProfile').addEventListener('click', showMainScreen);
+            
+            console.log('✅ Все кнопки подключены!');
+        }
+
+        // Инициализация приложения
         function initApp() {
-            console.log('🔥 ChaClub ИНИЦИАЛИЗАЦИЯ');
             createUser();
             loadData();
             updateWelcomeScreen();
+            initButtons(); // Самое важное!
             tg.CloudStorage.setCloudStorageAutoSync(true);
         }
 
@@ -186,15 +209,13 @@
             }
         }
 
-        // ✅ ВСЕ ЭКРАНЫ
+        // Навигация
         function showScreen(screenId) {
-            console.log('Показываем экран:', screenId);
             document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
             document.getElementById(screenId).style.display = 'block';
         }
 
         function enterApp() {
-            console.log('🚀 Вход в приложение');
             tg.HapticFeedback.impactOccurred('light');
             showScreen('mainScreen');
             renderFeed();
@@ -214,16 +235,14 @@
             showScreen('newPostScreen');
         }
 
-        function showProfileScreen() {
+        function showProfile() {
             updateProfileScreen();
             showScreen('profileScreen');
         }
 
-        function showProfileSettings() {
-            document.getElementById('nameInput').value = appData.users[appData.user.id].name;
-            document.getElementById('usernameInput').value = '@' + appData.users[appData.user.id].username;
-            document.getElementById('avatarPreview').style.display = 'none';
-            showScreen('profileSettingsScreen');
+        function showTeaGuide() {
+            tg.HapticFeedback.impactOccurred('light');
+            showScreen('teaScreen');
         }
 
         function showNotifications() {
@@ -231,7 +250,7 @@
             showScreen('notificationsScreen');
         }
 
-        // ✅ ЛЕНТА ПОСТОВ
+        // Лента постов
         function renderFeed() {
             const feed = document.getElementById('feed');
             const targetPosts = appData.postTarget === 'public' ? appData.posts : 
@@ -239,22 +258,18 @@
             
             feed.innerHTML = targetPosts.map(post => `
                 <div class="post-card">
-                    <div style="font-weight:bold;color:#8B4513;margin-bottom:10px;cursor:pointer" 
-                         onclick="showUserProfile(${post.userId})">@${post.author}</div>
+                    <div style="font-weight:bold;color:#8B4513;margin-bottom:10px">@${post.author}</div>
                     ${post.image ? `<img src="${post.image}" style="width:100%;height:200px;object-fit:cover;border-radius:10px;">` : ''}
                     <div style="font-size:14px;line-height:1.4;margin:10px 0;">${post.text}</div>
                     <div style="font-size:12px;opacity:0.7;margin-bottom:15px;">${post.timestamp}</div>
                     <div class="post-actions" style="display:flex;justify-content:space-around;">
-                        <button onclick="toggleLike(${post.id});event.stopPropagation()" 
-                                class="${post.likes?.includes(appData.user.id) ? 'liked' : ''}">
+                        <button onclick="toggleLike(${post.id})" class="${post.likes?.includes(appData.user.id) ? 'liked' : ''}">
                             ❤️ ${post.likes?.length || 0}
                         </button>
-                        <button onclick="alert('💬 Комментарии в разработке');event.stopPropagation()">
-                            💬 ${post.comments?.length || 0}
-                        </button>
+                        <button onclick="tg.showAlert('💬 Комментарии скоро!')">💬 0</button>
                     </div>
                 </div>
-            `).reverse().join('') || '<div style="text-align:center;padding:40px;opacity:0.5;">Нет постов. Создайте первый! ☕</div>';
+            `).reverse().join('') || '<div style="text-align:center;padding:40px;opacity:0.5;">Нет постов ☕</div>';
             
             document.getElementById('feedTitle').textContent = 
                 appData.postTarget === 'public' ? '📜 Общая лента' : '👤 Мои посты';
@@ -262,15 +277,10 @@
 
         function setPostTarget(target) {
             appData.postTarget = target;
-            document.querySelectorAll('#mainScreen button')[0].className = 
-                target === 'public' ? 'btn btn-small' : 'btn btn-small btn-secondary';
-            document.querySelectorAll('#mainScreen button')[1].className = 
-                target === 'profile' ? 'btn btn-small' : 'btn btn-small btn-secondary';
             renderFeed();
             tg.HapticFeedback.selectionChanged();
         }
 
-        // ✅ ЛАЙКИ РАБОТАЮТ!
         function toggleLike(postId) {
             const post = appData.posts.find(p => p.id === postId);
             if (!post) return;
@@ -280,17 +290,15 @@
                 post.likes = likes.filter(id => id !== appData.user.id);
             } else {
                 post.likes = [...likes, appData.user.id];
-                addNotification(appData.posts.find(p => p.id === postId).userId, 
-                    `Вам поставили лайк! ❤️`);
+                addNotification(post.userId, `Вам поставили лайк! ❤️`);
             }
-            
             updateUserStats();
             saveData();
             renderFeed();
             tg.HapticFeedback.impactOccurred('medium');
         }
 
-        // ✅ ПОСТЫ
+        // Посты
         function previewPhoto(event) {
             const file = event.target.files[0];
             if (file) {
@@ -327,32 +335,19 @@
             appData.posts.unshift(post);
             appData.users[appData.user.id].posts++;
             updateUserStats();
-            
             saveData();
             tg.showAlert('✅ Пост опубликован!');
             showNewPost();
         }
 
-        // ✅ ПРОФИЛЬ
+        // Остальные функции (профиль, уведомления, сохранение)
         function updateProfileScreen() {
             const userData = appData.users[appData.user.id];
-            document.getElementById('profileAvatar').textContent = userData.avatar;
             document.getElementById('profileName').textContent = '@' + userData.username;
-            document.getElementById('profileBio').textContent = userData.name;
             document.getElementById('profilePostCount').textContent = userData.posts || 0;
             document.getElementById('profileLikeCount').textContent = userData.totalLikes || 0;
-            
-            const profileFeed = document.getElementById('profileFeed');
-            const myPosts = appData.posts.filter(p => p.userId === appData.user.id);
-            profileFeed.innerHTML = myPosts.map(post => `
-                <div class="post-card">
-                    <div>${post.text.slice(0, 100)}${post.text.length > 100 ? '...' : ''}</div>
-                    <div style="font-size:12px;opacity:0.7;">${post.timestamp} • ❤️ ${post.likes?.length || 0}</div>
-                </div>
-            `).reverse().join('') || '<div style="text-align:center;opacity:0.5;">Нет постов ☕</div>';
         }
 
-        // ✅ УВЕДОМЛЕНИЯ
         function addNotification(userId, text) {
             appData.notifications.unshift({
                 id: Date.now(),
@@ -364,47 +359,6 @@
             saveData();
         }
 
-        function renderNotifications() {
-            const list = document.getElementById('notificationsList');
-            const myNotifs = appData.notifications.filter(n => n.userId === appData.user.id);
-            list.innerHTML = myNotifs.map(n => `
-                <div style="background:#FFF3CD;padding:15px;margin:10px 0;border-radius:12px;border-left:4px solid #FFC107;">
-                    ${n.text}
-                    <div style="font-size:12px;opacity:0.7;margin-top:8px;">${n.timestamp}</div>
-                </div>
-            `).join('') || '<div style="text-align:center;padding:40px;opacity:0.5;">Нет уведомлений 🔔</div>';
-            
-            document.getElementById('notifCount').textContent = myNotifs.filter(n => !n.read).length;
-        }
-
-        // ✅ АВАТАР И НАСТРОЙКИ
-        function previewAvatar(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    document.getElementById('avatarPreview').src = e.target.result;
-                    document.getElementById('avatarPreview').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function saveProfile() {
-            appData.users[appData.user.id].name = document.getElementById('nameInput').value || 'Чайный мастер';
-            appData.users[appData.user.id].username = document.getElementById('usernameInput').value.replace('@', '') || 
-                appData.users[appData.user.id].username;
-            
-            if (document.getElementById('avatarPreview').style.display === 'block') {
-                appData.users[appData.user.id].avatar = '🖼️';
-            }
-            
-            saveData();
-            tg.showAlert('✅ Профиль сохранён!');
-            showProfileScreen();
-        }
-
-        // ✅ УТИЛИТЫ
         function updateUserStats() {
             appData.users[appData.user.id].posts = appData.posts.filter(p => p.userId === appData.user.id).length;
             appData.users[appData.user.id].totalLikes = appData.posts
@@ -435,13 +389,8 @@
             }
         }
 
-        function showUserProfile(userId) {
-            tg.showAlert(`👤 Профиль @${appData.users[userId]?.username || 'user'}`);
-        }
-
-        // ✅ СТАРТ ПРИЛОЖЕНИЯ
+        // Запуск
         window.addEventListener('load', initApp);
-        tg.MainButton.setText('✨ Новый пост').onClick(showNewPost).hide();
     </script>
 </body>
 </html>
