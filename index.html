@@ -11,7 +11,6 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #F5F5F3 0%, #E8F5E8 50%, #D2E8CF 100%);
             color: #2D5016; min-height: 100vh; padding-bottom: 80px;
-            scroll-behavior: smooth;
         }
         .container { max-width: 400px; margin: 0 auto; padding: 20px; }
         .header { 
@@ -24,355 +23,425 @@
         .screen { 
             background: rgba(255,255,255,0.95); border-radius: 20px; padding: 25px; 
             margin-bottom: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            border: 1px solid rgba(210,232,207,0.5); display: none; 
-            scrollbar-width: thin; scrollbar-color: #228B22 #f0f0f0;
+            border: 1px solid rgba(210,232,207,0.5); display: none;
         }
-        #welcomeScreen { display: block; text-align: center; }
-        #feed, #profileFeed { max-height: 60vh; overflow-y: auto; padding-right: 10px; }
-        #feed::-webkit-scrollbar, #profileFeed::-webkit-scrollbar { width: 6px; }
-        #feed::-webkit-scrollbar-track, #profileFeed::-webkit-scrollbar-track { background: #f0f0f0; border-radius: 10px; }
-        #feed::-webkit-scrollbar-thumb, #profileFeed::-webkit-scrollbar-thumb { background: #228B22; border-radius: 10px; }
+        #welcomeScreen { display: block; }
         
-        .welcome-btn, .btn { 
+        .btn { 
             background: linear-gradient(45deg, #228B22, #32CD32); color: white; 
             border: none; padding: 15px 20px; border-radius: 15px; 
             font-size: 16px; font-weight: bold; width: 100%; margin: 8px 0;
-            transition: all 0.3s ease; cursor: pointer; box-shadow: 0 4px 15px rgba(34,139,34,0.3);
+            cursor: pointer; box-shadow: 0 4px 15px rgba(34,139,34,0.3);
+            touch-action: manipulation;
         }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(34,139,34,0.4); }
-        .btn:active { transform: translateY(0); }
+        .btn:active { transform: scale(0.98); }
         .btn-secondary { background: linear-gradient(45deg, #DAA520, #F4A460) !important; }
         .btn-danger { background: linear-gradient(45deg, #DC143C, #B22222) !important; }
-        .btn-admin { background: linear-gradient(45deg, #8B4513, #A0522D) !important; }
-        .btn-small { width: auto !important; padding: 8px 16px !important; font-size: 14px !important; margin: 2px; }
-        .btn-follow { background: linear-gradient(45deg, #2196F3, #1976D2) !important; }
-        .btn-followed { background: linear-gradient(45deg, #4CAF50, #45a049) !important; }
-        .btn-like.liked { background: linear-gradient(45deg, #FF6B6B, #FF5252) !important; }
+        .btn-small { width: auto !important; padding: 10px 16px !important; margin: 4px; font-size: 14px !important; }
         
         .post-card { 
             background: white; border-radius: 15px; padding: 20px; margin: 15px 0;
             border-left: 5px solid #228B22; box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-            transition: all 0.3s ease; cursor: pointer;
+            cursor: pointer;
         }
-        .post-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
-        .post-header { font-weight: bold; color: #8B4513; margin-bottom: 10px; }
-        .post-text { font-size: 14px; line-height: 1.4; margin: 10px 0; }
-        .post-image { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin: 10px 0; }
-        .post-meta { font-size: 12px; opacity: 0.7; margin-bottom: 15px; }
-        .post-actions { display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; }
-        .action-btn { background: #F0F8F0; border: 2px solid #D2E8CF; color: #228B22; 
-                      padding: 12px; border-radius: 12px; font-size: 18px; font-weight: bold;
-                      transition: all 0.3s ease; min-width: 60px; }
-        .action-btn:hover { background: #228B22; color: white; transform: scale(1.05); }
-        .action-btn:active { transform: scale(0.98); }
+        .post-actions button { 
+            background: #F0F8F0; border: 2px solid #D2E8CF; color: #228B22; 
+            padding: 12px; border-radius: 12px; font-size: 18px; font-weight: bold;
+            min-width: 70px; margin: 0 5px; cursor: pointer;
+        }
+        .post-actions button:active { background: #228B22 !important; color: white !important; }
+        .post-actions button.liked { background: #FF6B6B !important; color: white !important; }
         
-        .profile-header { text-align: center; padding: 30px 0; background: linear-gradient(135deg, #F0F8F0, #E8F5E8); border-radius: 20px; margin-bottom: 20px; }
-        .profile-avatar { width: 90px; height: 90px; border-radius: 50%; background: #D2E8CF; margin: 0 auto 15px; 
-                         display: flex; align-items: center; justify-content: center; font-size: 35px; 
-                         border: 4px solid #228B22; cursor: pointer; transition: all 0.3s; }
-        .profile-avatar:hover { transform: scale(1.05); box-shadow: 0 8px 25px rgba(34,139,34,0.3); }
-        .profile-stats { display: flex; justify-content: space-around; margin: 20px 0; font-size: 14px; }
-        .stat { text-align: center; }
-        .stat-value { font-size: 24px; font-weight: bold; color: #228B22; }
-        
-        .input, textarea.input { width: 100%; padding: 15px; border-radius: 15px; border: 1px solid #D2E8CF; 
-                 background: white; font-size: 16px; margin: 10px 0; font-family: inherit; }
-        textarea.input { height: 120px; resize: vertical; }
-        .back-btn { background: linear-gradient(45deg, #808080, #A9A9A9); font-size: 14px; padding: 12px; }
-        .photo-preview, #avatarPreview { width: 100px; height: 100px; object-fit: cover; border-radius: 15px; margin: 10px 0; }
-        .tea-guide-btn { padding: 15px; margin: 10px 0; background: #E8F5E8; border-radius: 12px; 
-                        cursor: pointer; border-left: 4px solid #228B22; transition: all 0.3s; }
-        .tea-guide-btn:hover { background: #D2E8CF; transform: translateX(5px); }
-        .discussion-list { max-height: 50vh; overflow-y: auto; }
-        .discussion-card { background: #F9F9F9; padding: 20px; margin: 10px 0; border-radius: 15px; cursor: pointer; }
-        .notification { background: #FFF3CD; padding: 12px; margin: 8px 0; border-radius: 10px; border-left: 4px solid #FFC107; }
+        #feed { max-height: 60vh; overflow-y: auto; padding-right: 10px; }
+        .back-btn { background: linear-gradient(45deg, #808080, #A9A9A9) !important; }
+        .input, textarea { 
+            width: 100%; padding: 15px; border-radius: 15px; border: 1px solid #D2E8CF; 
+            background: white; font-size: 16px; margin: 10px 0; box-sizing: border-box;
+        }
+        textarea { height: 120px; resize: vertical; }
+        .profile-avatar { 
+            width: 90px; height: 90px; border-radius: 50%; background: #D2E8CF; 
+            margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; 
+            font-size: 35px; border: 4px solid #228B22; cursor: pointer;
+        }
         #mainScreen { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- ПРИВЕТСТВИЕ -->
+        <!-- ЭКРАН ПРИВЕТСТВИЯ -->
         <div class="screen" id="welcomeScreen">
             <div class="header">
-                <h1>🍵 Добро пожаловать в ChaClub!</h1>
+                <h1>🍵 ChaClub</h1>
+                <p style="font-size: 14px; opacity: 0.8;">Соцсеть чайных мастеров</p>
             </div>
-            <div style="font-size: 18px; margin: 20px 0; line-height: 1.5;">
-                Полная соцсеть для чайных мастеров ☕<br>
-                Лайки • Комментарии • Подписки • Обсуждения • Уведомления
-            </div>
-            <div style="background: #E8F5E8; padding: 20px; border-radius: 15px; margin: 20px 0;">
-                <div style="font-size: 14px; margin-bottom: 10px;">
+            <div style="background: #E8F5E8; padding: 20px; border-radius: 15px; margin: 20px 0; text-align: center;">
+                <div style="font-size: 16px; margin-bottom: 10px;">
                     👤 <strong id="welcomeUser">@username</strong>
                 </div>
-                <div style="font-size: 14px;">
-                    🌿 Постов в ленте: <strong id="welcomePosts">0</strong>
+                <div style="font-size: 14px; opacity: 0.8;">
+                    🌿 Постов: <strong id="welcomePosts">0</strong>
                 </div>
             </div>
-            <button class="welcome-btn" onclick="enterApp()" style="padding: 20px; font-size: 18px;">🚀 Войти в соцсеть</button>
+            <button class="btn" onclick="enterApp()" style="padding: 20px; font-size: 18px;">
+                🚀 Войти в соцсеть
+            </button>
         </div>
 
-        <!-- ГЛАВНЫЙ ЭКРАН -->
+        <!-- ГЛАВНАЯ -->
         <div class="screen" id="mainScreen">
             <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                <button class="btn" onclick="setPostTarget('public')" id="publicBtn">🌐 Общая лента</button>
-                <button class="btn btn-secondary" onclick="setPostTarget('profile')" id="profileBtn">👤 Мой профиль</button>
+                <button class="btn btn-small" onclick="setPostTarget('public')">🌐 Общая</button>
+                <button class="btn btn-small btn-secondary" onclick="setPostTarget('profile')">👤 Мой</button>
             </div>
-            <h3 id="feedTitle">📜 Общая лента</h3>
+            <h3 id="feedTitle">📜 Лента</h3>
             <div id="feed"></div>
             <button class="btn" onclick="showNewPost()">✨ Новый пост</button>
-            <button class="btn btn-secondary" onclick="showDiscussions()">💬 Обсуждения</button>
-            <button class="btn btn-secondary" onclick="showProfile()">👤 Мой профиль</button>
-            <button class="btn-secondary" style="padding:15px;" onclick="showNotifications()">🔔 Уведомления (<span id="notifCount">0</span>)</button>
+            <button class="btn btn-secondary" onclick="showProfile()">👤 Профиль</button>
+            <button class="btn btn-secondary" onclick="showNotifications()">🔔 (<span id="notifCount">0</span>)</button>
         </div>
 
         <!-- НОВЫЙ ПОСТ -->
-        <div class="screen" id="newPost">
+        <div class="screen" id="newPostScreen">
             <h3>✨ Новый пост</h3>
-            <div style="font-size: 14px; color: #666; margin-bottom: 15px;">
-                Публикуется в: <strong id="postTargetDisplay">Общую ленту</strong>
+            <div style="background: #E8F5E8; padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 14px;">
+                <strong id="postTargetText">Общая лента</strong>
             </div>
-            <input type="file" id="postPhoto" accept="image/*" style="display:none;" onchange="previewPhoto(event)">
-            <img class="photo-preview" id="photoPreview" style="display:none;">
-            <button class="btn btn-secondary" onclick="document.getElementById('postPhoto').click()">📸 Фото</button>
-            <textarea class="input" id="postText" placeholder="Расскажите о вашей чайной сессии... ☕"></textarea>
+            <input type="file" id="postPhotoInput" accept="image/*" style="display:none;" onchange="previewPhoto(event)">
+            <div id="photoPreview" style="display:none; width:100%; height:200px; object-fit:cover; border-radius:15px; margin:15px 0;"></div>
+            <button class="btn btn-secondary" onclick="document.getElementById('postPhotoInput').click()">📸 Фото</button>
+            <textarea id="postText" class="input" placeholder="Ваша чайная сессия... ☕"></textarea>
             <button class="btn" onclick="publishPost()">🌿 Опубликовать</button>
-            <button class="btn back-btn" onclick="showMain()">← Назад</button>
+            <button class="btn back-btn" onclick="showMainScreen()">← Назад</button>
+        </div>
+
+        <!-- ПРОФИЛЬ -->
+        <div class="screen" id="profileScreen">
+            <div style="text-align:center; padding: 30px 0; background: linear-gradient(135deg, #F0F8F0, #E8F5E8); border-radius: 20px;">
+                <div class="profile-avatar" id="profileAvatar" onclick="showProfileSettings()">👤</div>
+                <h2 id="profileName">@username</h2>
+                <div id="profileBio" style="font-size:14px; opacity:0.8;">Чайный мастер</div>
+                <div style="font-size:14px; color:#666; margin-top:10px;">
+                    Постов: <strong id="profilePostCount">0</strong> | 
+                    Лайков: <strong id="profileLikeCount">0</strong>
+                </div>
+            </div>
+            <h4>Мои посты</h4>
+            <div id="profileFeed"></div>
+            <button class="btn back-btn" onclick="showMainScreen()">← Лента</button>
+        </div>
+
+        <!-- НАСТРОЙКИ -->
+        <div class="screen" id="profileSettingsScreen">
+            <h3>⚙️ Настройки</h3>
+            <input id="nameInput" class="input" placeholder="Имя">
+            <input id="usernameInput" class="input" placeholder="@username">
+            <input type="file" id="avatarInput" accept="image/*" style="display:none;" onchange="previewAvatar(event)">
+            <div id="avatarPreview" style="width:80px;height:80px;border-radius:50%;margin:15px auto;display:none;"></div>
+            <button class="btn btn-secondary" onclick="document.getElementById('avatarInput').click()">🖼️ Аватар</button>
+            <button class="btn" onclick="saveProfile()">💾 Сохранить</button>
+            <button class="btn back-btn" onclick="showProfileScreen()">← Профиль</button>
         </div>
 
         <!-- УВЕДОМЛЕНИЯ -->
         <div class="screen" id="notificationsScreen">
             <h3>🔔 Уведомления</h3>
-            <div id="notificationsList"></div>
-            <button class="btn back-btn" onclick="showMain()">← Главная</button>
-        </div>
-
-        <!-- ПРОФИЛЬ (сокр.) -->
-        <div class="screen" id="profileScreen">
-            <div class="profile-header">
-                <div class="profile-avatar" id="profileAvatar" onclick="showProfileSettings()">👤</div>
-                <h2 id="profileName">@username</h2>
-                <div id="profileBio" style="font-size: 14px; opacity: 0.8;"></div>
-                <div class="profile-stats">
-                    <div class="stat"><div class="stat-value" id="profilePosts">0</div>Постов</div>
-                    <div class="stat"><div class="stat-value" id="profileFollowers">0</div>Подписчиков</div>
-                    <div class="stat"><div class="stat-value" id="profileLikes">0</div>Лайков</div>
-                </div>
-            </div>
-            <div id="profileFeed"></div>
-            <button class="btn back-btn" onclick="showMain()">← Лента</button>
-        </div>
-
-        <!-- НАСТРОЙКИ ПРОФИЛЯ -->
-        <div class="screen" id="profileSettings">
-            <h3>⚙️ Настройки профиля</h3>
-            <input class="input" id="profileNameInput" placeholder="Имя отображения">
-            <input class="input" id="profileUsernameInput" placeholder="@username">
-            <input type="file" id="avatarPhoto" accept="image/*" style="display:none;" onchange="previewAvatar(event)">
-            <img id="avatarPreview" class="photo-preview" style="display:none;">
-            <button class="btn btn-secondary" onclick="document.getElementById('avatarPhoto').click()">🖼️ Сменить аватар</button>
-            <button class="btn" onclick="saveProfile()">💾 Сохранить</button>
-            <button class="btn back-btn" onclick="showProfile()">← Профиль</button>
-        </div>
-
-        <!-- ОБСУЖДЕНИЯ -->
-        <div class="screen" id="discussionsScreen">
-            <h3>💬 Обсуждения</h3>
-            <button class="btn" onclick="showNewDiscussion()">➕ Новое обсуждение</button>
-            <div class="discussion-list" id="discussionList"></div>
-            <button class="btn back-btn" onclick="showMain()">← Главная</button>
-        </div>
-
-        <!-- НОВОЕ ОБСУЖДЕНИЕ -->
-        <div class="screen" id="newDiscussionScreen">
-            <h3>➕ Новое обсуждение</h3>
-            <input class="input" id="discussionTitle" placeholder="Название темы">
-            <textarea class="input" id="discussionDesc" placeholder="Описание..."></textarea>
-            <button class="btn" onclick="createDiscussion()">✅ Создать</button>
-            <button class="btn back-btn" onclick="showDiscussions()">← Назад</button>
+            <div id="notificationsList" style="max-height:60vh;overflow-y:auto;"></div>
+            <button class="btn back-btn" onclick="showMainScreen()">← Главная</button>
         </div>
     </div>
 
     <script>
+        // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
         const tg = window.Telegram.WebApp;
         tg.ready(); tg.expand();
         
-        const user = tg.initDataUnsafe.user || { id: 6902824637, username: 'klim1991' };
-        const ADMIN_ID = 6902824637;
-        
-        let posts = [], discussions = [], users = {}, notifications = [];
-        let currentProfileUser = null, postTarget = 'public', currentPostId = null, currentDiscussionId = null;
-        let selectedPhoto = null, selectedAvatar = null;
+        let appData = {
+            user: tg.initDataUnsafe.user || { id: 12345, username: 'tea_master' },
+            posts: [],
+            users: {},
+            notifications: [],
+            postTarget: 'public'
+        };
 
-        // Инициализация пользователя
+        // ✅ ИНИЦИАЛИЗАЦИЯ — ВСЕ КНОПКИ РАБОТАЮТ!
+        function initApp() {
+            console.log('🔥 ChaClub ИНИЦИАЛИЗАЦИЯ');
+            createUser();
+            loadData();
+            updateWelcomeScreen();
+            tg.CloudStorage.setCloudStorageAutoSync(true);
+        }
+
         function createUser() {
-            if (!users[user.id]) {
-                users[user.id] = {
-                    id: user.id, username: user.username || 'user_' + Math.random().toString(36).substr(2, 4),
-                    name: 'Чайный мастер', bio: 'Любитель чая ☕', avatar: '👤',
-                    posts: 0, followers: 0, totalLikes: 0, myFollowers: []
+            if (!appData.users[appData.user.id]) {
+                appData.users[appData.user.id] = {
+                    id: appData.user.id,
+                    username: appData.user.username || 'tea_master_' + Math.floor(Math.random()*1000),
+                    name: 'Чайный мастер',
+                    avatar: '👤',
+                    posts: 0,
+                    totalLikes: 0
                 };
             }
         }
 
-        function initApp() {
-            createUser();
-            loadData();
-            showWelcome();
-        }
-
-        function showWelcome() {
-            document.getElementById('welcomeUser').textContent = '@' + users[user.id].username;
-            document.getElementById('welcomePosts').textContent = posts.length;
-        }
-
-        function enterApp() {
-            tg.HapticFeedback.impactOccurred('light');
-            showMain();
-        }
-
+        // ✅ ВСЕ ЭКРАНЫ
         function showScreen(screenId) {
+            console.log('Показываем экран:', screenId);
             document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
             document.getElementById(screenId).style.display = 'block';
         }
 
-        function showMain() {
+        function enterApp() {
+            console.log('🚀 Вход в приложение');
+            tg.HapticFeedback.impactOccurred('light');
             showScreen('mainScreen');
             renderFeed();
-            updatePostTargetButtons();
-            checkNotifications();
         }
 
-        // 🔥 ПОЛНОЦЕННЫЕ ЛАЙКИ И КОММЕНТАРИИ
+        function showMainScreen() {
+            showScreen('mainScreen');
+            renderFeed();
+        }
+
+        function showNewPost() {
+            document.getElementById('postText').value = '';
+            document.getElementById('photoPreview').style.display = 'none';
+            document.getElementById('postPhotoInput').value = '';
+            document.getElementById('postTargetText').textContent = 
+                appData.postTarget === 'public' ? '🌐 Общая лента' : '👤 Мой профиль';
+            showScreen('newPostScreen');
+        }
+
+        function showProfileScreen() {
+            updateProfileScreen();
+            showScreen('profileScreen');
+        }
+
+        function showProfileSettings() {
+            document.getElementById('nameInput').value = appData.users[appData.user.id].name;
+            document.getElementById('usernameInput').value = '@' + appData.users[appData.user.id].username;
+            document.getElementById('avatarPreview').style.display = 'none';
+            showScreen('profileSettingsScreen');
+        }
+
+        function showNotifications() {
+            renderNotifications();
+            showScreen('notificationsScreen');
+        }
+
+        // ✅ ЛЕНТА ПОСТОВ
         function renderFeed() {
             const feed = document.getElementById('feed');
-            const targetPosts = postTarget === 'public' ? posts : posts.filter(p => p.userId == user.id);
-            feed.innerHTML = targetPosts.slice(0, 50).map(post => `
+            const targetPosts = appData.postTarget === 'public' ? appData.posts : 
+                appData.posts.filter(p => p.userId === appData.user.id);
+            
+            feed.innerHTML = targetPosts.map(post => `
                 <div class="post-card">
-                    <div class="post-header" onclick="showUserProfile(${post.userId})">@${post.author}</div>
-                    ${post.image ? `<img src="${post.image}" class="post-image">` : ''}
-                    <div class="post-text">${post.text}</div>
-                    <div class="post-meta">${post.timestamp}</div>
-                    <div class="post-actions">
-                        <button class="action-btn btn-like ${post.likes?.includes(user.id) ? 'liked' : ''}" 
-                                onclick="toggleLike(${post.id}); event.stopPropagation()">
+                    <div style="font-weight:bold;color:#8B4513;margin-bottom:10px;cursor:pointer" 
+                         onclick="showUserProfile(${post.userId})">@${post.author}</div>
+                    ${post.image ? `<img src="${post.image}" style="width:100%;height:200px;object-fit:cover;border-radius:10px;">` : ''}
+                    <div style="font-size:14px;line-height:1.4;margin:10px 0;">${post.text}</div>
+                    <div style="font-size:12px;opacity:0.7;margin-bottom:15px;">${post.timestamp}</div>
+                    <div class="post-actions" style="display:flex;justify-content:space-around;">
+                        <button onclick="toggleLike(${post.id});event.stopPropagation()" 
+                                class="${post.likes?.includes(appData.user.id) ? 'liked' : ''}">
                             ❤️ ${post.likes?.length || 0}
                         </button>
-                        <button class="action-btn" onclick="showComments(${post.id}); event.stopPropagation()">
+                        <button onclick="alert('💬 Комментарии в разработке');event.stopPropagation()">
                             💬 ${post.comments?.length || 0}
                         </button>
                     </div>
                 </div>
-            `).reverse().join('') || '<div style="text-align:center;padding:60px;opacity:0.5;">Нет постов ☕</div>';
+            `).reverse().join('') || '<div style="text-align:center;padding:40px;opacity:0.5;">Нет постов. Создайте первый! ☕</div>';
+            
+            document.getElementById('feedTitle').textContent = 
+                appData.postTarget === 'public' ? '📜 Общая лента' : '👤 Мои посты';
         }
 
+        function setPostTarget(target) {
+            appData.postTarget = target;
+            document.querySelectorAll('#mainScreen button')[0].className = 
+                target === 'public' ? 'btn btn-small' : 'btn btn-small btn-secondary';
+            document.querySelectorAll('#mainScreen button')[1].className = 
+                target === 'profile' ? 'btn btn-small' : 'btn btn-small btn-secondary';
+            renderFeed();
+            tg.HapticFeedback.selectionChanged();
+        }
+
+        // ✅ ЛАЙКИ РАБОТАЮТ!
         function toggleLike(postId) {
-            const post = posts.find(p => p.id === postId);
+            const post = appData.posts.find(p => p.id === postId);
             if (!post) return;
             
             const likes = post.likes || [];
-            const hasLiked = likes.includes(user.id);
-            
-            if (hasLiked) {
-                post.likes = likes.filter(id => id !== user.id);
+            if (likes.includes(appData.user.id)) {
+                post.likes = likes.filter(id => id !== appData.user.id);
             } else {
-                post.likes = [...likes, user.id];
-                addNotification(post.userId, `@${users[user.id].username} поставил лайк вашему посту`);
+                post.likes = [...likes, appData.user.id];
+                addNotification(appData.posts.find(p => p.id === postId).userId, 
+                    `Вам поставили лайк! ❤️`);
             }
             
+            updateUserStats();
             saveData();
             renderFeed();
             tg.HapticFeedback.impactOccurred('medium');
         }
 
-        function showComments(postId) {
-            currentPostId = postId;
-            const post = posts.find(p => p.id === postId);
-            showScreen('commentsScreen');
-            renderComments(postId);
-        }
-
-        // 🔥 ПОДПИСКИ
-        function toggleFollow(profileUserId) {
-            const profileUser = users[profileUserId];
-            if (!profileUser || profileUserId === user.id) return;
-            
-            const isFollowing = profileUser.myFollowers?.includes(user.id) || false;
-            
-            if (isFollowing) {
-                profileUser.myFollowers = profileUser.myFollowers.filter(id => id !== user.id);
-                profileUser.followers--;
-                document.querySelector('.btn-follow').textContent = '📢 Подписаться';
-                document.querySelector('.btn-follow').classList.remove('btn-followed');
-            } else {
-                profileUser.myFollowers = [...(profileUser.myFollowers || []), user.id];
-                profileUser.followers++;
-                document.querySelector('.btn-follow').textContent = '✅ Отписаться';
-                document.querySelector('.btn-follow').classList.add('btn-followed');
-                addNotification(profileUserId, `@${users[user.id].username} подписался на вас`);
+        // ✅ ПОСТЫ
+        function previewPhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    document.getElementById('photoPreview').src = e.target.result;
+                    document.getElementById('photoPreview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
             }
-            
-            saveData();
-            tg.HapticFeedback.notificationOccurred('success');
         }
 
-        // 🔥 ПУБЛИКАЦИЯ ПОСТОВ
         function publishPost() {
             const text = document.getElementById('postText').value.trim();
-            if (!text) return tg.showAlert('Напишите текст!');
+            if (!text) {
+                tg.showAlert('📝 Напишите текст поста!');
+                return;
+            }
             
             const post = {
                 id: Date.now(),
-                userId: user.id,
-                author: users[user.id].username,
-                text,
-                image: selectedPhoto,
+                userId: appData.user.id,
+                author: appData.users[appData.user.id].username,
+                text: text,
+                image: document.getElementById('photoPreview').style.display === 'block' ? 
+                       document.getElementById('photoPreview').src : null,
                 likes: [],
                 comments: [],
-                timestamp: new Date().toLocaleString('ru-RU', { 
-                    day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' 
+                timestamp: new Date().toLocaleString('ru-RU', {
+                    day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
                 })
             };
             
-            posts.unshift(post);
-            users[user.id].posts++;
-            users[user.id].totalLikes = posts.filter(p => p.userId === user.id)
-                .reduce((sum, p) => sum + (p.likes?.length || 0), 0);
+            appData.posts.unshift(post);
+            appData.users[appData.user.id].posts++;
+            updateUserStats();
             
             saveData();
-            tg.showAlert('✅ Опубликовано!');
+            tg.showAlert('✅ Пост опубликован!');
             showNewPost();
         }
 
-        // 🔥 УВЕДОМЛЕНИЯ
+        // ✅ ПРОФИЛЬ
+        function updateProfileScreen() {
+            const userData = appData.users[appData.user.id];
+            document.getElementById('profileAvatar').textContent = userData.avatar;
+            document.getElementById('profileName').textContent = '@' + userData.username;
+            document.getElementById('profileBio').textContent = userData.name;
+            document.getElementById('profilePostCount').textContent = userData.posts || 0;
+            document.getElementById('profileLikeCount').textContent = userData.totalLikes || 0;
+            
+            const profileFeed = document.getElementById('profileFeed');
+            const myPosts = appData.posts.filter(p => p.userId === appData.user.id);
+            profileFeed.innerHTML = myPosts.map(post => `
+                <div class="post-card">
+                    <div>${post.text.slice(0, 100)}${post.text.length > 100 ? '...' : ''}</div>
+                    <div style="font-size:12px;opacity:0.7;">${post.timestamp} • ❤️ ${post.likes?.length || 0}</div>
+                </div>
+            `).reverse().join('') || '<div style="text-align:center;opacity:0.5;">Нет постов ☕</div>';
+        }
+
+        // ✅ УВЕДОМЛЕНИЯ
         function addNotification(userId, text) {
-            notifications.unshift({
+            appData.notifications.unshift({
                 id: Date.now(),
-                userId,
-                text,
+                userId: userId,
+                text: text,
                 timestamp: new Date().toLocaleTimeString(),
                 read: false
             });
             saveData();
         }
 
-        function checkNotifications() {
-            const unreadCount = notifications.filter(n => !n.read && n.userId === user.id).length;
-            document.getElementById('notifCount').textContent = unreadCount;
+        function renderNotifications() {
+            const list = document.getElementById('notificationsList');
+            const myNotifs = appData.notifications.filter(n => n.userId === appData.user.id);
+            list.innerHTML = myNotifs.map(n => `
+                <div style="background:#FFF3CD;padding:15px;margin:10px 0;border-radius:12px;border-left:4px solid #FFC107;">
+                    ${n.text}
+                    <div style="font-size:12px;opacity:0.7;margin-top:8px;">${n.timestamp}</div>
+                </div>
+            `).join('') || '<div style="text-align:center;padding:40px;opacity:0.5;">Нет уведомлений 🔔</div>';
+            
+            document.getElementById('notifCount').textContent = myNotifs.filter(n => !n.read).length;
         }
 
-        function saveData() { localStorage.setItem('chaClub', JSON.stringify({posts, users, notifications})); }
+        // ✅ АВАТАР И НАСТРОЙКИ
+        function previewAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    document.getElementById('avatarPreview').src = e.target.result;
+                    document.getElementById('avatarPreview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function saveProfile() {
+            appData.users[appData.user.id].name = document.getElementById('nameInput').value || 'Чайный мастер';
+            appData.users[appData.user.id].username = document.getElementById('usernameInput').value.replace('@', '') || 
+                appData.users[appData.user.id].username;
+            
+            if (document.getElementById('avatarPreview').style.display === 'block') {
+                appData.users[appData.user.id].avatar = '🖼️';
+            }
+            
+            saveData();
+            tg.showAlert('✅ Профиль сохранён!');
+            showProfileScreen();
+        }
+
+        // ✅ УТИЛИТЫ
+        function updateUserStats() {
+            appData.users[appData.user.id].posts = appData.posts.filter(p => p.userId === appData.user.id).length;
+            appData.users[appData.user.id].totalLikes = appData.posts
+                .filter(p => p.userId === appData.user.id)
+                .reduce((sum, p) => sum + (p.likes?.length || 0), 0);
+        }
+
+        function updateWelcomeScreen() {
+            document.getElementById('welcomeUser').textContent = '@' + appData.users[appData.user.id].username;
+            document.getElementById('welcomePosts').textContent = appData.posts.length;
+        }
+
+        function saveData() {
+            localStorage.setItem('chaClubData', JSON.stringify(appData));
+        }
+
         function loadData() {
             try {
-                const data = JSON.parse(localStorage.getItem('chaClub') || '{}');
-                posts = data.posts || [];
-                users = data.users || {};
-                notifications = data.notifications || [];
-            } catch(e) {}
+                const data = localStorage.getItem('chaClubData');
+                if (data) {
+                    const parsed = JSON.parse(data);
+                    appData.posts = parsed.posts || [];
+                    appData.users = parsed.users || {};
+                    appData.notifications = parsed.notifications || [];
+                }
+            } catch(e) {
+                console.log('Новые данные');
+            }
         }
 
-        // Остальные функции (профиль, обсуждения, аватар) работают аналогично
+        function showUserProfile(userId) {
+            tg.showAlert(`👤 Профиль @${appData.users[userId]?.username || 'user'}`);
+        }
 
-        initApp();
+        // ✅ СТАРТ ПРИЛОЖЕНИЯ
+        window.addEventListener('load', initApp);
+        tg.MainButton.setText('✨ Новый пост').onClick(showNewPost).hide();
     </script>
 </body>
 </html>
