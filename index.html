@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChaClub - Чайный Синдром</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 50%, #228B22 100%);
+            color: #FFF8DC; min-height: 100vh;
+        }
+        .container { max-width: 400px; margin: 0 auto; padding: 20px; }
+        .header { 
+            text-align: center; padding: 30px 0; 
+            background: rgba(139,0,0,0.2); border-radius: 20px; margin-bottom: 20px;
+            border: 2px solid rgba(255,248,220,0.3);
+        }
+        h1 { 
+            font-size: 28px; 
+            background: linear-gradient(45deg, #FFD700, #FF4500); 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+        }
+        .streak { font-size: 18px; color: #FFD700; font-weight: bold; margin-top: 10px; }
+        .welcome { 
+            background: rgba(139,0,0,0.25); border-radius: 20px; padding: 30px; 
+            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,248,220,0.2);
+        }
+        .btn { 
+            background: linear-gradient(45deg, #FF4500, #DC143C); color: white; 
+            border: none; padding: 15px 25px; border-radius: 15px; 
+            font-size: 16px; font-weight: bold; width: 100%; margin: 10px 0;
+            transition: all 0.3s; cursor: pointer;
+        }
+        .btn:hover { 
+            transform: translateY(-2px); box-shadow: 0 10px 25px rgba(255,69,0,0.4); 
+        }
+        .btn-green { background: linear-gradient(45deg, #228B22, #32CD32) !important; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 ChaClub</h1>
+            <div class="streak" id="streak">🔥 Стрик: 0 дней</div>
+            <div style="font-size: 12px; opacity: 0.8;">Чайный Синдром</div>
+        </div>
+        
+        <div class="welcome" id="welcome">
+            <h2>⚠️ Диагностирован Чайный Синдром!</h2>
+            <p>Только для чайнозависимых ☕</p>
+            <p style="font-size: 14px; opacity: 0.9; margin-top: 15px;">
+                18 дней бесплатно • Работает 24/7
+            </p>
+            <button class="btn" onclick="startApp()">Начать лечение ☕</button>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready(); tg.expand();
+        
+        const user = tg.initDataUnsafe.user;
+        console.log('Чайнозависимый:', user);
+
+        function startApp() {
+            document.getElementById('welcome').innerHTML = `
+                <h2>🧠 Форма зависимости: Лёгкая</h2>
+                <p>Стрик: <span id="streakNum">🔥0 дней</span></p>
+                <p>Статус: Новичок → [Подмастерье] → [Мастер]</p>
+                <button class="btn" onclick="openFeed()">📜 Лента мастеров</button>
+                <button class="btn btn-green" onclick="openProfile()">👤 Мой канал</button>
+                <button class="btn" onclick="openTeaCatalog()" style="background: linear-gradient(45deg, #DAA520, #8B4513);">📚 Каталог чаев</button>
+            `;
+            
+            let streak = localStorage.getItem('chaClubStreak') || 0;
+            document.getElementById('streakNum').textContent = `🔥${streak} дней`;
+            document.getElementById('streak').textContent = `🔥 Стрик: ${streak} дней`;
+        }
+
+        function openFeed() { alert('📜 Лента чайных мастеров скоро откроется!'); }
+        function openProfile() { alert('👤 Твой личный канал чайных проливов!'); }
+        function openTeaCatalog() { alert('📚 Каталог волшебных пуэров, улунов и габлонгов!'); }
+    </script>
+</body>
+</html>
