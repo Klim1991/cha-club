@@ -3,294 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChaClub - Чайный Синдром</title>
+    <title>ChaClub — Сообщество Чайных Мастеров</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #8B0000 0%, #DC143C 50%, #228B22 100%);
-            color: #FFF8DC; min-height: 100vh; padding-bottom: 80px;
+            background: linear-gradient(135deg, #F5F5F3 0%, #E8F5E8 50%, #D2E8CF 100%);
+            color: #2D5016; min-height: 100vh; padding-bottom: 80px;
         }
         .container { max-width: 400px; margin: 0 auto; padding: 20px; }
         .header { 
-            text-align: center; padding: 30px 0; 
-            background: rgba(139,0,0,0.3); border-radius: 20px; margin-bottom: 20px;
-            border: 2px solid rgba(255,248,220,0.4);
+            text-align: center; padding: 20px 0; 
+            background: rgba(255,248,220,0.8); border-radius: 20px; margin-bottom: 20px;
+            border: 1px solid rgba(210,232,207,0.5);
         }
-        h1 { font-size: 28px; background: linear-gradient(45deg, #FFD700, #FF4500); 
+        h1 { font-size: 28px; background: linear-gradient(45deg, #8B4513, #228B22); 
              -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .streak { font-size: 18px; color: #FFD700; font-weight: bold; margin-top: 10px; }
-        .status { font-size: 14px; opacity: 0.9; margin-top: 5px; }
-        .welcome, .screen { 
-            background: rgba(139,0,0,0.25); border-radius: 20px; padding: 25px; 
-            margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,248,220,0.2); display: none;
+        .screen { 
+            background: rgba(255,255,255,0.9); border-radius: 20px; padding: 25px; 
+            margin-bottom: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 1px solid rgba(210,232,207,0.5); display: none;
         }
-        .welcome { display: block; text-align: center; }
+        #mainScreen { display: block; }
+        
         .btn { 
-            background: linear-gradient(45deg, #FF4500, #DC143C); color: white; 
+            background: linear-gradient(45deg, #228B22, #32CD32); color: white; 
             border: none; padding: 15px 20px; border-radius: 15px; 
             font-size: 16px; font-weight: bold; width: 100%; margin: 8px 0;
-            transition: all 0.3s; cursor: pointer; box-shadow: 0 4px 15px rgba(255,69,0,0.3);
+            transition: all 0.3s; cursor: pointer; box-shadow: 0 4px 15px rgba(34,139,34,0.3);
         }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,69,0,0.4); }
-        .btn:active { transform: translateY(0); }
-        .btn-green { background: linear-gradient(45deg, #228B22, #32CD32) !important; }
-        .btn-gold { background: linear-gradient(45deg, #DAA520, #FFD700) !important; }
-        .tea-card { 
-            background: rgba(255,248,220,0.1); border-radius: 15px; padding: 20px; margin: 15px 0;
-            border-left: 5px solid #FFD700; box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            cursor: pointer; transition: all 0.3s;
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(34,139,34,0.4); }
+        .btn-secondary { background: linear-gradient(45deg, #DAA520, #F4A460) !important; }
+        .btn-outline { background: transparent !important; color: #228B22; border: 2px solid #228B22; }
+        
+        .post-card { 
+            background: white; border-radius: 15px; padding: 20px; margin: 15px 0;
+            border-left: 5px solid #228B22; box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            cursor: pointer;
         }
-        .tea-card:hover { transform: translateX(5px); box-shadow: 0 8px 25px rgba(255,212,0,0.3); }
-        .tea-name { font-size: 20px; font-weight: bold; color: #FFD700; margin-bottom: 8px; }
-        .tea-info { font-size: 14px; opacity: 0.9; line-height: 1.4; margin-bottom: 10px; }
-        .tea-brew { font-weight: bold; color: #32CD32; background: rgba(50,205,50,0.1); padding: 10px; border-radius: 10px; }
-        .tea-story { font-style: italic; font-size: 13px; opacity: 0.8; margin-top: 10px; }
-        .back-btn { background: linear-gradient(45deg, #808080, #A9A9A9); font-size: 14px; padding: 10px; margin-top: 15px; }
-        #teaList { max-height: 400px; overflow-y: auto; }
-        .input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,248,220,0.3); 
-                 background: rgba(255,255,255,0.1); color: white; font-size: 16px; margin: 10px 0; }
-        .input::placeholder { color: rgba(255,248,220,0.7); }
-        .rank-badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; 
-                      background: rgba(255,215,0,0.2); color: #FFD700; display: inline-block; margin: 5px 0; }
+        .post-header { font-weight: bold; color: #8B4513; margin-bottom: 10px; }
+        .post-tea { font-size: 16px; color: #228B22; margin-bottom: 8px; }
+        .post-brew { background: #E8F5E8; padding: 8px; border-radius: 10px; font-weight: bold; }
+        .post-actions { display: flex; justify-content: space-between; margin-top: 15px; }
+        .action-btn { background: none; border: none; font-size: 20px; cursor: pointer; }
+        
+        .input { width: 100%; padding: 15px; border-radius: 15px; border: 1px solid #D2E8CF; 
+                 background: white; font-size: 16px; margin: 10px 0; font-family: inherit; }
+        .tea-type { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
+        .tea-type-btn { padding: 10px 15px; border: 2px solid #D2E8CF; background: white; 
+                       border-radius: 20px; cursor: pointer; transition: all 0.3s; }
+        .tea-type-btn.active { background: #228B22; color: white; border-color: #228B22; }
+        
+        #feed { max-height: 500px; overflow-y: auto; }
+        .back-btn { background: linear-gradient(45deg, #808080, #A9A9A9); font-size: 14px; padding: 10px; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🧠 ChaClub</h1>
-            <div class="streak" id="streak">🔥 Стрик: <span id="streakCount">0</span> дней</div>
-            <div class="status" id="status">Чайный Синдром</div>
-        </div>
-        
-        <div class="welcome" id="welcome">
-            <h2>⚠️ Диагностирован Чайный Синдром!</h2>
-            <p>Только для чайнозависимых ☕</p>
-            <p style="font-size: 14px; opacity: 0.9;">58 сортов • Работает 24/7</p>
-            <button class="btn" onclick="startApp()">Начать лечение ☕</button>
+            <h1>🍵 ChaClub</h1>
+            <div style="font-size: 14px; opacity: 0.8;">Сообщество Чайных Мастеров</div>
         </div>
 
+        <!-- ГЛАВНЫЙ ЭКРАН: ЛЕНТА ПОСТОВ -->
         <div class="screen" id="mainScreen">
-            <h3>🧠 Форма зависимости: <span class="rank-badge" id="rank">Лёгкая</span></h3>
-            <button class="btn" onclick="updateStreak()">🔥 Обновить стрик</button>
-            <button class="btn btn-green" onclick="showTeaCatalog()">📚 Каталог чаёв (58)</button>
-            <button class="btn btn-gold" onclick="showProfile()">👤 Мой канал</button>
-            <button class="btn" onclick="showMastersFeed()">📜 Лента мастеров</button>
-        </div>
-
-        <div class="screen" id="teaCatalog">
-            <h3>📚 Каталог чаёв (<span id="teaCount">58</span>)</h3>
-            <div id="teaList"></div>
-            <button class="btn back-btn" onclick="showMain()">← Назад</button>
-        </div>
-
-        <div class="screen" id="profile">
-            <h3>👤 Мой канал</h3>
-            <p><strong>ID:</strong> <span id="userId"></span></p>
-            <p><strong>Статус:</strong> <span id="profileRank"></span></p>
-            <p><strong>Био:</strong> <span id="bio"></span></p>
-            <p><strong>Подписчиков:</strong> <span id="followers">12</span></p>
-            <button class="btn" onclick="editBio()">✏️ Редактировать био</button>
-            <button class="btn back-btn" onclick="showMain()">← Назад</button>
-        </div>
-
-        <div class="screen" id="mastersFeed">
             <h3>📜 Лента мастеров</h3>
-            <div id="feedPosts">
-                <div class="tea-card">
-                    <div class="tea-name">@tea_master_ivan</div>
-                    <div class="tea-info">Шу Пуэр Дик Гуй 2015 • 12 проливов • Стрик 127 🔥</div>
-                    <div class="tea-brew">95°C × 15с</div>
-                </div>
-                <div class="tea-card">
-                    <div class="tea-name">@puer_lord</div>
-                    <div class="tea-info">Шэн Мэнку 2012 • Гора Булан • 300-летние деревья</div>
-                    <div class="tea-brew">90°C × 10с × 15 проливов</div>
-                </div>
+            <div id="feed"></div>
+            <button class="btn" onclick="showNewPost()">✨ Новый пост</button>
+            <button class="btn btn-secondary" onclick="showTeaGuide()">📚 Руководство по чаям</button>
+            <button class="btn btn-secondary" onclick="showProfile()">👤 Мой профиль</button>
+        </div>
+
+        <!-- НОВЫЙ ПОСТ -->
+        <div class="screen" id="newPost">
+            <h3>✨ Новый чайный пост</h3>
+            <textarea class="input" id="postText" placeholder="Что заварили сегодня? Опишите сессию..."></textarea>
+            <div>Тип чая:</div>
+            <div class="tea-type">
+                <div class="tea-type-btn" data-type="white">Белый чай</div>
+                <div class="tea-type-btn" data-type="green">Зелёный чай</div>
+                <div class="tea-type-btn" data-type="yellow">Жёлтый чай</div>
+                <div class="tea-type-btn" data-type="oolong">Улун</div>
+                <div class="tea-type-btn" data-type="red">Красный чай</div>
+                <div class="tea-type-btn" data-type="black">Чёрный чай</div>
+                <div class="tea-type-btn" data-type="puer">Пуэр</div>
+            </div>
+            <input class="input" id="brewInfo" placeholder="95°C × 15с × 12 проливов">
+            <button class="btn" onclick="publishPost()">🌿 Опубликовать</button>
+            <button class="btn back-btn" onclick="showMain()">← Назад</button>
+        </div>
+
+        <!-- РУКОВОДСТВО ПО ЧАЯМ -->
+        <div class="screen" id="teaGuide">
+            <h3>📚 6 основных видов чая</h3>
+            <div style="font-size: 14px; line-height: 1.5; max-height: 400px; overflow-y: auto;">
+                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0; cursor: default;" onclick="showTeaDetails('white')">🍃 Белый чай</div>
+                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0; cursor: default;" onclick="showTeaDetails('green')">🍵 Зелёный чай</div>
+                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0; cursor: default;" onclick="showTeaDetails('yellow')">🌾 Жёлтый чай</div>
+                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0; cursor: default;" onclick="showTeaDetails('oolong')">🌀 Улун</div>
+                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0; cursor: default;" onclick="showTeaDetails('red')">🔴 Красный чай</div>
+                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0; cursor: default;" onclick="showTeaDetails('black')">⚫ Чёрный чай</div>
+                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0; cursor: default;" onclick="showTeaDetails('puer')">🌲 Пуэр</div>
             </div>
             <button class="btn back-btn" onclick="showMain()">← Назад</button>
         </div>
 
-        <div class="screen" id="editBioScreen" style="display: none;">
-            <h3>✏️ Редактировать био</h3>
-            <textarea class="input" id="bioInput" placeholder="Расскажи о своей чайной зависимости..."></textarea>
-            <button class="btn btn-green" onclick="saveBio()">💾 Сохранить</button>
-            <button class="btn back-btn" onclick="showProfile()">← Отмена</button>
+        <!-- ПРОФИЛЬ -->
+        <div class="screen" id="profile">
+            <h3>👤 Ваш профиль</h3>
+            <p><strong>@</strong><span id="username">tea_master</span></p>
+            <p><strong>Постов:</strong> <span id="postCount">0</span></p>
+            <button class="btn" onclick="showNewPost()">✨ Новый пост</button>
+            <button class="btn back-btn" onclick="showMain()">← Лента</button>
+        </div>
+
+        <!-- ДЕТАЛИ ЧАЯ -->
+        <div class="screen" id="teaDetails" style="display: none;">
+            <h3 id="teaTitle"></h3>
+            <div id="teaInfo" style="font-size: 14px; line-height: 1.6; padding: 20px; background: #F0F8F0; border-radius: 15px;"></div>
+            <button class="btn back-btn" onclick="showTeaGuide()">← К типам чая</button>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.ready(); 
-        tg.expand();
+        tg.ready(); tg.expand();
         
-        const user = tg.initDataUnsafe.user || { 
-            id: Math.floor(Math.random() * 1000000), 
-            username: 'tea_addict_' + Math.floor(Math.random() * 1000) 
+        const user = tg.initDataUnsafe.user || { id: Math.floor(Math.random() * 1000000), username: 'tea_master_' + Math.floor(Math.random() * 1000) };
+        let posts = [];
+        let currentTeaType = '';
+
+        // 6 ОСНОВНЫХ ВИДОВ ЧАЯ (по artoftea.ru)
+        const teaTypes = {
+            white: {
+                title: "🍃 Белый чай",
+                info: "Белый чай — самый нежный из всех. Листья подвергаются минимальной обработке: только увяливание и сушка. Сохраняет максимум полезных веществ. Идеален для новичков. Заваривание: 75-85°C, 2-3 минуты, 3-5 проливов."
+            },
+            green: {
+                title: "🍵 Зелёный чай", 
+                info: "Зелёный чай фиксируется паром или обжаривается для остановки окисления. Сотни сортов: Лунцзин, Билочунь, Матча. Тонкий вкус требует правильной температуры. Заваривание: 70-85°C, 1-2 минуты, 2-4 пролива."
+            },
+            yellow: {
+                title: "🌾 Жёлтый чай",
+                info: "Редкий вид между зелёным и белым. Добавляется этап 'тюнь хуан' — завяливание в ткани. Мягкий вкус без горечи. Заваривание: 80-90°C, 2-3 минуты, 3 пролива."
+            },
+            oolong: {
+                title: "🌀 Улун",
+                info: "Частично ферментированный. От лёгкого Тиегуаньинь (10%) до темного Да Хун Пао (70%). Обработка: скручивание, ферментация, обжарка. Заваривание: 85-100°C, 20-60 сек, 6-10 проливов."
+            },
+            red: {
+                title: "🔴 Красный чай",
+                info: "В Китае называют 'хун ча'. Полная ферментация 90-100%. Классика: Цимэнь, Цюэшань. Мягкий сладкий вкус. Заваривание: 90-100°C, 2-3 минуты, 3-5 проливов."
+            },
+            black: {
+                title: "⚫ Чёрный чай",
+                info: "Полная ферментация + скручивание. Классика: Лапсанг Сушонг, Кашмир. Насыщенный вкус. Заваривание: 95-100°C, 3-5 минут, 2-3 пролива."
+            },
+            puer: {
+                title: "🌲 Пуэр",
+                info: "Уникальный постферментированный чай из Юньнани. Шэн (сырой) и Шу (зрелый). Улучшается с возрастом. Заваривание: Шэн 85-95°C, Шу 95-100°C, 10-30 сек, 10-20 проливов."
+            }
         };
-
-        // 🔥 58 ЧАЁВ С ПОЛНЫМИ ОПИСАНИЯМИ И ИСТОРИЕЙ
-        const teas = [
-            {name: "Шу Пуэр Дик Гуй 2015", type: "Шу пуэр", year: 2015, region: "Юньнань, Дик Гуй", taste: "шоколад, лес, смола", brew: "95°C × 15с × 12 проливов", story: "Легендарный рецепт Дик Гуй. Ферментация 4 года в влажных условиях. Густой шоколадный вкус."},
-            {name: "Шэн Пуэр Мэнку 2012", type: "Шэн пуэр", year: 2012, region: "Мэнку, Булан", taste: "липа, мята, сладость", brew: "90°C × 10с × 15 проливов", story: "300-летние чайные деревья. Хранился в Юньнани. Преобразование продолжается."},
-            {name: "Да Хун Пао 2018", type: "Улун", year: 2018, region: "Уи Шань", taste: "карамель, фрукты, цветы", brew: "95°C × 20с × 8 проливов", story: "Великая Красная Мантия. Императорский улун со скал Уи Шань. Легенда о чудесном исцелении."},
-            {name: "Тие Гуань Инь 2024", type: "Улун", year: 2024, region: "Аньси", taste: "орхидея, крем, сладость", brew: "85°C × 25с × 7 проливов", story: "Железная Богиня Милосердия. 600 лет истории. Открыт монахом Вэй Шан."},
-            {name: "Габлонг Мэй Шань", type: "Улун", year: 2023, region: "Фуцзянь", taste: "персик, мед, цветы", brew: "90°C × 15с × 10 проливов", story: "Дикий габлонг с гор Мэй Шань. Натуральная сладость без горечи."},
-            {name: "Шу Пуэр Линь Кан 2018", type: "Шу пуэр", year: 2018, region: "Линь Кан", taste: "орех, дерево, сладость", brew: "95°C × 12с × 14 проливов", story: "Высокогорный шу. Ферментация Kunming Tea Factory. Идеальный баланс."},
-            {name: "Шэн Пуэр И Ву 2008", type: "Шэн пуэр", year: 2008, region: "И Ву", taste: "апельсин, патока, камфора", brew: "85°C × 8с × 18 проливов", story: "16-летний шэн. Преобразование завершено. Классика И Ву."},
-            {name: "Бай Хао Инь Чжэнь", type: "Белый чай", year: 2025, region: "Фу Дин", taste: "молоко, цветы, сладость", brew: "80°C × 30с × 5 проливов", story: "Серебряные Иголки. Императорский белый чай. Только почки."},
-            {name: "Лао Шу Пуэр 2010", type: "Шу пуэр", year: 2010, region: "Юньнань", taste: "коньяк, табак, фрукты", brew: "95°C × 20с × 10 проливов", story: "Старый Древесный пуэр. Дерево 500+ лет. Редкость."},
-            {name: "Фэн Хуан Дань Цун", type: "Улун", year: 2023, region: "Фэн Хуан Шань", taste: "личи, мёд, цитрус", brew: "95°C × 15с × 9 проливов", story: "Дерево Феникса. Семейство улун из Фэн Хуан Шань."},
-            {name: "Шу Пуэр Бин Дао 2019", type: "Шу пуэр", year: 2019, region: "Бин Дао", taste: "кедр, смола, сладость", brew: "95°C × 10с × 16 проливов", story: "Лесной пуэр Бин Дао. Дикие деревья в первозданном лесу."},
-            {name: "Шэн Пуэр Бан Чжан 2017", type: "Шэн пуэр", year: 2017, region: "Бан Чжан", taste: "сигара, фрукты, сила", brew: "95°C × 5с × 20 проливов", story: "Король пуэров. Самый дорогой шэн. Гора Бан Чжан."},
-            {name: "Цзинь Цзюнь Мэй", type: "Чёрный чай", year: 2024, region: "Уи Шань", taste: "карамель, мёд, цветы", brew: "95°C × 20с × 4 пролива", story: "Золотые Браслеты. Только почки и молодые листья."},
-            {name: "Лапсанг Сушонг", type: "Чёрный чай", year: 2023, region: "Уи Шань", taste: "костёр, сосна, смола", brew: "95°C × 15с × 3 пролива", story: "Копчение над сосновым дымом. Единственный в мире."},
-            {name: "Гу Шу Шэн 2014", type: "Шэн пуэр", year: 2014, region: "Линь Кан", taste: "грибы, сладость, камфора", brew: "90°C × 12с × 14 проливов", story: "Старое Дерево Шэн. 800-летние чайные деревья."},
-            {name: "Шу Пуэр Мэн Хай 2016", type: "Шу пуэр", year: 2016, region: "Мэн Хай", taste: "шоколад, вишня, земля", brew: "95°C × 18с × 11 проливов", story: "Классика Мэн Хай Tea Factory. Идеальная ферментация."},
-            {name: "Дун Дин Улун", type: "Улун", year: 2024, region: "Аньси", taste: "карамель, сливки, цветы", brew: "85°C × 30с × 6 проливов", story: "Замороженный Вершина. Горный улун из Аньси."},
-            {name: "Ци Мэнь Хун Ча", type: "Чёрный чай", year: 2024, region: "Ци Мэнь", taste: "соломка, фрукты, сладость", brew: "95°C × 25с × 4 пролива", story: "Красная Чай из Ци Мэнь. Китайский Кейлон."},
-            {name: "Хуа Чжуан", type: "Белый чай", year: 2025, region: "Фу Дин", taste: "апельсин, мёд, цветы", brew: "85°C × 40с × 5 проливов", story: "Цветущие Бамбуковые иголки. Рарый белый чай."},
-            {name: "Шу Пуэр Юнь Лун 2019", type: "Шу пуэр", year: 2019, region: "Юнь Лун", taste: "гриб, дерево, сладость", brew: "95°C × 15с × 13 проливов", story: "Облачный Дракон. Ферментация в стиле Юньнань."},
-            {name: "Шэн Пуэр Я Ву 2015", type: "Шэн пуэр", year: 2015, region: "Я Ву", taste: "цитрус, мята, сила", brew: "90°C × 8с × 16 проливов", story: "Дикая гора Я Ву. 400-летние деревья."},
-            {name: "Би Ло Чунь 2024", type: "Зелёный чай", year: 2024, region: "Дун Тин", taste: "фрукты, орех, цветы", brew: "80°C × 20с × 4 пролива", story: "Изумрудные Спирали. Весенний урожай с озера Западное."},
-            {name: "Лун Цзин 2025", type: "Зелёный чай", year: 2025, region: "Хан Чжоу", taste: "каштан, сладость", brew: "75°C × 25с × 3 пролива", story: "Дракон в ясную погоду. Императорский зелёный."},
-            {name: "Хун Вэй Цзы", type: "Шу пуэр", year: 2017, region: "Бан Бан", taste: "мёд, фрукты, земля", brew: "95°C × 12с × 12 проливов", story: "Красные Веи. Дикие деревья Бан Бан."},
-            {name: "Цай Фэн Ча", type: "Белый чай", year: 2024, region: "Фу Дин", taste: "апельсин, цветы", brew: "80°C × 1мин × 4 пролива", story: "Сбор Феникса. Ритуальный белый чай."},
-            {name: "Цюэ Шань Хун Чжун", type: "Чёрный чай", year: 2023, region: "Цюэ Шань", taste: "малина, мёд, цветы", brew: "90°C × 20с × 5 проливов", story: "Красная вершина Цюэ Шань. Высокогорный чёрный."},
-            {name: "Гун Тин Шу 2020", type: "Шу пуэр", year: 2020, region: "Мэн Хай", taste: "шоколад, сливки, сладость", brew: "95°C × 10с × 15 проливов", story: "Дворецовый пуэр. Императорский шу."},
-            {name: "Бу Чжи Чунь", type: "Зелёный чай", year: 2024, region: "Гань Ду", taste: "каштан, орех, сладость", brew: "75°C × 30с × 3 пролива", story: "Не знает весны. Весенний урожай Гань Ду."},
-            {name: "Шу Пуэр Чжан И Шоу", type: "Шу пуэр", year: 2018, region: "Чжан И Шоу", taste: "лес, смола, сладость", brew: "95°C × 15с × 12 проливов", story: "Длинная жизнь Чжан И Шоу. Классика."},
-            {name: "Шэн Пуэр Гуван Чжэ", type: "Шэн пуэр", year: 2013, region: "Гуван Чжэ", taste: "дикий мёд, фрукты", brew: "85°C × 10с × 14 проливов", story: "Старое Дерево Гуван Чжэ. 600-летние деревья."},
-            {name: "Да Цзи Сюань", type: "Улун", year: 2024, region: "Фу Дин", taste: "липа, мёд, цветы", brew: "85°C × 30с × 6 проливов", story: "Великий Феникс. Фуцзяньский улун."},
-            {name: "Мо Шунь Цзы", type: "Чёрный чай", year: 2023, region: "Юньнань", taste: "малина, шоколад", brew: "90°C × 25с × 4 пролива", story: "Волосы Феникса. Дикий чёрный Юньнань."},
-            {name: "Шу Пуэр Мэн Лу Гу", type: "Шу пуэр", year: 2019, region: "Мэн Лу", taste: "орех, земля, сладость", brew: "95°C × 12с × 13 проливов", story: "Древесный Мэн Лу. Дикие деревья."},
-            {name: "Шэн Пуэр Нан Цзя То", type: "Шэн пуэр", year: 2016, region: "Нан Цзя То", taste: "лимон, мята, сила", brew: "90°C × 7с × 18 проливов", story: "Южная семья То. Высокогорный шэн."},
-            {name: "Бай Мудань", type: "Белый чай", year: 2025, region: "Фу Дин", taste: "персик, цветы, сладость", brew: "80°C × 40с × 5 проливов", story: "Белая Пиона. Весенний урожай."},
-            {name: "Хуэй Чжань", type: "Улун", year: 2023, region: "Аньси", taste: "апельсин, сливки", brew: "85°C × 25с × 7 проливов", story: "Собрание ароматов. Аньси улун."},
-            {name: "Дикий Бай Хао", type: "Белый чай", year: 2024, region: "Фу Дин", taste: "ананас, мёд", brew: "75°C × 2мин × 4 пролива", story: "Дикий серебряный волос. Рарый сорт."},
-            {name: "Шу Пуэр Кун Минг", type: "Шу пуэр", year: 2020, region: "Кун Минг", taste: "кофе, шоколад, вишня", brew: "95°C × 15с × 12 проливов", story: "Ферментация Кун Минг. Густой вкус."},
-            {name: "Шэн Пуэр Пай Шань", type: "Шэн пуэр", year: 2014, region: "Пай Шань", taste: "грибы, сладость, камфора", brew: "85°C × 10с × 16 проливов", story: "Снежная гора Пай Шань. 700-летние деревья."},
-            {name: "Цзинь Гуан Хуан Цзинь", type: "Жёлтый чай", year: 2024, region: "Хунань", taste: "каштан, мёд, цветы", brew: "80°C × 20с × 3 пролива", story: "Золотой император. Редкий жёлтый чай."},
-            {name: "Шу Пуэр Да Ие Шэн", type: "Шу пуэр", year: 2018, region: "Да Ие Шэн", taste: "лес, смола, сладость", brew: "95°C × 12с × 14 проливов", story: "Большой дикий лист. Гу Шу шу."},
-            {name: "Лао Мань Э", type: "Шэн пуэр", year: 2012, region: "Мэн Хай", taste: "дикая вишня, табак", brew: "90°C × 8с × 20 проливов", story: "Старый дикий Э. Легенда Мэн Хай."},
-            {name: "Фэн Цюнь Мэй", type: "Чёрный чай", year: 2023, region: "Уи Шань", taste: "личи, карамель", brew: "95°C × 20с × 4 пролива", story: "Феникс Цюнь Мэй. Императорский чёрный."},
-            {name: "Гу Шу Шу 2009", type: "Шу пуэр", year: 2009, region: "Линь Кан", taste: "коньяк, чернослив, земля", brew: "95°C × 20с × 11 проливов", story: "Старое дерево шу. 15-летняя выдержка."},
-            {name: "Шэн Пуэр Менгку Равенна", type: "Шэн пуэр", year: 2015, region: "Менгку", taste: "апельсиновая цедра, мята", brew: "85°C × 10с × 15 проливов", story: "Равенна Менгку. Дикие деревья."},
-            {name: "Бай Юй Тан", type: "Белый чай", year: 2025, region: "Фу Дин", taste: "липа, сливки, сладость", brew: "80°C × 1мин × 5 проливов", story: "Белый нефрит. Ритуальный белый чай."},
-            {name: "Шу Пуэр 7542", type: "Шу пуэр", year: 2017, region: "Кун Минг", taste: "шоколад, табак, сладость", brew: "95°C × 15с × 12 проливов", story: "Классическая 7542 рецептура. Стандарт шу."},
-            {name: "Да Хун Пао Гу Шу", type: "Улун", year: 2022, region: "Уи Шань", taste: "карамель, сухофрукты, цветы", brew: "95°C × 25с × 8 проливов", story: "Материнское дерево Да Хун Пао. Легенда."},
-            {name: "Цзюнь Шань Инь Цзянь", type: "Жёлтый чай", year: 2024, region: "Хунань", taste: "каштан, цветы, сладость", brew: "80°C × 30с × 3 пролива", story: "Серебряные иглы Цзюнь Шань. Императорский."},
-            {name: "Шэн Пуэр Булан Гу Шу", type: "Шэн пуэр", year: 2013, region: "Булан", taste: "дикий мёд, цитрус, камфора", brew: "85°C × 8с × 18 проливов", story: "Старое дерево Булан. 800-летние корни."},
-            {name: "Шу Пуэр Да Чжи Мэн", type: "Шу пуэр", year: 2019, region: "Да Чжи Мэн", taste: "гриб, орех, земля", brew: "95°C × 12с × 14 проливов", story: "Большой гриб Мэн. Лесной шу."}
-        ];
-
-        let currentStreak = 0;
-        let userData = {
-            bio: "Чайнозависимый ☕ Стрик: " + currentStreak + " дней",
-            rank: "Лёгкая",
-            followers: 12
-        };
-
-        function startApp() {
-            document.getElementById('welcome').style.display = 'none';
-            document.getElementById('mainScreen').style.display = 'block';
-            loadUserData();
-            updateStreak();
-            tg.MainButton.setText('🔥 Обновить стрик').show().onClick(updateStreak);
-        }
 
         function showScreen(screenId) {
-            document.querySelectorAll('.screen, .welcome').forEach(s => s.style.display = 'none');
+            document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
             document.getElementById(screenId).style.display = 'block';
-            tg.MainButton.hide();
         }
 
-        function showMain() { 
-            showScreen('mainScreen'); 
-            document.getElementById('rank').textContent = getRank();
+        function showMain() {
+            showScreen('mainScreen');
+            renderFeed();
+            tg.MainButton.setText('✨ Новый пост').show().onClick(() => showNewPost());
         }
 
-        function showTeaCatalog() {
-            showScreen('teaCatalog');
-            document.getElementById('teaCount').textContent = teas.length;
-            renderTeaCatalog();
+        function renderFeed() {
+            const feed = document.getElementById('feed');
+            feed.innerHTML = '';
+            
+            // Генерируем фейковые посты + пользовательские
+            const allPosts = [...getDemoPosts(), ...posts].slice(0, 10);
+            
+            allPosts.forEach(post => {
+                const postEl = document.createElement('div');
+                postEl.className = 'post-card';
+                postEl.onclick = () => tg.showAlert(post.text + '\n\n' + post.brew);
+                postEl.innerHTML = `
+                    <div class="post-header">${post.author}</div>
+                    <div class="post-tea">${post.teaType}</div>
+                    <div class="post-brew">${post.brew}</div>
+                    <div style="font-size: 14px; opacity: 0.8; margin-top: 10px;">${post.text}</div>
+                    <div class="post-actions">
+                        <button class="action-btn">❤️ ${post.likes || 0}</button>
+                        <button class="action-btn">💬</button>
+                    </div>
+                `;
+                feed.appendChild(postEl);
+            });
+        }
+
+        function getDemoPosts() {
+            return [
+                {author: '@tea_master_ivan', teaType: 'Шу Пуэр Дик Гуй', brew: '95°C × 15с × 12 проливов', text: '12 проливов чистого шоколада. Стрик 127 дней.', likes: 42},
+                {author: '@puer_lord', teaType: 'Шэн Мэнку 2012', brew: '90°C × 10с × 15 проливов', text: '300-летние деревья Булан. Камфора в послевкусии.', likes: 28}
+            ];
+        }
+
+        function showNewPost() {
+            showScreen('newPost');
+            document.querySelectorAll('.tea-type-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.onclick = (e) => {
+                    document.querySelectorAll('.tea-type-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentTeaType = e.target.dataset.type;
+                };
+            });
+        }
+
+        function publishPost() {
+            const text = document.getElementById('postText').value || 'Медитация с чаем ☕';
+            const brew = document.getElementById('brewInfo').value || 'заварили по правилам';
+            
+            if (!currentTeaType) {
+                tg.showAlert('Выберите тип чая!');
+                return;
+            }
+
+            posts.unshift({
+                author: '@' + user.username,
+                teaType: teaTypes[currentTeaType].title,
+                brew,
+                text,
+                likes: 0,
+                timestamp: new Date().toLocaleString()
+            });
+
+            document.getElementById('postText').value = '';
+            document.getElementById('brewInfo').value = '';
+            currentTeaType = '';
+            document.querySelectorAll('.tea-type-btn').forEach(btn => btn.classList.remove('active'));
+            
+            showMain();
+            tg.HapticFeedback.notificationOccurred('success');
+            tg.showAlert('✅ Пост опубликован в ленту!');
+        }
+
+        function showTeaGuide() {
+            showScreen('teaGuide');
+        }
+
+        function showTeaDetails(type) {
+            document.getElementById('teaTitle').textContent = teaTypes[type].title;
+            document.getElementById('teaInfo').innerHTML = teaTypes[type].info;
+            showScreen('teaDetails');
         }
 
         function showProfile() {
             showScreen('profile');
-            document.getElementById('userId').textContent = user.id;
-            document.getElementById('profileRank').textContent = userData.rank;
-            document.getElementById('bio').textContent = userData.bio;
-            document.getElementById('followers').textContent = userData.followers;
-        }
-
-        function showMastersFeed() {
-            showScreen('mastersFeed');
-        }
-
-        function renderTeaCatalog() {
-            const teaList = document.getElementById('teaList');
-            teaList.innerHTML = '';
-            teas.forEach((tea, index) => {
-                const card = document.createElement('div');
-                card.className = 'tea-card';
-                card.onclick = () => tg.showAlert(`🍵 ${tea.name}\n\n${tea.story}\n\nЗаваривание: ${tea.brew}`);
-                card.innerHTML = `
-                    <div class="tea-name">${tea.name} (${tea.year})</div>
-                    <div class="tea-info">${tea.type} • ${tea.region} • ${tea.taste}</div>
-                    <div class="tea-brew">${tea.brew}</div>
-                    <div class="tea-story">${tea.story}</div>
-                `;
-                teaList.appendChild(card);
-            });
-        }
-
-        function updateStreak() {
-            currentStreak++;
-            document.getElementById('streakCount').textContent = currentStreak;
-            userData.bio = `Чайнозависимый ☕ Стрик: ${currentStreak} дней`;
-            userData.rank = getRank();
-            document.getElementById('rank').textContent = userData.rank;
-            tg.HapticFeedback.notificationOccurred('success');
-            tg.showAlert(`🔥 Стрик обновлён! ${currentStreak} дней!`);
-            saveUserData();
-        }
-
-        function getRank() {
-            if (currentStreak < 7) return "Лёгкая";
-            if (currentStreak < 30) return "Средняя";
-            if (currentStreak < 90) return "Тяжёлая";
-            return "КРИТИЧЕСКАЯ ☠️";
-        }
-
-        function editBio() {
-            document.getElementById('bioInput').value = userData.bio;
-            showScreen('editBioScreen');
-        }
-
-        function saveBio() {
-            userData.bio = document.getElementById('bioInput').value || 'Чайнозависимый ☕';
-            showProfile();
-            saveUserData();
-            tg.HapticFeedback.notificationOccurred('success');
-        }
-
-        function loadUserData() {
-            const saved = localStorage.getItem('chaClubUser');
-            if (saved) {
-                userData = JSON.parse(saved);
-                currentStreak = parseInt(userData.bio.match(/Стрик: (\d+)/)?.[1] || 0);
-            }
-        }
-
-        function saveUserData() {
-            localStorage.setItem('chaClubUser', JSON.stringify(userData));
+            document.getElementById('username').textContent = user.username;
+            document.getElementById('postCount').textContent = posts.length;
         }
 
         // Инициализация
-        document.getElementById('userId').textContent = user.id;
+        document.getElementById('username').textContent = user.username;
+        showMain();
         tg.CloudStorage.setCloudStorageAutoSync(true);
     </script>
 </body>
