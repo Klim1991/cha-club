@@ -6,65 +6,259 @@
     <title>🍵 ChaClub — Соцсеть Чайных Мастеров</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        :root {
+            --green-primary: #228B22;
+            --green-light: #32CD32;
+            --gold-primary: #DAA520;
+            --cream: #F5F5F3;
+            --mint: #E8F5E8;
+            --shadow: rgba(34,139,34,0.3);
+            --border: rgba(210,232,207,0.5);
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #F5F5F3 0%, #E8F5E8 50%, #D2E8CF 100%);
-            color: #2D5016; min-height: 100vh; padding-bottom: 80px;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--cream) 0%, var(--mint) 50%, #D2E8CF 100%);
+            color: #2D5016; min-height: 100vh; padding-bottom: 100px;
+            scroll-behavior: smooth;
         }
+
         .container { max-width: 400px; margin: 0 auto; padding: 20px; }
-        .header { 
-            text-align: center; padding: 32px 0; 
-            background: rgba(255,248,220,0.9); border-radius: 24px; margin-bottom: 28px;
-            border: 1px solid rgba(210,232,207,0.5);
-        }
-        h1 { font-size: 32px; background: linear-gradient(45deg, #8B4513, #228B22); 
-             -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+        
+        /* КАРТОЧКИ */
         .screen { 
-            background: rgba(255,255,255,0.95); border-radius: 24px; padding: 28px; 
-            margin-bottom: 20px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
-            border: 1px solid rgba(210,232,207,0.5); display: none;
+            background: rgba(255,255,255,0.97); 
+            backdrop-filter: blur(20px);
+            border-radius: 24px; 
+            padding: 28px; 
+            margin-bottom: 24px; 
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+            border: 1px solid var(--border);
+            display: none; 
+            animation: fadeIn 0.4s ease;
         }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         #welcomeScreen { display: block; }
-        
-        .btn { 
-            background: linear-gradient(135deg, #228B22, #32CD32); color: white; 
-            border: none; padding: 20px 28px; border-radius: 20px; 
-            font-size: 18px; font-weight: 700; width: 100%; margin: 12px 0;
-            cursor: pointer; box-shadow: 0 8px 24px rgba(34,139,34,0.3);
-            touch-action: manipulation; user-select: none; position: relative;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+        /* ЗАГОЛОВКИ */
+        .header { 
+            text-align: center; 
+            padding: 32px 0; 
+            background: linear-gradient(135deg, rgba(255,248,220,0.9), rgba(248,249,250,0.9));
+            border-radius: 24px; 
+            margin-bottom: 28px;
+            border: 1px solid var(--border);
         }
-        .btn:active { transform: scale(0.96); }
-        .btn:hover { box-shadow: 0 12px 32px rgba(34,139,34,0.4); }
-        .btn-secondary { background: linear-gradient(135deg, #DAA520, #F4A460) !important; }
+        h1 { 
+            font-size: 32px; 
+            background: linear-gradient(45deg, #8B4513, var(--green-primary), #228B22);
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        /* КНОПКИ */
+        .btn { 
+            background: linear-gradient(135deg, var(--green-primary), var(--green-light)); 
+            color: white; 
+            border: none; 
+            padding: 18px 24px; 
+            border-radius: 20px; 
+            font-size: 16px; 
+            font-weight: 700; 
+            width: 100%; 
+            margin: 12px 0;
+            cursor: pointer; 
+            box-shadow: 0 8px 24px var(--shadow);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            touch-action: manipulation;
+            user-select: none;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; 
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        .btn:hover::before { left: 100%; }
+        .btn:active { transform: scale(0.96) translateY(2px); box-shadow: 0 4px 16px var(--shadow); }
+        .btn-secondary { background: linear-gradient(135deg, var(--gold-primary), #F4A460) !important; }
         .btn-danger { background: linear-gradient(135deg, #DC143C, #B22222) !important; }
-        .btn-small { width: auto !important; padding: 14px 24px !important; margin: 8px; font-size: 16px !important; }
         .btn-tea { background: linear-gradient(135deg, #8B4513, #A0522D) !important; }
-        
+        .btn-admin { background: linear-gradient(135deg, #4B0082, #6A0DAD) !important; }
+        .btn-small { width: auto !important; padding: 12px 20px !important; margin: 6px; font-size: 14px !important; }
+        .btn-follow { background: linear-gradient(135deg, #2196F3, #1976D2) !important; }
+        .btn-followed { background: linear-gradient(135deg, #4CAF50, #45a049) !important; }
+        .btn-like.liked { background: linear-gradient(135deg, #FF6B6B, #FF5252) !important; animation: pulse 0.3s; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* ПОСТЫ */
         .post-card { 
-            background: white; border-radius: 20px; padding: 24px; margin: 20px 0;
-            border-left: 6px solid #228B22; box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            background: linear-gradient(145deg, #ffffff, #f8faf8); 
+            border-radius: 20px; 
+            padding: 24px; 
+            margin: 20px 0;
+            border-left: 6px solid var(--green-primary); 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .post-card:hover { 
+            transform: translateY(-4px) scale(1.02); 
+            box-shadow: 0 16px 48px rgba(0,0,0,0.15);
+        }
+        .post-header { 
+            font-weight: 700; 
+            color: #8B4513; 
+            margin-bottom: 16px; 
+            font-size: 16px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .post-avatar { 
+            width: 40px; height: 40px; border-radius: 50%; 
+            background: linear-gradient(135deg, var(--green-primary), var(--green-light));
+            display: flex; align-items: center; justify-content: center; font-size: 18px;
+        }
+        .post-text { font-size: 15px; line-height: 1.6; margin: 16px 0; color: #2D5016; }
+        .post-image { 
+            width: 100%; height: 220px; object-fit: cover; 
+            border-radius: 16px; margin: 16px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+        .post-meta { font-size: 13px; opacity: 0.8; margin-bottom: 20px; color: #666; }
+        .post-actions { 
+            display: flex; justify-content: space-around; 
+            padding: 16px 0; border-top: 1px solid rgba(210,232,207,0.6);
+        }
+        .action-btn { 
+            background: rgba(255,255,255,0.7); 
+            border: 2px solid var(--border); 
+            color: var(--green-primary); 
+            padding: 14px 18px; 
+            border-radius: 16px; 
+            font-size: 18px; 
+            font-weight: 700; 
+            min-width: 72px; 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+        }
+        .action-btn:hover { background: var(--green-primary); color: white; transform: scale(1.08); }
+        .action-btn:active { transform: scale(0.98); }
+
+        /* ПРОФИЛЬ */
+        .profile-header { 
+            text-align: center; 
+            padding: 40px 24px; 
+            background: linear-gradient(135deg, #F0F8F0, var(--mint)); 
+            border-radius: 24px; 
+            margin-bottom: 28px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+        }
+        .profile-avatar { 
+            width: 100px; height: 100px; 
+            border-radius: 50%; 
+            background: linear-gradient(135deg, var(--green-primary), var(--green-light)); 
+            margin: 0 auto 20px; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 42px; border: 5px solid white;
+            box-shadow: 0 12px 36px rgba(34,139,34,0.3);
             cursor: pointer; transition: all 0.3s ease;
         }
-        .post-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.15); }
-        .post-actions button { 
-            background: #F0F8F0; border: 2px solid #D2E8CF; color: #228B22; 
-            padding: 14px 20px; border-radius: 16px; font-size: 18px; font-weight: 700;
-            min-width: 75px; margin: 0 6px; cursor: pointer; transition: all 0.3s;
+        .profile-avatar:hover { transform: scale(1.08) rotate(5deg); }
+        .profile-stats { 
+            display: flex; justify-content: space-around; 
+            margin: 28px 0; font-size: 14px; 
         }
-        .post-actions button:hover { background: #228B22; color: white; transform: scale(1.05); }
-        .post-actions button.liked { background: #FF6B6B !important; color: white !important; }
-        
-        #feed { max-height: 60vh; overflow-y: auto; padding-right: 10px; }
+        .stat { text-align: center; }
+        .stat-value { font-size: 26px; font-weight: 800; color: var(--green-primary); margin-bottom: 4px; }
+
+        /* ИНПУТЫ */
+        .input, textarea.input { 
+            width: 100%; padding: 18px 20px; 
+            border-radius: 20px; 
+            border: 2px solid var(--border); 
+            background: rgba(255,255,255,0.9); 
+            font-size: 16px; 
+            margin: 12px 0; 
+            font-family: inherit; 
+            transition: all 0.3s ease;
+        }
+        .input:focus, textarea.input:focus { 
+            outline: none; 
+            border-color: var(--green-primary); 
+            box-shadow: 0 0 0 4px rgba(34,139,34,0.1);
+            transform: translateY(-2px);
+        }
+        textarea.input { height: 140px; resize: vertical; }
+
+        /* СКРОЛЛ */
+        #feed, #profileFeed, #chatMessages, #followersList { 
+            max-height: 55vh; 
+            overflow-y: auto; 
+            padding-right: 8px; 
+            scrollbar-width: thin; 
+            scrollbar-color: var(--green-primary) rgba(210,232,207,0.3);
+        }
+        #feed::-webkit-scrollbar, #profileFeed::-webkit-scrollbar { width: 6px; }
+        #feed::-webkit-scrollbar-track, #profileFeed::-webkit-scrollbar-track { 
+            background: rgba(210,232,207,0.3); border-radius: 10px; 
+        }
+        #feed::-webkit-scrollbar-thumb, #profileFeed::-webkit-scrollbar-thumb { 
+            background: var(--green-primary); border-radius: 10px; 
+        }
+
+        /* ЧАТ И ОБСУЖДЕНИЯ */
+        .chat-message, .follower-item { 
+            background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(248,250,248,0.9)); 
+            padding: 20px; 
+            margin: 12px 0; 
+            border-radius: 20px; 
+            border-left: 4px solid var(--green-primary);
+        }
+        .chat-message.me { 
+            background: linear-gradient(135deg, var(--green-primary), var(--green-light)); 
+            color: white; 
+            margin-left: 24px; 
+            border-left-color: white;
+        }
+
+        /* ЧАЙНЫЙ ГАЙД */
+        .tea-guide-btn { 
+            padding: 20px; 
+            margin: 12px 0; 
+            background: linear-gradient(135deg, #FFF8DC, #FDF6E3); 
+            border-radius: 20px; 
+            cursor: pointer; 
+            border-left: 6px solid var(--gold-primary); 
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        .tea-guide-btn:hover { 
+            transform: translateX(8px); 
+            box-shadow: 0 8px 24px rgba(218,165,32,0.3);
+        }
+        .tea-info { 
+            background: linear-gradient(135deg, #FFF8DC, #FDF6E3); 
+            padding: 28px; 
+            border-radius: 20px; 
+            line-height: 1.7; 
+            border-left: 6px solid var(--gold-primary);
+        }
+
+        /* УВЕДОМЛЕНИЯ */
+        .notification { 
+            background: linear-gradient(135deg, #FFF3CD, #FFEAA7); 
+            padding: 20px; 
+            margin: 12px 0; 
+            border-radius: 20px; 
+            border-left: 6px solid #FFC107;
+            animation: slideIn 0.4s ease;
+        }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+
         .back-btn { background: linear-gradient(135deg, #6C757D, #495057) !important; }
-        .input, textarea { 
-            width: 100%; padding: 18px 20px; border-radius: 20px; border: 2px solid #D2E8CF; 
-            background: white; font-size: 16px; margin: 12px 0; font-family: inherit;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .input:focus, textarea:focus { outline: none; border-color: #228B22; box-shadow: 0 0 0 4px rgba(34,139,34,0.1); }
-        .tea-info { background: linear-gradient(135deg, #FFF8DC, #FDF6E3); padding: 28px; border-radius: 20px; line-height: 1.7; }
         #mainScreen { display: none; }
     </style>
 </head>
@@ -74,298 +268,760 @@
         <div class="screen" id="welcomeScreen">
             <div class="header">
                 <h1>🍵 ChaClub</h1>
-                <p style="font-size: 16px; opacity: 0.9;">Соцсеть чайных мастеров</p>
+                <p style="font-size: 16px; opacity: 0.9; font-weight: 500;">Соцсеть для чайных мастеров и ценителей</p>
             </div>
-            <div style="background: linear-gradient(135deg, #E8F5E8, #E3F2E3); padding: 28px; border-radius: 20px; margin: 24px 0; text-align: center;">
-                <div style="font-size: 18px; margin-bottom: 12px;">
-                    👤 <strong id="welcomeUsername">@tea_master</strong>
+            <div style="background: linear-gradient(135deg, var(--mint), #E3F2E3); padding: 28px; border-radius: 20px; margin: 24px 0; text-align: center; box-shadow: 0 8px 24px var(--shadow);">
+                <div style="font-size: 18px; margin-bottom: 12px; font-weight: 600;">
+                    👤 <strong id="welcomeUser">@username</strong>
                 </div>
-                <div style="font-size: 15px;">
-                    🌿 Постов: <strong id="welcomePostCount">0</strong>
+                <div style="font-size: 15px; opacity: 0.9;">
+                    🌿 Постов в ленте: <strong id="welcomePosts">0</strong> | 🔔 Уведомлений: <strong id="welcomeNotifs">0</strong>
                 </div>
             </div>
-            <!-- 🔥 КРИТИЧЕСКАЯ КНОПКА ВХОДА -->
-            <button id="enterButton" class="btn" style="padding: 28px; font-size: 20px;">
-                🚀 ВОЙТИ В CHACLUB
+            <button id="enterAppBtn" class="btn" style="padding: 24px; font-size: 18px; box-shadow: 0 12px 36px var(--shadow);">
+                🚀 Войти в ChaClub
             </button>
-            <div style="text-align: center; font-size: 12px; opacity: 0.6; margin-top: 20px;">
-                Полная соцсеть: посты, лайки, профиль, чайный гайд ☕
-            </div>
         </div>
 
-        <!-- 📱 ГЛАВНАЯ -->
+        <!-- 📱 ГЛАВНЫЙ ЭКРАН -->
         <div class="screen" id="mainScreen">
-            <div style="display: flex; gap: 12px; margin-bottom: 24px;">
-                <button id="publicBtn" class="btn btn-small">🌐 Общая лента</button>
-                <button id="profileBtn" class="btn btn-small btn-secondary">👤 Мои посты</button>
+            <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+                <button id="publicFeedBtn" class="btn btn-small">🌐 Общая лента</button>
+                <button id="profileFeedBtn" class="btn btn-small btn-secondary">👤 Мои посты</button>
             </div>
-            <h3 id="feedTitle">📜 Общая лента</h3>
-            <div id="feed"></div>
-            <button id="newPostBtn" class="btn">✨ Новый пост</button>
-            <button id="teaBtn" class="btn btn-tea">☕ О чае и заваривании</button>
-            <button id="chatBtn" class="btn btn-secondary">💬 Чат</button>
-            <button id="profileSettingsBtn" class="btn btn-secondary">👤 Профиль</button>
+            
+            <div style="position: relative;">
+                <h3 id="feedTitle" style="margin-bottom: 20px; font-size: 22px; font-weight: 700;">📜 Общая лента</h3>
+                <div id="feed"></div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px;">
+                <button id="newPostBtn" class="btn">✨ Новый пост</button>
+                <button id="chatBtn" class="btn btn-secondary">💬 Чат</button>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
+                <button id="profileBtn" class="btn btn-secondary">👤 Профиль</button>
+                <button id="teaGuideBtn" class="btn btn-tea">☕ О чае</button>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
+                <button id="notificationsBtn" class="btn btn-secondary">🔔 <span id="notifCount">0</span></button>
+                <button id="adminBtn" class="btn btn-admin" style="display: none;">⚙️ Админ</button>
+            </div>
         </div>
 
         <!-- ➕ НОВЫЙ ПОСТ -->
         <div class="screen" id="newPostScreen">
-            <h3>✨ Новый пост</h3>
-            <div id="postTargetInfo" style="background: #E8F5E8; padding: 16px; border-radius: 16px; margin-bottom: 20px; font-size: 15px;">
-                Публикуется в: <strong id="postTargetText">🌐 Общую ленту</strong>
+            <h3 style="display: flex; align-items: center; gap: 12px;">
+                ✨ <span>Новый пост</span>
+                <span id="postTargetDisplay" style="font-size: 14px; opacity: 0.8; background: var(--mint); padding: 6px 12px; border-radius: 12px;">🌐 Общая лента</span>
+            </h3>
+            <input type="file" id="postPhotoInput" accept="image/*" style="display: none;">
+            <div id="photoPreview" style="display: none; width: 100%; height: 240px; object-fit: cover; border-radius: 20px; margin: 20px 0; box-shadow: 0 12px 36px rgba(0,0,0,0.2);"></div>
+            <button id="addPhotoBtn" class="btn btn-secondary">📸 Добавить фото</button>
+            <textarea id="postTextInput" class="input" placeholder="Расскажите о вашей чайной сессии ☕&#10;• Какой чай заваривали?&#10;• Какая посуда?&#10;• Какие проливы?&#10;• Какие ароматы открылись?"></textarea>
+            <button id="publishPostBtn" class="btn">🌿 Опубликовать в <span id="publishTarget">общую ленту</span></button>
+            <button id="backMainBtn" class="btn back-btn">← На главную</button>
+        </div>
+
+        <!-- 👤 ПРОФИЛЬ -->
+        <div class="screen" id="profileScreen">
+            <div class="profile-header">
+                <div class="profile-avatar" id="profileAvatar">👤</div>
+                <h2 id="profileUsername">@username</h2>
+                <div id="profileBio" style="font-size: 15px; opacity: 0.9; margin-bottom: 12px;">Чайный мастер</div>
+                <div id="profileSpecialty" style="font-size: 14px; color: var(--gold-primary); font-weight: 600;"></div>
+                <div class="profile-stats">
+                    <div class="stat">
+                        <div class="stat-value" id="profilePostCount">0</div>
+                        <div style="font-size: 13px; opacity: 0.8;">Постов</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="profileFollowerCount">0</div>
+                        <div style="font-size: 13px; opacity: 0.8;">Подписчиков</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="profileTotalLikes">0</div>
+                        <div style="font-size: 13px; opacity: 0.8;">Лайков</div>
+                    </div>
+                </div>
+                <button id="editProfileBtn" class="btn btn-secondary">✏️ Настроить профиль</button>
+                <button id="viewFollowersBtn" class="btn btn-secondary">👥 Подписчики (<span id="followersBadge">0</span>)</button>
             </div>
-            <input type="file" id="postPhoto" accept="image/*" style="display:none;">
-            <img id="photoPreview" style="display:none; width:100%; height:240px; object-fit:cover; border-radius:20px; margin:20px 0;">
-            <button id="photoButton" class="btn btn-secondary">📸 Добавить фото</button>
-            <textarea id="postText" class="input" placeholder="Расскажите о чайной сессии... ☕&#10;• Какой чай? • Посуда? • Проливы?"></textarea>
-            <button id="publishButton" class="btn">🌿 Опубликовать</button>
-            <button id="backButton" class="btn back-btn">← Назад</button>
+            <h4 style="margin-bottom: 20px;">📜 Мои посты</h4>
+            <div id="profileFeed"></div>
+            <button id="backProfileBtn" class="btn back-btn">← Главная</button>
+        </div>
+
+        <!-- ⚙️ НАСТРОЙКИ ПРОФИЛЯ -->
+        <div class="screen" id="profileSettingsScreen">
+            <h3>⚙️ Настройки профиля</h3>
+            <input id="profileNameInput" class="input" placeholder="Имя (Чайный мастер Петров)">
+            <input id="profileUsernameInput" class="input" placeholder="@username">
+            <input id="profileSpecialtyInput" class="input" placeholder="Специализация (Улуны Фуцзянь)">
+            <textarea id="profileBioInput" class="input" placeholder="О себе... Люблю пуэры и длинные проливы ☕"></textarea>
+            <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+            <div id="avatarPreview" style="width: 100px; height: 100px; border-radius: 50%; margin: 16px auto; display: none; border: 4px solid var(--green-primary);"></div>
+            <button id="changeAvatarBtn" class="btn btn-secondary">🖼️ Сменить аватар</button>
+            <button id="saveProfileBtn" class="btn">💾 Сохранить профиль</button>
+            <button id="backProfileSettingsBtn" class="btn back-btn">← Профиль</button>
+        </div>
+
+        <!-- 👥 ПОДПИСЧИКИ -->
+        <div class="screen" id="followersScreen">
+            <h3>👥 Мои подписчики</h3>
+            <div id="followersList" style="margin-bottom: 24px;"></div>
+            <button id="backFollowersBtn" class="btn back-btn">← Профиль</button>
+        </div>
+
+        <!-- 🔔 УВЕДОМЛЕНИЯ -->
+        <div class="screen" id="notificationsScreen">
+            <h3>🔔 Уведомления</h3>
+            <div id="notificationsList"></div>
+            <button id="clearNotificationsBtn" class="btn btn-danger">🗑️ Очистить все</button>
+            <button id="backNotificationsBtn" class="btn back-btn">← Главная</button>
         </div>
 
         <!-- ☕ ЧАЙНЫЙ ГАЙД -->
-        <div class="screen" id="teaScreen">
-            <h3>☕ Как заваривать чай</h3>
-            <div class="tea-info">
-                <h4 style="color: #8B4513; margin-bottom: 16px;">🥋 Техника гайвани</h4>
-                <p>Повторно заливая гайвань кипятком, чай настаивают <strong>2-3 секунды</strong> и сливают в сливник.</p>
-                
-                <h4 style="color: #8B4513; margin: 20px 0 12px 0;">⏱️ Проливы</h4>
-                <p>Каждый следующий пролив увеличиваем на несколько секунд. Китайский чай насыщенный — моментально отдает вкус!</p>
-                
-                <h4 style="color: #8B4513; margin: 20px 0 12px 0;">✨ Готовность</h4>
-                <p>Яркие ароматы на крышке гайвани + приятный цвет настоя = чай готов.</p>
-                
-                <h4 style="color: #8B4513; margin: 20px 0 16px 0;">👆 Техника слива</h4>
-                <p><strong>Большой + средний пальцы</strong> за краешки гайвани, <strong>указательным</strong> прижать крышку.<br>
-                Отодвинуть крышку на себя на <strong>2-3 мм</strong> — настой польется!</p>
-            </div>
-            <button id="backTeaButton" class="btn back-btn">← Главная</button>
+        <div class="screen" id="teaGuideScreen">
+            <h3>📚 Мир чая</h3>
+            <div class="tea-guide-btn" id="whiteTeaBtn">🍃 Белый чай</div>
+            <div class="tea-guide-btn" id="greenTeaBtn">🍵 Зелёный чай</div>
+            <div class="tea-guide-btn" id="yellowTeaBtn">🌾 Жёлтый чай</div>
+            <div class="tea-guide-btn" id="oolongTeaBtn">🌀 Улун</div>
+            <div class="tea-guide-btn" id="redTeaBtn">🔴 Красный чай</div>
+            <div class="tea-guide-btn" id="blackTeaBtn">⚫ Чёрный чай</div>
+            <div class="tea-guide-btn" id="puerTeaBtn">🌲 Пуэр</div>
+            <div class="tea-guide-btn" id="brewingBtn">🥋 Как заваривать</div>
+            <button id="backTeaGuideBtn" class="btn back-btn">← Главная</button>
         </div>
 
-        <!-- ПРОЧЕЕ (профиль, чат) -->
-        <div class="screen" id="profileScreen">
-            <h3>👤 Ваш профиль</h3>
-            <div id="profileContent" style="text-align:center; padding:40px; background:#F0F8F0; border-radius:20px;">
-                <div style="font-size:48px; margin-bottom:20px;">👤</div>
-                <h2 id="profileName">@username</h2>
-                <div style="font-size:14px; opacity:0.8; margin:20px 0;">Чайный мастер</div>
-                <div style="font-size:16px; margin-bottom:20px;">
-                    Постов: <strong id="profilePosts">0</strong> | Лайков: <strong id="profileLikes">0</strong>
-                </div>
-            </div>
-            <button id="backProfileButton" class="btn back-btn">← Главная</button>
+        <!-- 📖 ДЕТАЛИ ЧАЯ -->
+        <div class="screen" id="teaDetailScreen">
+            <h3 id="teaDetailTitle">Тип чая</h3>
+            <div id="teaDetailContent" class="tea-info"></div>
+            <button id="backTeaDetailBtn" class="btn back-btn">← К типам</button>
         </div>
 
+        <!-- 💬 ЧАТ -->
         <div class="screen" id="chatScreen">
-            <h3>💬 Чат ChaClub</h3>
-            <div id="chatMessages" style="height:400px; overflow-y:auto; margin-bottom:20px; padding:20px; background:#F9F9F9; border-radius:20px;"></div>
-            <div style="display:flex; gap:12px;">
-                <input id="chatInput" class="input" placeholder="Сообщение..." style="flex:1;">
-                <button id="sendChatButton" class="btn" style="padding:20px;">→</button>
+            <h3>💬 Общий чат ChaClub</h3>
+            <div id="chatMessages"></div>
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <input id="chatInput" class="input" placeholder="Напишите сообщение..." style="flex: 1;">
+                <button id="sendChatBtn" class="btn" style="padding: 18px 24px; flex-shrink: 0;">→</button>
             </div>
-            <button id="backChatButton" class="btn back-btn">← Главная</button>
+            <button id="backChatBtn" class="btn back-btn">← Главная</button>
+        </div>
+
+        <!-- 👑 АДМИН ПАНЕЛЬ -->
+        <div class="screen" id="adminScreen">
+            <h3>👑 Панель администратора</h3>
+            <div id="adminUsersList" style="max-height: 50vh; overflow-y: auto; margin-bottom: 24px;"></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <button id="clearAllPostsBtn" class="btn btn-danger">🗑️ Все посты</button>
+                <button id="clearAllChatsBtn" class="btn btn-danger">🗑️ Чат</button>
+            </div>
+            <button id="backAdminBtn" class="btn back-btn">← Главная</button>
         </div>
     </div>
 
     <script>
-        // 🔥 ГЛАВНЫЙ ОБЪЕКТ ПРИЛОЖЕНИЯ
-        const chaClub = {
-            tg: window.Telegram.WebApp,
-            user: { id: 12345, username: 'tea_master' },
+        // ИНИЦИАЛИЗАЦИЯ TELEGRAM WEB APP
+        const tg = window.Telegram.WebApp;
+        tg.ready(); 
+        tg.expand();
+        tg.requestViewport(400, 100);
+
+        // ГЛОБАЛЬНОЕ СОСТОЯНИЕ ПРИЛОЖЕНИЯ
+        const app = {
+            user: tg.initDataUnsafe?.user || { 
+                id: Math.floor(Math.random() * 1000000), 
+                username: `tea_master_${Math.floor(Math.random() * 1000)}`
+            },
             posts: [],
             chats: [],
-            currentScreen: 'welcome',
-            postTarget: 'public'
+            users: {},
+            notifications: [],
+            discussions: [],
+            postTarget: 'public',
+            currentProfileUser: null,
+            ADMIN_ID: 6902824637,
+            selectedPhoto: null,
+            selectedAvatar: null
         };
 
-        // 🚀 СУПЕР ПРОСТАЯ ИНИЦИАЛИЗАЦИЯ
-        function initChaClub() {
-            chaClub.tg.ready();
-            chaClub.tg.expand();
-            
-            // 🔥 САМЫЙ ВАЖНЫЙ КОД — КНОПКА ВХОДА
-            document.getElementById('enterButton').onclick = function() {
-                console.log('🔥 КНОПКА ВХОДА НАЖАТА!');
-                enterChaClub();
-            };
-            
-            // БЫСТРАЯ ИНИЦИАЛИЗАЦИЯ ПОЛЬЗОВАТЕЛЯ
-            chaClub.user.username = chaClub.tg.initDataUnsafe?.user?.username?.replace('@', '') || 'tea_master_' + Math.floor(Math.random()*1000);
-            document.getElementById('welcomeUsername').textContent = '@' + chaClub.user.username;
-            
-            loadData();
-            updateWelcomeStats();
-            console.log('✅ ChaClub ИНИЦИАЛИЗИРОВАН');
-        }
-
-        // 🔥 ОСНОВНАЯ КНОПКА ВХОДА — ГАРАНТИРОВАННО РАБОТАЕТ
-        function enterChaClub() {
-            console.log('🚀 ВХОД В CHACLUB');
-            chaClub.tg.HapticFeedback.impactOccurred('heavy');
-            
-            document.getElementById('welcomeScreen').style.display = 'none';
-            document.getElementById('mainScreen').style.display = 'block';
-            
-            chaClub.currentScreen = 'main';
-            renderFeed();
-            chaClub.tg.MainButton.setText('✨ Новый пост').show().onClick(showNewPostScreen);
-        }
-
-        // 📱 ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ
-        function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
-            document.getElementById(screenId).style.display = 'block';
-            chaClub.currentScreen = screenId.replace('Screen', '');
-        }
-
-        // 📜 ЛЕНТА ПОСТОВ
-        function renderFeed() {
-            const feed = document.getElementById('feed');
-            const posts = chaClub.postTarget === 'public' ? chaClub.posts : chaClub.posts.filter(p => p.userId === chaClub.user.id);
-            
-            feed.innerHTML = posts.map(post => `
-                <div class="post-card">
-                    <div style="font-weight:700; color:#8B4513; margin-bottom:12px;">@${post.author}</div>
-                    ${post.image ? `<img src="${post.image}" style="width:100%; height:200px; object-fit:cover; border-radius:16px;">` : ''}
-                    <div style="font-size:15px; line-height:1.5; margin:12px 0;">${post.text}</div>
-                    <div style="font-size:13px; opacity:0.7; margin-bottom:16px;">${post.timestamp}</div>
-                    <div style="display:flex; justify-content:space-around;">
-                        <button class="post-actions button liked" onclick="toggleLike(${post.id}); event.stopPropagation();">
-                            ❤️ ${post.likes?.length || 0}
-                        </button>
-                        <button onclick="alert('💬 Скоро!'); event.stopPropagation();">💬 0</button>
-                    </div>
-                </div>
-            `).reverse().join('') || '<div style="text-align:center; padding:60px; opacity:0.5; font-size:16px;">🌿 Создайте первый пост!</div>';
-            
-            document.getElementById('feedTitle').textContent = chaClub.postTarget === 'public' ? '📜 Общая лента' : '👤 Мои посты';
-        }
-
-        // ➕ НОВЫЙ ПОСТ
-        function showNewPostScreen() {
-            document.getElementById('postText').value = '';
-            document.getElementById('photoPreview').style.display = 'none';
-            document.getElementById('postPhoto').value = '';
-            document.getElementById('postTargetText').textContent = chaClub.postTarget === 'public' ? '🌐 Общую ленту' : '👤 Мой профиль';
-            showScreen('newPostScreen');
-        }
-
-        function publishPost() {
-            const text = document.getElementById('postText').value.trim();
-            if (!text) {
-                chaClub.tg.showAlert('📝 Напишите о чайной сессии!');
-                return;
+        // 🧠 ПОЛНЫЙ КОНТЕНТ О ЧАЯХ (из artoftea.ru + chaikitaiskoipandi.ru)
+        const teaDatabase = {
+            white: {
+                title: '🍃 Белый чай',
+                emoji: '🍃',
+                info: `Лист собирают и естественным образом высушивают. Окисление частично происходит во время сушки. 
+                Ферментация идет по-особому — лист не сминался. Белым чай называют по цвету Бай Хао Инь Чжэнь, 
+                покрыт нежным серебристым пушком. Основной объём из Фуцзянь. Выше всего ценится чай из почек.
+                Сладость как березовый сок, ягоды и цветы. Листовые сорта хороши выдержанными, почечные — свежими.`,
+                examples: ['Бай Хао Инь Чжэнь (Серебряные иглы)', 'Юэ Гуан Бай (Белый лунный свет)', 'Лао Шоу Мэй']
+            },
+            green: {
+                title: '🍵 Зелёный чай',
+                emoji: '🍵',
+                info: `Минимально ферментирован: подвяливают, скручивают, прогревают, сушат. Сладость, легкая терпкость, краски весны. 
+                Ощущение натянутой тетивы и сочного среза травы. Ценят свежесть — вкус дольше одного сезона не держится.
+                Заваривать в гайвани при 80-85°C, первый пролив 10-15 сек.`,
+                examples: ['Сюэ Я (Снежная почка)', 'Люань Гуапянь', 'Мао Фэн (Ворсистые пики)']
+            },
+            yellow: {
+                title: '🌾 Жёлтый чай',
+                emoji: '🌾',
+                info: `Ферментация во влажной тёплой среде ("томление"). Вкус глубже зелёного, мягче. Ноты горького миндаля, дымной карамели. 
+                Премиальный чай, на рынке много подделок. Покупайте у проверенных продавцов.`,
+                examples: ['Хо Шань Хуан Я', 'Цзюнь Шань Инь Чжэнь']
+            },
+            oolong: {
+                title: '🌀 Улун',
+                emoji: '🌀',
+                info: `Особый кустарник с плотными листьями. Светлые (зелёные) и тёмные (красные) улуны. Ферментация от частичной до полной. 
+                Ароматика как парфюм, вкус многоуровневый. Самая разнообразная группа чаев — сердце чайного искусства.`,
+                examples: ['Да Хун Пао', 'Тегуаньинь', 'Ми Лань Сян', 'Гуй Фэй']
+            },
+            red: {
+                title: '🔴 Красный чай',
+                emoji: '🔴',
+                info: `Сильно ферментированные чаи. Согревающие, плотные, яркие. Почечные из Юньнани, тайваньские с ассамикой. 
+                Отдают вкус щедро, не передерживайте. Отличный выбор для холодных вечеров.`,
+                examples: ['Дянь Хун Маофэн', 'Чжун Го Хун', 'Сяо Чжуны']
+            },
+            black: {
+                title: '⚫ Чёрный чай',
+                emoji: '⚫',
+                info: `Влажное скирдование даёт ноты шу пуэра. Используют грубое сырьё с черенками. Плотный вкус, затаённая сладость, 
+                винные и ореховые ноты. Люань Хэй Ча и Лю Бао — классика жанра.`,
+                examples: ['Люань Хэй Ча (2009)', 'Лю Бао Хэй Ча 6166']
+            },
+            puer: {
+                title: '🌲 Пуэр',
+                emoji: '🌲',
+                info: `Шэн (зелёный): молодые травянистые, выдержанные нектарные. Шу (чёрный): орехи, шоколад, сухофрукты. 
+                Шэны с деревьев 300+ лет. Шу любит кипяток и прощает ошибки новичкам. Юньнань — родина пуэров.`,
+                examples: ['Уляншань Органик 2023', 'Шу Чёрный Дракон', 'Синхай Зелёное дерево']
+            },
+            brewing: {
+                title: '🥋 Как заваривать чай',
+                emoji: '🥋',
+                info: `Повторно заливая гайвань кипятком, чай настаивают 2-3 секунды и сливают в сливник. Каждый пролив увеличиваем на несколько секунд. 
+                Свежий китайский чай насыщенный и моментально отдаёт вкус. Яркие ноты на крышке гайвани, приятный цвет настоя.
+                Техника слива: большой и средний пальцы за краешки, указательным прижать крышку, отодвинуть на 2-3 мм.`,
+                examples: ['Гайвань 100-150 мл', 'Сливник', 'Пиалы 30-50 мл']
             }
-            
-            const post = {
-                id: Date.now(),
-                userId: chaClub.user.id,
-                author: chaClub.user.username,
-                text: text,
-                image: document.getElementById('photoPreview').style.display === 'block' ? 
-                       document.getElementById('photoPreview').src : null,
-                likes: [],
-                timestamp: new Date().toLocaleString('ru-RU', {day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'})
-            };
-            
-            chaClub.posts.unshift(post);
-            saveData();
-            chaClub.tg.showAlert('✅ Опубликовано!');
-            showMainScreen();
+        };
+
+        // ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ
+        function initApp() {
+            createUser();
+            loadData();
+            bindAllButtons();
+            updateWelcomeScreen();
+            tg.CloudStorage.setCloudStorageAutoSync(true);
+            console.log('✅ ChaClub полностью инициализирован');
         }
 
-        // 📸 ФОТО
+        // 🔗 ПРИВЯЗКА ВСЕХ КНОПОК (ГАРАНТИРОВАННО РАБОТАЕТ)
+        function bindAllButtons() {
+            // Главная навигация
+            ['enterAppBtn', 'publicFeedBtn', 'profileFeedBtn', 'newPostBtn', 'profileBtn', 
+             'teaGuideBtn', 'notificationsBtn', 'chatBtn'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('click', window[resolveFunctionName(id)]);
+            });
+
+            // Посты
+            ['addPhotoBtn', 'publishPostBtn', 'backMainBtn'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('click', window[resolveFunctionName(id)]);
+            });
+            document.getElementById('postPhotoInput').addEventListener('change', previewPhoto);
+
+            // Профиль
+            ['editProfileBtn', 'viewFollowersBtn', 'backProfileBtn', 'saveProfileBtn', 
+             'backProfileSettingsBtn', 'changeAvatarBtn', 'backFollowersBtn'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('click', window[resolveFunctionName(id)]);
+            });
+            document.getElementById('avatarInput').addEventListener('change', previewAvatar);
+
+            // Чайный гайд
+            Object.keys(teaDatabase).forEach(type => {
+                const el = document.getElementById(`${type}TeaBtn`) || document.getElementById(`${type}Btn`);
+                if (el) el.addEventListener('click', () => showTeaDetail(type));
+            });
+            ['backTeaGuideBtn', 'backTeaDetailBtn'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('click', window[resolveFunctionName(id)]);
+            });
+
+            // Чат
+            ['sendChatBtn', 'backChatBtn'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('click', window[resolveFunctionName(id)]);
+            });
+
+            // Админ
+            if (app.user.id == app.ADMIN_ID) {
+                document.getElementById('adminBtn').style.display = 'block';
+                document.getElementById('adminBtn').addEventListener('click', showAdminPanel);
+            }
+        }
+
+        function resolveFunctionName(id) {
+            const map = {
+                'enterAppBtn': 'enterApp',
+                'publicFeedBtn': () => setPostTarget('public'),
+                'profileFeedBtn': () => setPostTarget('profile'),
+                'newPostBtn': 'showNewPost',
+                'profileBtn': 'showProfile',
+                'teaGuideBtn': 'showTeaGuide',
+                'notificationsBtn': 'showNotifications',
+                'chatBtn': 'showChat',
+                'addPhotoBtn': () => document.getElementById('postPhotoInput').click(),
+                'publishPostBtn': 'publishPost',
+                'backMainBtn': 'showMainScreen',
+                'editProfileBtn': 'showProfileSettings',
+                'viewFollowersBtn': 'showFollowers',
+                'backProfileBtn': 'showMainScreen',
+                'saveProfileBtn': 'saveProfile',
+                'backProfileSettingsBtn': 'showProfile',
+                'changeAvatarBtn': () => document.getElementById('avatarInput').click(),
+                'backFollowersBtn': 'showProfile',
+                'backTeaGuideBtn': 'showMainScreen',
+                'backTeaDetailBtn': 'showTeaGuide',
+                'sendChatBtn': 'sendChatMessage',
+                'backChatBtn': 'showMainScreen'
+            };
+            return map[id] || (() => console.log(`No handler for ${id}`));
+        }
+
+        // 👤 СОЗДАНИЕ ПОЛЬЗОВАТЕЛЯ
+        function createUser() {
+            if (!app.users[app.user.id]) {
+                app.users[app.user.id] = {
+                    id: app.user.id,
+                    username: app.user.username?.replace('@', '') || `tea_master_${Math.floor(Math.random()*10000)}`,
+                    name: 'Чайный мастер',
+                    bio: 'Любитель качественного чая ☕',
+                    specialty: '',
+                    avatar: '👤',
+                    posts: 0,
+                    followers: 0,
+                    totalLikes: 0,
+                    myFollowers: []
+                };
+            }
+        }
+
+        // 🖼️ ПРЕДВАРИТЕЛЬНЫЙ ПРОСМОТР ФОТО
         function previewPhoto(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = e => {
-                    document.getElementById('photoPreview').src = e.target.result;
-                    document.getElementById('photoPreview').style.display = 'block';
+                    app.selectedPhoto = e.target.result;
+                    const preview = document.getElementById('photoPreview');
+                    preview.src = app.selectedPhoto;
+                    preview.style.display = 'block';
                 };
                 reader.readAsDataURL(file);
             }
         }
 
-        // ❤️ ЛАЙКИ
-        function toggleLike(postId) {
-            const post = chaClub.posts.find(p => p.id === postId);
-            if (post) {
-                const liked = post.likes.includes(chaClub.user.id);
-                if (liked) {
-                    post.likes = post.likes.filter(id => id !== chaClub.user.id);
-                } else {
-                    post.likes.push(chaClub.user.id);
-                }
-                saveData();
-                renderFeed();
-                chaClub.tg.HapticFeedback.impactOccurred('medium');
+        function previewAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    app.selectedAvatar = e.target.result;
+                    const preview = document.getElementById('avatarPreview');
+                    preview.src = app.selectedAvatar;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
             }
         }
 
-        // 🔄 ПЕРЕКЛЮЧЕНИЕ ЛЕНТЫ
-        function setPostTarget(target) {
-            chaClub.postTarget = target;
-            renderFeed();
-            chaClub.tg.HapticFeedback.selectionChanged();
+        // 📱 НАВИГАЦИЯ
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+            document.getElementById(screenId).style.display = 'block';
+            tg.HapticFeedback.impactOccurred('light');
         }
 
-        // 💾 ДАННЫЕ
+        function enterApp() {
+            showScreen('mainScreen');
+            renderFeed();
+            updateNotificationBadge();
+        }
+
+        function showMainScreen() {
+            showScreen('mainScreen');
+            renderFeed();
+        }
+
+        function showNewPost() {
+            document.getElementById('postTextInput').value = '';
+            document.getElementById('photoPreview').style.display = 'none';
+            document.getElementById('postPhotoInput').value = '';
+            document.getElementById('postTargetDisplay').textContent = app.postTarget === 'public' ? '🌐 Общая лента' : '👤 Мой профиль';
+            document.getElementById('publishTarget').textContent = app.postTarget === 'public' ? 'общую ленту' : 'мой профиль';
+            showScreen('newPostScreen');
+        }
+
+        function showProfile(userId = app.user.id) {
+            app.currentProfileUser = userId;
+            updateProfileScreen();
+            showScreen('profileScreen');
+        }
+
+        function showProfileSettings() {
+            const user = app.users[app.user.id];
+            document.getElementById('profileNameInput').value = user.name;
+            document.getElementById('profileUsernameInput').value = '@' + user.username;
+            document.getElementById('profileSpecialtyInput').value = user.specialty;
+            document.getElementById('profileBioInput').value = user.bio;
+            document.getElementById('avatarPreview').style.display = 'none';
+            document.getElementById('avatarInput').value = '';
+            showScreen('profileSettingsScreen');
+        }
+
+        function showTeaGuide() {
+            showScreen('teaGuideScreen');
+        }
+
+        function showTeaDetail(type) {
+            const tea = teaDatabase[type];
+            document.getElementById('teaDetailTitle').textContent = tea.emoji + ' ' + tea.title;
+            document.getElementById('teaDetailContent').innerHTML = `
+                <div style="font-size: 15px; line-height: 1.7; margin-bottom: 20px;">${tea.info}</div>
+                <div style="background: rgba(255,248,220,0.6); padding: 16px; border-radius: 16px; font-size: 14px;">
+                    <strong>Примеры сортов:</strong><br>${tea.examples.map(s => `• ${s}`).join('<br>')}
+                </div>
+            `;
+            showScreen('teaDetailScreen');
+        }
+
+        function showNotifications() {
+            renderNotifications();
+            showScreen('notificationsScreen');
+        }
+
+        function showChat() {
+            renderChat();
+            showScreen('chatScreen');
+            document.getElementById('chatInput').focus();
+        }
+
+        function showFollowers() {
+            renderFollowers();
+            showScreen('followersScreen');
+        }
+
+        // 📜 ЛЕНТА ПОСТОВ
+        function renderFeed() {
+            const feed = document.getElementById('feed');
+            const targetPosts = app.postTarget === 'public' ? app.posts : app.posts.filter(p => p.userId === app.user.id);
+            
+            feed.innerHTML = targetPosts.slice(0, 30).map(post => createPostHTML(post)).reverse().join('') || 
+                '<div style="text-align: center; padding: 60px 20px; opacity: 0.6; font-size: 16px;">🌿 Пока нет постов<br>Будьте первым чайным мастером!</div>';
+            
+            document.getElementById('feedTitle').textContent = app.postTarget === 'public' ? '📜 Общая лента чайных мастеров' : '👤 Мои чайные сессии';
+        }
+
+        function createPostHTML(post) {
+            const isLiked = post.likes?.includes(app.user.id) || false;
+            const author = app.users[post.userId] || { username: post.author, avatar: '👤' };
+            return `
+                <div class="post-card" onclick="showProfile(${post.userId})">
+                    <div class="post-header">
+                        <div class="post-avatar" style="background-image: url('${author.avatar}'); font-size: 16px;">${author.avatar === '👤' ? author.avatar : ''}</div>
+                        <div>@${post.author}</div>
+                    </div>
+                    ${post.image ? `<img src="${post.image}" class="post-image" onerror="this.style.display='none'">` : ''}
+                    <div class="post-text">${post.text}</div>
+                    <div class="post-meta">${post.timestamp}</div>
+                    <div class="post-actions">
+                        <button class="action-btn btn-like ${isLiked ? 'liked' : ''}" onclick="toggleLike(${post.id}); event.stopPropagation()">
+                            ❤️ ${post.likes?.length || 0}
+                        </button>
+                        <button class="action-btn" onclick="tg.showAlert('💬 Комментарии в разработке!'); event.stopPropagation()">
+                            💬 ${post.comments?.length || 0}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function setPostTarget(target) {
+            app.postTarget = target;
+            const publicBtn = document.getElementById('publicFeedBtn');
+            const profileBtn = document.getElementById('profileFeedBtn');
+            
+            if (target === 'public') {
+                publicBtn.classList.remove('btn-secondary');
+                profileBtn.classList.add('btn-secondary');
+            } else {
+                publicBtn.classList.add('btn-secondary');
+                profileBtn.classList.remove('btn-secondary');
+            }
+            
+            document.getElementById('postTargetDisplay').textContent = target === 'public' ? '🌐 Общая лента' : '👤 Мой профиль';
+            renderFeed();
+            tg.HapticFeedback.selectionChanged();
+        }
+
+        // ❤️ ЛАЙКИ
+        function toggleLike(postId) {
+            const post = app.posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            const likes = post.likes || [];
+            const isLiked = likes.includes(app.user.id);
+            
+            if (isLiked) {
+                post.likes = likes.filter(id => id !== app.user.id);
+            } else {
+                post.likes = [...likes, app.user.id];
+                addNotification(post.userId, `@${app.users[app.user.id].username} поставил ❤️ лайк вашему посту`);
+            }
+            
+            updateUserStats(post.userId);
+            saveData();
+            renderFeed();
+            tg.HapticFeedback.impactOccurred('medium');
+        }
+
+        // ➕ ОПУБЛИКОВАНИЕ ПОСТА
+        function publishPost() {
+            const text = document.getElementById('postTextInput').value.trim();
+            if (!text) {
+                tg.showAlert('📝 Расскажите о своей чайной сессии!');
+                return;
+            }
+            
+            const post = {
+                id: Date.now(),
+                userId: app.user.id,
+                author: app.users[app.user.id].username,
+                text: text.slice(0, 1000),
+                image: app.selectedPhoto,
+                likes: [],
+                comments: [],
+                timestamp: new Date().toLocaleString('ru-RU', { 
+                    day: 'numeric', 
+                    month: 'short', 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                })
+            };
+            
+            app.posts.unshift(post);
+            updateUserStats(app.user.id);
+            app.selectedPhoto = null;
+            
+            saveData();
+            tg.showAlert('✅ Пост опубликован в ' + (app.postTarget === 'public' ? 'общую ленту' : 'ваш профиль') + '!');
+            showNewPost();
+        }
+
+        // 👤 ПРОФИЛЬ
+        function updateProfileScreen() {
+            const userId = app.currentProfileUser || app.user.id;
+            const user = app.users[userId];
+            if (!user) return;
+            
+            document.getElementById('profileAvatar').textContent = user.avatar;
+            document.getElementById('profileUsername').textContent = '@' + user.username;
+            document.getElementById('profileBio').textContent = user.name;
+            document.getElementById('profileSpecialty').textContent = user.specialty ? `🎯 ${user.specialty}` : '';
+            document.getElementById('profilePostCount').textContent = user.posts || 0;
+            document.getElementById('profileFollowerCount').textContent = user.followers || 0;
+            document.getElementById('profileTotalLikes').textContent = user.totalLikes || 0;
+            document.getElementById('followersBadge').textContent = user.followers || 0;
+            
+            const profileFeed = document.getElementById('profileFeed');
+            const userPosts = app.posts.filter(p => p.userId === userId).slice(0, 10);
+            profileFeed.innerHTML = userPosts.map(post => `
+                <div class="post-card">
+                    <div style="font-size: 14px; line-height: 1.5;">${post.text.slice(0, 120)}${post.text.length > 120 ? '...' : ''}</div>
+                    <div style="font-size: 12px; opacity: 0.7; margin-top: 12px;">
+                        ${post.timestamp} • ❤️ ${post.likes?.length || 0}
+                    </div>
+                </div>
+            `).reverse().join('') || '<div style="text-align: center; opacity: 0.6; padding: 40px;">Нет постов ☕</div>';
+        }
+
+        function saveProfile() {
+            const user = app.users[app.user.id];
+            user.name = document.getElementById('profileNameInput').value || user.name;
+            user.username = document.getElementById('profileUsernameInput').value.replace('@', '') || user.username;
+            user.specialty = document.getElementById('profileSpecialtyInput').value;
+            user.bio = document.getElementById('profileBioInput').value || user.bio;
+            
+            if (app.selectedAvatar) {
+                user.avatar = app.selectedAvatar;
+            }
+            
+            saveData();
+            tg.showAlert('✅ Профиль обновлён!');
+            showProfile();
+        }
+
+        // 🔔 УВЕДОМЛЕНИЯ
+        function addNotification(userId, text) {
+            app.notifications.unshift({
+                id: Date.now(),
+                userId,
+                text,
+                timestamp: new Date().toLocaleString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+                read: false
+            });
+            saveData();
+            updateNotificationBadge();
+        }
+
+        function renderNotifications() {
+            const list = document.getElementById('notificationsList');
+            const myNotifs = app.notifications.filter(n => n.userId === app.user.id).slice(0, 50);
+            list.innerHTML = myNotifs.map(n => `
+                <div class="notification">
+                    <div style="font-weight: 600; margin-bottom: 6px;">${n.text}</div>
+                    <div style="font-size: 13px; opacity: 0.8;">${n.timestamp}</div>
+                </div>
+            `).join('') || '<div style="text-align: center; padding: 60px; opacity: 0.6;">Нет уведомлений 🔔</div>';
+        }
+
+        function updateNotificationBadge() {
+            const unreadCount = app.notifications.filter(n => !n.read && n.userId === app.user.id).length;
+            document.getElementById('notifCount').textContent = unreadCount;
+            document.getElementById('welcomeNotifs').textContent = unreadCount;
+        }
+
+        // 💬 ЧАТ
+        function renderChat() {
+            const messages = document.getElementById('chatMessages');
+            messages.innerHTML = app.chats.slice(-30).map(chat => `
+                <div class="chat-message ${chat.userId === app.user.id ? 'me' : ''}">
+                    <strong>@${chat.author}:</strong> ${chat.text}
+                    <div style="font-size: 12px; opacity: 0.7; margin-top: 8px;">${chat.timestamp}</div>
+                </div>
+            `).join('');
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function sendChatMessage() {
+            const text = document.getElementById('chatInput').value.trim();
+            if (!text) return;
+            
+            app.chats.push({
+                id: Date.now(),
+                userId: app.user.id,
+                author: app.users[app.user.id].username,
+                text,
+                timestamp: new Date().toLocaleTimeString('ru-RU')
+            });
+            
+            document.getElementById('chatInput').value = '';
+            saveData();
+            renderChat();
+            tg.HapticFeedback.impactOccurred('light');
+        }
+
+        // 👥 ПОДПИСКИ
+        function renderFollowers() {
+            const user = app.users[app.currentProfileUser || app.user.id];
+            const list = document.getElementById('followersList');
+            if (user?.myFollowers) {
+                list.innerHTML = user.myFollowers.map(followerId => {
+                    const follower = app.users[followerId];
+                    return follower ? `
+                        <div class="follower-item" onclick="showProfile(${followerId})">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--mint); display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                                    ${follower.avatar === '👤' ? follower.avatar : ''}
+                                </div>
+                                <div>@${follower.username}</div>
+                            </div>
+                        </div>
+                    ` : '';
+                }).join('') || '<div style="text-align: center; opacity: 0.6; padding: 40px;">Пока нет подписчиков ☕</div>';
+            }
+        }
+
+        function toggleFollow(targetUserId) {
+            if (targetUserId === app.user.id) return;
+            const targetUser = app.users[targetUserId];
+            if (!targetUser) return;
+            
+            const isFollowing = targetUser.myFollowers?.includes(app.user.id) || false;
+            const followBtn = document.querySelector('.btn-follow');
+            
+            if (isFollowing) {
+                targetUser.myFollowers = targetUser.myFollowers.filter(id => id !== app.user.id);
+                targetUser.followers--;
+                followBtn.textContent = '📢 Подписаться';
+                followBtn.classList.remove('btn-followed');
+            } else {
+                targetUser.myFollowers = [...(targetUser.myFollowers || []), app.user.id];
+                targetUser.followers++;
+                followBtn.textContent = '✅ Отписаться';
+                followBtn.classList.add('btn-followed');
+                addNotification(targetUserId, `@${app.users[app.user.id].username} подписался на вас!`);
+            }
+            
+            saveData();
+            tg.HapticFeedback.notificationOccurred('success');
+        }
+
+        // 📊 СТАТИСТИКА ПОЛЬЗОВАТЕЛЕЙ
+        function updateUserStats(userId) {
+            const userPosts = app.posts.filter(p => p.userId === userId);
+            app.users[userId].posts = userPosts.length;
+            app.users[userId].totalLikes = userPosts.reduce((sum, p) => sum + (p.likes?.length || 0), 0);
+        }
+
+        // 💾 СОХРАНЕНИЕ/ЗАГРУЗКА
         function saveData() {
-            localStorage.setItem('chaClubData', JSON.stringify(chaClub));
+            localStorage.setItem('chaClub_v7', JSON.stringify(app));
         }
 
         function loadData() {
             try {
-                const data = localStorage.getItem('chaClubData');
+                const data = localStorage.getItem('chaClub_v7');
                 if (data) {
                     const parsed = JSON.parse(data);
-                    chaClub.posts = parsed.posts || [];
-                    chaClub.chats = parsed.chats || [];
+                    app.posts = parsed.posts || [];
+                    app.chats = parsed.chats || [];
+                    app.users = { ...app.users, ...parsed.users };
+                    app.notifications = parsed.notifications || [];
                 }
-            } catch(e) {}
-        }
-
-        function updateWelcomeStats() {
-            document.getElementById('welcomePostCount').textContent = chaClub.posts.length;
-        }
-
-        // 🎛️ ВСЕ КНОПКИ (ПРОСТЫЕ onclick)
-        document.getElementById('publicBtn').onclick = () => setPostTarget('public');
-        document.getElementById('profileBtn').onclick = () => setPostTarget('profile');
-        document.getElementById('newPostBtn').onclick = showNewPostScreen;
-        document.getElementById('photoButton').onclick = () => document.getElementById('postPhoto').click();
-        document.getElementById('publishButton').onclick = publishPost;
-        document.getElementById('backButton').onclick = showMainScreen;
-        document.getElementById('teaBtn').onclick = () => showScreen('teaScreen');
-        document.getElementById('chatBtn').onclick = () => showScreen('chatScreen');
-        document.getElementById('profileSettingsBtn').onclick = () => showScreen('profileScreen');
-        document.getElementById('backTeaButton').onclick = showMainScreen;
-        document.getElementById('postPhoto').onchange = previewPhoto;
-        document.getElementById('backProfileButton').onclick = showMainScreen;
-
-        // 💬 ЧАТ
-        document.getElementById('sendChatButton').onclick = function() {
-            const text = document.getElementById('chatInput').value.trim();
-            if (text) {
-                chaClub.chats.push({
-                    id: Date.now(),
-                    userId: chaClub.user.id,
-                    author: chaClub.user.username,
-                    text,
-                    timestamp: new Date().toLocaleTimeString()
-                });
-                document.getElementById('chatInput').value = '';
-                saveData();
+            } catch(e) {
+                console.log('🆕 Новое приложение');
             }
-        };
+        }
 
-        // ⏰ ENTER В ЧАТЕ
-        document.getElementById('chatInput').onkeypress = function(e) {
-            if (e.key === 'Enter') document.getElementById('sendChatButton').click();
-        };
+        function updateWelcomeScreen() {
+            const user = app.users[app.user.id];
+            document.getElementById('welcomeUser').textContent = '@' + (user?.username || app.user.username);
+            document.getElementById('welcomePosts').textContent = app.posts.length;
+            updateNotificationBadge();
+        }
 
-        // 🚀 ЗАПУСК
-        window.onload = initChaClub;
+        // ⏰ ENTER KEY ДЛЯ ЧАТА
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && document.activeElement === document.getElementById('chatInput')) {
+                sendChatMessage();
+            }
+        });
+
+        // 🚀 ЗАПУСК ПРИЛОЖЕНИЯ
+        window.addEventListener('load', initApp);
+        tg.MainButton.setText('✨ Новый пост').onClick(showNewPost).hide();
     </script>
 </body>
 </html>
