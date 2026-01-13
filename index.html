@@ -36,6 +36,8 @@
         .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(34,139,34,0.4); }
         .btn-secondary { background: linear-gradient(45deg, #DAA520, #F4A460) !important; }
         .btn-outline { background: transparent !important; color: #228B22; border: 2px solid #228B22; }
+        .btn-danger { background: linear-gradient(45deg, #DC143C, #B22222) !important; }
+        .btn-admin { background: linear-gradient(45deg, #8B4513, #A0522D) !important; }
         
         .post-card { 
             background: white; border-radius: 15px; padding: 20px; margin: 15px 0;
@@ -48,15 +50,22 @@
         .post-actions { display: flex; justify-content: space-between; margin-top: 15px; }
         .action-btn { background: none; border: none; font-size: 20px; cursor: pointer; }
         
+        .profile-header { text-align: center; padding: 30px 0; background: linear-gradient(135deg, #F0F8F0, #E8F5E8); border-radius: 20px; margin-bottom: 20px; }
+        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: #D2E8CF; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+        .profile-stats { display: flex; justify-content: space-around; margin: 20px 0; }
+        .stat { text-align: center; font-weight: bold; }
+        
         .input { width: 100%; padding: 15px; border-radius: 15px; border: 1px solid #D2E8CF; 
                  background: white; font-size: 16px; margin: 10px 0; font-family: inherit; }
         .tea-type { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
         .tea-type-btn { padding: 10px 15px; border: 2px solid #D2E8CF; background: white; 
                        border-radius: 20px; cursor: pointer; transition: all 0.3s; }
         .tea-type-btn.active { background: #228B22; color: white; border-color: #228B22; }
-        
-        #feed { max-height: 500px; overflow-y: auto; }
+        #feed, #profileFeed { max-height: 500px; overflow-y: auto; }
         .back-btn { background: linear-gradient(45deg, #808080, #A9A9A9); font-size: 14px; padding: 10px; }
+        
+        .admin-list { max-height: 300px; overflow-y: auto; }
+        .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #F0F8F0; margin: 10px 0; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -66,13 +75,14 @@
             <div style="font-size: 14px; opacity: 0.8;">Сообщество Чайных Мастеров</div>
         </div>
 
-        <!-- ГЛАВНЫЙ ЭКРАН: ЛЕНТА ПОСТОВ -->
+        <!-- ГЛАВНЫЙ ЭКРАН -->
         <div class="screen" id="mainScreen">
             <h3>📜 Лента мастеров</h3>
             <div id="feed"></div>
             <button class="btn" onclick="showNewPost()">✨ Новый пост</button>
-            <button class="btn btn-secondary" onclick="showTeaGuide()">📚 Руководство по чаям</button>
+            <button class="btn btn-secondary" onclick="showTeaGuide()">📚 Руководство</button>
             <button class="btn btn-secondary" onclick="showProfile()">👤 Мой профиль</button>
+            <button class="btn btn-admin" onclick="showAdmin()" id="adminBtn">⚙️ Админ</button>
         </div>
 
         <!-- НОВЫЙ ПОСТ -->
@@ -94,35 +104,61 @@
             <button class="btn back-btn" onclick="showMain()">← Назад</button>
         </div>
 
+        <!-- ЛИЧНЫЙ ПРОФИЛЬ / КАНАЛ -->
+        <div class="screen" id="profileScreen">
+            <div class="profile-header">
+                <div class="profile-avatar" id="profileAvatar">👤</div>
+                <h2 id="profileName">@tea_master</h2>
+                <div style="font-size: 14px; opacity: 0.8; margin-bottom: 20px;" id="profileBio">Чайный мастер</div>
+                <div class="profile-stats">
+                    <div class="stat"><div style="font-size: 24px;" id="profilePosts">0</div>Постов</div>
+                    <div class="stat"><div style="font-size: 24px;" id="profileFollowers">12</div>Подписчиков</div>
+                </div>
+                <button class="btn btn-secondary" onclick="showProfileSettings()" id="editProfileBtn">✏️ Настроить</button>
+            </div>
+            <div id="profileFeed"></div>
+            <button class="btn back-btn" onclick="showMain()">← Лента</button>
+        </div>
+
+        <!-- НАСТРОЙКИ ПРОФИЛЯ -->
+        <div class="screen" id="profileSettings">
+            <h3>⚙️ Настройки профиля</h3>
+            <input class="input" id="profileNameInput" placeholder="Имя профиля">
+            <textarea class="input" id="profileBioInput" placeholder="Био: ваш чайный путь..."></textarea>
+            <input class="input" id="profileTeaSpecialty" placeholder="Специализация (Пуэр, Улун...)">
+            <input class="input" id="profileExperience" placeholder="Опыт (лет):" type="number">
+            <button class="btn" onclick="saveProfile()">💾 Сохранить</button>
+            <button class="btn back-btn" onclick="showProfileScreen()">← Профиль</button>
+        </div>
+
+        <!-- АДМИН ПАНЕЛЬ -->
+        <div class="screen" id="adminPanel">
+            <h3>👑 Админ панель (6902824637)</h3>
+            <div class="admin-list" id="adminUsers"></div>
+            <button class="btn btn-danger" onclick="deleteAllPosts()">🗑️ Удалить все посты</button>
+            <button class="btn" onclick="toggleAdminMode()">👁️ Режим модерации</button>
+            <button class="btn back-btn" onclick="showMain()">← Главная</button>
+        </div>
+
         <!-- РУКОВОДСТВО ПО ЧАЯМ -->
         <div class="screen" id="teaGuide">
             <h3>📚 6 основных видов чая</h3>
             <div style="font-size: 14px; line-height: 1.5; max-height: 400px; overflow-y: auto;">
-                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0; cursor: default;" onclick="showTeaDetails('white')">🍃 Белый чай</div>
-                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0; cursor: default;" onclick="showTeaDetails('green')">🍵 Зелёный чай</div>
-                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0; cursor: default;" onclick="showTeaDetails('yellow')">🌾 Жёлтый чай</div>
-                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0; cursor: default;" onclick="showTeaDetails('oolong')">🌀 Улун</div>
-                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0; cursor: default;" onclick="showTeaDetails('red')">🔴 Красный чай</div>
-                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0; cursor: default;" onclick="showTeaDetails('black')">⚫ Чёрный чай</div>
-                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0; cursor: default;" onclick="showTeaDetails('puer')">🌲 Пуэр</div>
+                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0;" onclick="showTeaDetails('white')">🍃 Белый чай</div>
+                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0;" onclick="showTeaDetails('green')">🍵 Зелёный чай</div>
+                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0;" onclick="showTeaDetails('yellow')">🌾 Жёлтый чай</div>
+                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0;" onclick="showTeaDetails('oolong')">🌀 Улун</div>
+                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0;" onclick="showTeaDetails('red')">🔴 Красный чай</div>
+                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0;" onclick="showTeaDetails('black')">⚫ Чёрный чай</div>
+                <div class="tea-type-btn" style="font-size: 16px; margin: 15px 0;" onclick="showTeaDetails('puer')">🌲 Пуэр</div>
             </div>
             <button class="btn back-btn" onclick="showMain()">← Назад</button>
         </div>
 
-        <!-- ПРОФИЛЬ -->
-        <div class="screen" id="profile">
-            <h3>👤 Ваш профиль</h3>
-            <p><strong>@</strong><span id="username">tea_master</span></p>
-            <p><strong>Постов:</strong> <span id="postCount">0</span></p>
-            <button class="btn" onclick="showNewPost()">✨ Новый пост</button>
-            <button class="btn back-btn" onclick="showMain()">← Лента</button>
-        </div>
-
-        <!-- ДЕТАЛИ ЧАЯ -->
         <div class="screen" id="teaDetails" style="display: none;">
             <h3 id="teaTitle"></h3>
             <div id="teaInfo" style="font-size: 14px; line-height: 1.6; padding: 20px; background: #F0F8F0; border-radius: 15px;"></div>
-            <button class="btn back-btn" onclick="showTeaGuide()">← К типам чая</button>
+            <button class="btn back-btn" onclick="showTeaGuide()">← К типам</button>
         </div>
     </div>
 
@@ -130,41 +166,48 @@
         const tg = window.Telegram.WebApp;
         tg.ready(); tg.expand();
         
-        const user = tg.initDataUnsafe.user || { id: Math.floor(Math.random() * 1000000), username: 'tea_master_' + Math.floor(Math.random() * 1000) };
-        let posts = [];
-        let currentTeaType = '';
-
-        // 6 ОСНОВНЫХ ВИДОВ ЧАЯ (по artoftea.ru)
-        const teaTypes = {
-            white: {
-                title: "🍃 Белый чай",
-                info: "Белый чай — самый нежный из всех. Листья подвергаются минимальной обработке: только увяливание и сушка. Сохраняет максимум полезных веществ. Идеален для новичков. Заваривание: 75-85°C, 2-3 минуты, 3-5 проливов."
-            },
-            green: {
-                title: "🍵 Зелёный чай", 
-                info: "Зелёный чай фиксируется паром или обжаривается для остановки окисления. Сотни сортов: Лунцзин, Билочунь, Матча. Тонкий вкус требует правильной температуры. Заваривание: 70-85°C, 1-2 минуты, 2-4 пролива."
-            },
-            yellow: {
-                title: "🌾 Жёлтый чай",
-                info: "Редкий вид между зелёным и белым. Добавляется этап 'тюнь хуан' — завяливание в ткани. Мягкий вкус без горечи. Заваривание: 80-90°C, 2-3 минуты, 3 пролива."
-            },
-            oolong: {
-                title: "🌀 Улун",
-                info: "Частично ферментированный. От лёгкого Тиегуаньинь (10%) до темного Да Хун Пао (70%). Обработка: скручивание, ферментация, обжарка. Заваривание: 85-100°C, 20-60 сек, 6-10 проливов."
-            },
-            red: {
-                title: "🔴 Красный чай",
-                info: "В Китае называют 'хун ча'. Полная ферментация 90-100%. Классика: Цимэнь, Цюэшань. Мягкий сладкий вкус. Заваривание: 90-100°C, 2-3 минуты, 3-5 проливов."
-            },
-            black: {
-                title: "⚫ Чёрный чай",
-                info: "Полная ферментация + скручивание. Классика: Лапсанг Сушонг, Кашмир. Насыщенный вкус. Заваривание: 95-100°C, 3-5 минут, 2-3 пролива."
-            },
-            puer: {
-                title: "🌲 Пуэр",
-                info: "Уникальный постферментированный чай из Юньнани. Шэн (сырой) и Шу (зрелый). Улучшается с возрастом. Заваривание: Шэн 85-95°C, Шу 95-100°C, 10-30 сек, 10-20 проливов."
-            }
+        const user = tg.initDataUnsafe.user || { 
+            id: Math.floor(Math.random() * 1000000), 
+            username: 'tea_master_' + Math.floor(Math.random() * 1000) 
         };
+        
+        // 🔥 ТВОЙ TELEGRAM ID - ПОЛНЫЙ АДМИН ДОСТУП
+        const ADMIN_IDS = [6902824637];
+        
+        let posts = [];
+        let users = {};
+        let currentTeaType = '';
+        let currentProfileUser = null;
+        let isAdminMode = false;
+
+        // 6 видов чая
+        const teaTypes = {
+            white: {title: "🍃 Белый чай", info: "Белый чай — самый нежный. Минимальная обработка. 75-85°C, 2-3 мин, 3-5 проливов."},
+            green: {title: "🍵 Зелёный чай", info: "Фиксация паром. 70-85°C, 1-2 мин, 2-4 пролива."},
+            yellow: {title: "🌾 Жёлтый чай", info: "Редкий. 'Тюнь хуан'. 80-90°C, 2-3 мин, 3 пролива."},
+            oolong: {title: "🌀 Улун", info: "Частично ферментирован. 85-100°C, 20-60 сек, 6-10 проливов."},
+            red: {title: "🔴 Красный чай", info: "'Хун ча'. 90-100°C, 2-3 мин, 3-5 проливов."},
+            black: {title: "⚫ Чёрный чай", info: "Полная ферментация. 95-100°C, 3-5 мин, 2-3 пролива."},
+            puer: {title: "🌲 Пуэр", info: "Постферментация. Шэн 85-95°C, Шу 95-100°C, 10-20 проливов."}
+        };
+
+        // Инициализация
+        function initUser() {
+            if (!users[user.id]) {
+                users[user.id] = {
+                    id: user.id,
+                    username: user.username || 'tea_master',
+                    name: 'Чайный мастер',
+                    bio: 'Любитель качественного чая ☕',
+                    specialty: 'Пуэр',
+                    experience: 2,
+                    posts: 0,
+                    followers: 12,
+                    avatar: '👤'
+                };
+            }
+            loadData();
+        }
 
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
@@ -180,19 +223,22 @@
         function renderFeed() {
             const feed = document.getElementById('feed');
             feed.innerHTML = '';
-            
-            // Генерируем фейковые посты + пользовательские
-            const allPosts = [...getDemoPosts(), ...posts].slice(0, 10);
+            const allPosts = getDemoPosts().concat(posts).slice(0, 10);
             
             allPosts.forEach(post => {
                 const postEl = document.createElement('div');
                 postEl.className = 'post-card';
-                postEl.onclick = () => tg.showAlert(post.text + '\n\n' + post.brew);
+                postEl.onclick = (e) => {
+                    if (e.target.tagName !== 'BUTTON') showUserProfile(post.userId);
+                };
                 postEl.innerHTML = `
-                    <div class="post-header">${post.author}</div>
+                    <div class="post-header">
+                        ${post.author} 
+                        ${ADMIN_IDS.includes(user.id) ? `<button class="btn-danger" style="padding:5px 10px;font-size:12px;float:right;" onclick="event.stopPropagation();deletePost('${post.id}')">Удалить</button>` : ''}
+                    </div>
                     <div class="post-tea">${post.teaType}</div>
                     <div class="post-brew">${post.brew}</div>
-                    <div style="font-size: 14px; opacity: 0.8; margin-top: 10px;">${post.text}</div>
+                    <div style="font-size: 14px; opacity: 0.8;">${post.text}</div>
                     <div class="post-actions">
                         <button class="action-btn">❤️ ${post.likes || 0}</button>
                         <button class="action-btn">💬</button>
@@ -202,11 +248,67 @@
             });
         }
 
-        function getDemoPosts() {
-            return [
-                {author: '@tea_master_ivan', teaType: 'Шу Пуэр Дик Гуй', brew: '95°C × 15с × 12 проливов', text: '12 проливов чистого шоколада. Стрик 127 дней.', likes: 42},
-                {author: '@puer_lord', teaType: 'Шэн Мэнку 2012', brew: '90°C × 10с × 15 проливов', text: '300-летние деревья Булан. Камфора в послевкусии.', likes: 28}
-            ];
+        function showUserProfile(userId) {
+            currentProfileUser = userId;
+            const profileUser = users[userId] || users[user.id];
+            
+            document.getElementById('profileAvatar').textContent = profileUser.avatar;
+            document.getElementById('profileName').textContent = '@' + profileUser.username;
+            document.getElementById('profileBio').textContent = profileUser.bio;
+            document.getElementById('profilePosts').textContent = profileUser.posts;
+            document.getElementById('profileFollowers').textContent = profileUser.followers;
+            document.getElementById('editProfileBtn').style.display = userId == user.id ? 'block' : 'none';
+            
+            renderProfileFeed(userId);
+            showScreen('profileScreen');
+        }
+
+        function renderProfileFeed(userId) {
+            const feed = document.getElementById('profileFeed');
+            feed.innerHTML = '';
+            const userPosts = posts.filter(p => p.userId === userId);
+            
+            if (userPosts.length === 0) {
+                feed.innerHTML = '<div style="text-align:center; opacity:0.6;">Пока нет постов</div>';
+                return;
+            }
+            
+            userPosts.forEach(post => {
+                const postEl = document.createElement('div');
+                postEl.className = 'post-card';
+                postEl.innerHTML = `
+                    <div class="post-tea">${post.teaType}</div>
+                    <div class="post-brew">${post.brew}</div>
+                    <div style="font-size: 14px; opacity: 0.8;">${post.text}</div>
+                    <div class="post-actions">
+                        <button class="action-btn">❤️ ${post.likes || 0}</button>
+                    </div>
+                `;
+                feed.appendChild(postEl);
+            });
+        }
+
+        function showProfile() {
+            showUserProfile(user.id);
+        }
+
+        function showProfileSettings() {
+            const profileUser = users[user.id];
+            document.getElementById('profileNameInput').value = profileUser.name;
+            document.getElementById('profileBioInput').value = profileUser.bio;
+            document.getElementById('profileTeaSpecialty').value = profileUser.specialty;
+            document.getElementById('profileExperience').value = profileUser.experience;
+            showScreen('profileSettings');
+        }
+
+        function saveProfile() {
+            users[user.id].name = document.getElementById('profileNameInput').value || 'Чайный мастер';
+            users[user.id].bio = document.getElementById('profileBioInput').value || 'Любитель чая';
+            users[user.id].specialty = document.getElementById('profileTeaSpecialty').value || 'Пуэр';
+            users[user.id].experience = parseInt(document.getElementById('profileExperience').value) || 0;
+            saveData();
+            showUserProfile(user.id);
+            tg.showAlert('✅ Профиль сохранён!');
         }
 
         function showNewPost() {
@@ -222,51 +324,112 @@
         }
 
         function publishPost() {
+            if (!currentTeaType) return tg.showAlert('Выберите тип чая!');
+            
             const text = document.getElementById('postText').value || 'Медитация с чаем ☕';
             const brew = document.getElementById('brewInfo').value || 'заварили по правилам';
             
-            if (!currentTeaType) {
-                tg.showAlert('Выберите тип чая!');
-                return;
-            }
-
-            posts.unshift({
-                author: '@' + user.username,
+            const post = {
+                id: Date.now(),
+                userId: user.id,
+                author: '@' + users[user.id].username,
                 teaType: teaTypes[currentTeaType].title,
                 brew,
                 text,
                 likes: 0,
                 timestamp: new Date().toLocaleString()
-            });
-
+            };
+            
+            posts.unshift(post);
+            users[user.id].posts++;
+            
             document.getElementById('postText').value = '';
             document.getElementById('brewInfo').value = '';
             currentTeaType = '';
             document.querySelectorAll('.tea-type-btn').forEach(btn => btn.classList.remove('active'));
             
+            saveData();
             showMain();
             tg.HapticFeedback.notificationOccurred('success');
-            tg.showAlert('✅ Пост опубликован в ленту!');
+            tg.showAlert('✅ Пост опубликован!');
         }
 
-        function showTeaGuide() {
-            showScreen('teaGuide');
+        function showAdmin() {
+            showScreen('adminPanel');
+            renderAdminPanel();
         }
 
+        function renderAdminPanel() {
+            const adminList = document.getElementById('adminUsers');
+            adminList.innerHTML = '';
+            Object.values(users).forEach(userData => {
+                const userEl = document.createElement('div');
+                userEl.className = 'admin-item';
+                userEl.innerHTML = `
+                    <div><strong>@${userData.username}</strong> (${userData.posts} постов)</div>
+                    <button class="btn btn-danger" style="padding:8px 12px;font-size:12px;" onclick="banUser('${userData.id}')">Бан</button>
+                `;
+                adminList.appendChild(userEl);
+            });
+        }
+
+        function deleteAllPosts() {
+            if (confirm('Удалить ВСЕ посты?')) {
+                posts = [];
+                saveData();
+                renderFeed();
+                tg.showAlert('🗑️ Все посты удалены');
+            }
+        }
+
+        function deletePost(postId) {
+            posts = posts.filter(p => p.id != postId);
+            saveData();
+            renderFeed();
+            tg.showAlert('✅ Пост удалён');
+        }
+
+        function banUser(userId) {
+            if (userId == user.id) return tg.showAlert('Нельзя забанить себя!');
+            delete users[userId];
+            posts = posts.filter(p => p.userId != userId);
+            saveData();
+            renderAdminPanel();
+            tg.showAlert('👋 Пользователь забанен');
+        }
+
+        function getDemoPosts() {
+            return [
+                {id: 1, userId: 999, author: '@tea_master_ivan', teaType: 'Шу Пуэр Дик Гуй', brew: '95°C × 15с × 12 проливов', text: '12 проливов шоколада!', likes: 42},
+                {id: 2, userId: 888, author: '@puer_lord', teaType: 'Шэн Мэнку 2012', brew: '90°C × 10с × 15 проливов', text: '300-летние деревья!', likes: 28}
+            ];
+        }
+
+        function saveData() {
+            localStorage.setItem('chaClubPosts', JSON.stringify(posts));
+            localStorage.setItem('chaClubUsers', JSON.stringify(users));
+        }
+
+        function loadData() {
+            const savedPosts = localStorage.getItem('chaClubPosts');
+            const savedUsers = localStorage.getItem('chaClubUsers');
+            if (savedPosts) posts = JSON.parse(savedPosts);
+            if (savedUsers) users = JSON.parse(savedUsers);
+        }
+
+        function showTeaGuide() { showScreen('teaGuide'); }
         function showTeaDetails(type) {
             document.getElementById('teaTitle').textContent = teaTypes[type].title;
-            document.getElementById('teaInfo').innerHTML = teaTypes[type].info;
+            document.getElementById('teaInfo').textContent = teaTypes[type].info;
             showScreen('teaDetails');
         }
 
-        function showProfile() {
-            showScreen('profile');
-            document.getElementById('username').textContent = user.username;
-            document.getElementById('postCount').textContent = posts.length;
+        function showProfileScreen() {
+            showUserProfile(currentProfileUser || user.id);
         }
 
         // Инициализация
-        document.getElementById('username').textContent = user.username;
+        initUser();
         showMain();
         tg.CloudStorage.setCloudStorageAutoSync(true);
     </script>
