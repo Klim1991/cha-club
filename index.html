@@ -46,6 +46,52 @@
             50% { transform: scale(1.15) rotate(180deg); opacity: 0.7; }
         }
 
+        /* Вихрь чайных листьев */
+        .tea-leaves {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .tea-leaf {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.6;
+            animation: leafSwirl 8s linear infinite;
+        }
+
+        .tea-leaf:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; animation-duration: 10s; }
+        .tea-leaf:nth-child(2) { top: 30%; left: 80%; animation-delay: 1s; animation-duration: 12s; font-size: 20px; }
+        .tea-leaf:nth-child(3) { top: 60%; left: 20%; animation-delay: 2s; animation-duration: 9s; font-size: 28px; }
+        .tea-leaf:nth-child(4) { top: 70%; left: 70%; animation-delay: 3s; animation-duration: 11s; }
+        .tea-leaf:nth-child(5) { top: 10%; left: 60%; animation-delay: 4s; animation-duration: 13s; font-size: 22px; }
+        .tea-leaf:nth-child(6) { top: 50%; left: 5%; animation-delay: 5s; animation-duration: 10s; }
+
+        @keyframes leafSwirl {
+            0% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+                opacity: 0.6;
+            }
+            25% {
+                transform: translate(50px, -30px) rotate(90deg) scale(1.1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translate(80px, 20px) rotate(180deg) scale(0.9);
+                opacity: 0.4;
+            }
+            75% {
+                transform: translate(20px, 50px) rotate(270deg) scale(1.2);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg) scale(1);
+                opacity: 0.6;
+            }
+        }
+
         .container {
             width: 100vw;
             height: 100vh;
@@ -81,19 +127,13 @@
             font-family: 'Playfair Display', serif;
             font-size: 90px;
             font-weight: 700;
-            opacity: 0.12;
-            animation: teaGlow 4s ease-in-out infinite alternate;
+            opacity: 0.08;
         }
 
         @keyframes teaGradient {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
-        }
-
-        @keyframes teaGlow {
-            from { text-shadow: 0 0 15px rgba(139,195,74,0.8), 0 0 30px rgba(255,235,59,0.6); }
-            to { text-shadow: 0 0 25px rgba(139,195,74,0.9), 0 0 45px rgba(255,235,59,0.7); }
         }
 
         .tea-logo {
@@ -106,27 +146,8 @@
             background-clip: text;
             margin-bottom: 25px;
             text-shadow: 0 0 30px rgba(139,195,74,0.4);
-            animation: teaPulse 3s ease-in-out infinite;
             position: relative;
-        }
-
-        .tea-logo::after {
-            content: '🍵';
-            position: absolute;
-            font-size: 30px;
-            top: -10px;
-            right: -40px;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes teaPulse {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.06) rotate(1deg); }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+            z-index: 2;
         }
 
         .nav-grid {
@@ -135,6 +156,8 @@
             gap: 28px;
             padding: 45px 20px;
             width: 100%;
+            position: relative;
+            z-index: 2;
         }
 
         .tea-btn {
@@ -431,8 +454,16 @@
 </head>
 <body>
     <div class="container" id="app">
-        <!-- Главный экран -->
+        <!-- Главный экран с вихрем листьев -->
         <div id="welcomeScreen" class="welcome-screen">
+            <div class="tea-leaves">
+                <div class="tea-leaf">🍃</div>
+                <div class="tea-leaf">🍵</div>
+                <div class="tea-leaf">🍃</div>
+                <div class="tea-leaf">🍵</div>
+                <div class="tea-leaf">🍃</div>
+                <div class="tea-leaf">🍵</div>
+            </div>
             <div class="tea-logo">CHUCLUB</div>
             <p style="font-size: 22px; margin-bottom: 55px; opacity: 0.95; font-weight: 300; max-width: 280px;">Китайский чай • Рок атмосфера • Чайный клуб</p>
             <div class="nav-grid">
@@ -466,39 +497,43 @@
                 <div class="tea-card">
                     <h3 style="color: #8bc34a; margin-bottom: 18px; font-family: 'Playfair Display', serif; font-size: 26px;">🌿 Утренний ритуал</h3>
                     <p style="opacity: 0.92; margin-bottom: 22px; font-size: 16px;">Chinmaya Dunster - Scent Meditation (6:52)</p>
-                    <audio controls style="width: 100%; margin-top: 20px;" preload="metadata" autoplay>
+                    <audio controls id="audio1" preload="metadata">
                         <source src="https://ramayoga.ru/wp-content/uploads/2020/03/Chinmaya_Dunster_-_Scent_Meditation_-_Klub_yogi_OUM_RU_oum_ru.mp3" type="audio/mpeg">
                         Ваш браузер не поддерживает аудио
                     </audio>
+                    <button onclick="playAudio('audio1')" style="margin-top: 15px; padding: 12px 25px; background: #8bc34a; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: 600;">▶️ Воспроизвести</button>
                 </div>
                 <div class="tea-card">
                     <h3 style="color: #ffeb3b; margin-bottom: 18px; font-family: 'Playfair Display', serif; font-size: 26px;">🍃 Вечерний покой</h3>
                     <p style="opacity: 0.92; margin-bottom: 22px; font-size: 16px;">Chinmaya Dunster - Touch Meditation (7:04)</p>
-                    <audio controls style="width: 100%; margin-top: 20px;" preload="metadata">
+                    <audio controls id="audio2" preload="metadata">
                         <source src="https://ramayoga.ru/wp-content/uploads/2020/03/Chinmaya_Dunster_-_Touch_Meditation_-_Klub_yogi_OUM_RU_oum_ru.mp3" type="audio/mpeg">
                         Ваш браузер не поддерживает аудио
                     </audio>
+                    <button onclick="playAudio('audio2')" style="margin-top: 15px; padding: 12px 25px; background: #ffeb3b; color: #3d2b1f; border: none; border-radius: 25px; cursor: pointer; font-weight: 600;">▶️ Воспроизвести</button>
                 </div>
                 <div class="tea-card">
                     <h3 style="color: #4caf50; margin-bottom: 18px; font-family: 'Playfair Display', serif; font-size: 26px;">💚 Гармония сердца</h3>
                     <p style="opacity: 0.92; margin-bottom: 22px; font-size: 16px;">Vamadeva - Наполненность (4:11)</p>
-                    <audio controls style="width: 100%; margin-top: 20px;" preload="metadata">
+                    <audio controls id="audio3" preload="metadata">
                         <source src="https://ramayoga.ru/wp-content/uploads/2020/03/Vamadeva_-_Napohnennost_oum_ru.mp3" type="audio/mpeg">
                         Ваш браузер не поддерживает аудио
                     </audio>
+                    <button onclick="playAudio('audio3')" style="margin-top: 15px; padding: 12px 25px; background: #4caf50; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: 600;">▶️ Воспроизвести</button>
                 </div>
                 <div class="tea-card">
                     <h3 style="color: #ffc107; margin-bottom: 18px; font-family: 'Playfair Display', serif; font-size: 26px;">🕉️ Поющие чаши</h3>
                     <p style="opacity: 0.92; margin-bottom: 22px; font-size: 16px;">Тибетские поющие чаши - Равновесие (6:54)</p>
-                    <audio controls style="width: 100%; margin-top: 20px;" preload="metadata">
+                    <audio controls id="audio4" preload="metadata">
                         <source src="https://ramayoga.ru/wp-content/uploads/2020/03/Tibetskie_poyuschie_chashi_Ravnovesie_-_variant_8_-_Klub_yogi_Oum_ru_oum_ru.mp3" type="audio/mpeg">
                         Ваш браузер не поддерживает аудио
                     </audio>
+                    <button onclick="playAudio('audio4')" style="margin-top: 15px; padding: 12px 25px; background: #ffc107; color: #3d2b1f; border: none; border-radius: 25px; cursor: pointer; font-weight: 600;">▶️ Воспроизвести</button>
                 </div>
             </div>
         </div>
 
-        <!-- Заметки -->
+        <!-- Остальные секции без изменений -->
         <div id="notes" class="section">
             <div class="section-header">
                 <div class="section-icon">📝</div>
@@ -511,7 +546,6 @@
             <button class="tea-btn-main" onclick="addNote()">🍵 Добавить заметку</button>
         </div>
 
-        <!-- Чат -->
         <div id="feed" class="section">
             <div class="section-header">
                 <div class="section-icon">💬</div>
@@ -524,13 +558,11 @@
             <button class="tea-btn-main" onclick="addPost()">🍵 Опубликовать</button>
         </div>
 
-        <!-- Профиль -->
         <div id="profile" class="section">
             <div class="section-header">
                 <div class="section-icon">👤</div>
                 <h2 class="section-title">Профиль</h2>
             </div>
-            
             <div class="profile-grid" style="display: grid; grid-template-columns: 110px 1fr; gap: 35px; align-items: center; margin-bottom: 45px; background: rgba(255,255,255,0.8); padding: 35px; border-radius: 35px; border: 3px solid rgba(139,195,74,0.3); box-shadow: 0 20px 60px rgba(0,0,0,0.1);">
                 <div class="profile-avatar" id="profileAvatar" style="width: 110px; height: 110px; border-radius: 28px; background: linear-gradient(145deg, #8bc34a, #a4d484); display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; color: #f5f5f5;">
                     <span id="avatarText">К</span>
@@ -540,7 +572,6 @@
                     <p id="profileBio" style="opacity: 0.92; font-size: 18px;">Любитель китайского чая</p>
                 </div>
             </div>
-
             <div class="input-group">
                 <label>Имя</label>
                 <input type="text" id="editName">
@@ -580,20 +611,24 @@
             {name: 'Пуэр', description: 'Глубокий землистый вкус. Постферментация придаёт уникальные нотки.', brewing: '95-100°C • 10-30 сек • Чайник 150 мл'}
         ];
 
+        // Функция для воспроизведения аудио
+        function playAudio(audioId) {
+            const audio = document.getElementById(audioId);
+            if (audio) {
+                audio.play().then(() => {
+                    tg.HapticFeedback.notificationOccurred('success');
+                }).catch(e => {
+                    tg.showAlert('Нажмите на плеер для воспроизведения');
+                });
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             updateProfileDisplay();
             renderTeaList();
             renderPosts();
             renderNotes();
             tg.MainButton.setText('🍵 Главная').onClick(showWelcome).show();
-            
-            // Автовоспроизведение первой медитации (Telegram WebApp позволяет)
-            setTimeout(() => {
-                const firstAudio = document.querySelector('#meditations audio');
-                if (firstAudio && tg.platform === 'android') {
-                    firstAudio.play().catch(() => {});
-                }
-            }, 1000);
         });
 
         function showWelcome() {
@@ -659,7 +694,6 @@
         function addPost() {
             const text = document.getElementById('newPost').value.trim();
             if (!text) return;
-            
             posts.unshift({
                 id: Date.now(),
                 userId: currentUser.id,
@@ -669,7 +703,6 @@
                 likes: 0,
                 liked: false
             });
-            
             document.getElementById('newPost').value = '';
             renderPosts();
             tg.HapticFeedback.notificationOccurred('success');
@@ -695,13 +728,11 @@
         function addNote() {
             const text = document.getElementById('newNote').value.trim();
             if (!text) return;
-            
             notes.unshift({
                 id: Date.now(),
                 text: text,
                 date: new Date().toLocaleDateString('ru-RU')
             });
-            
             document.getElementById('newNote').value = '';
             renderNotes();
             tg.HapticFeedback.notificationOccurred('success');
