@@ -8,124 +8,164 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: linear-gradient(135deg, #f5f5f3, #e8f5e8);
-  color: #2d5016;
-  min-height: 100vh;
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:linear-gradient(135deg,#f3f3ef,#e6f4ea);
+  color:#2d5016;
 }
-.container {
-  max-width: 420px;
-  margin: 0 auto;
-  padding: 16px;
+.container{max-width:420px;margin:0 auto;padding:16px}
+.screen{
+  display:none;background:#fff;border-radius:20px;padding:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,.15)
 }
-.screen {
-  display: none;
-  background: white;
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 12px 36px rgba(0,0,0,.15);
+h1{text-align:center;margin-bottom:10px}
+.btn{
+  width:100%;padding:14px;margin-top:10px;border-radius:16px;
+  border:none;font-size:15px;font-weight:700;cursor:pointer;
+  background:linear-gradient(135deg,#2e8b57,#3cb371);color:#fff
 }
-h1 { text-align: center; margin-bottom: 16px; }
-
-.btn {
-  width: 100%;
-  padding: 16px;
-  margin-top: 12px;
-  border-radius: 16px;
-  border: none;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  background: linear-gradient(135deg, #228b22, #32cd32);
-  color: white;
+.btn.secondary{
+  background:linear-gradient(135deg,#d2b48c,#f4a460)
 }
-.btn.secondary {
-  background: linear-gradient(135deg, #daa520, #f4a460);
+.post,.card{
+  background:#f8faf8;border-radius:14px;padding:12px;margin-top:10px;
+  box-shadow:0 4px 14px rgba(0,0,0,.08)
+}
+.author{font-weight:700;cursor:pointer}
+.admin{color:#b22222;font-weight:700}
+input,textarea{
+  width:100%;padding:10px;border-radius:12px;
+  border:1px solid #ccc;margin-top:8px
 }
 </style>
 </head>
 
 <body>
-
 <div class="container">
 
 <div id="welcomeScreen" class="screen">
   <h1>🍵 ChaClub</h1>
-  <p style="text-align:center;margin-bottom:20px;">
-    Добро пожаловать, <strong id="welcomeUser">@user</strong>
+  <p style="text-align:center">
+    Добро пожаловать,<br><strong id="welcomeUser">@user</strong>
   </p>
-  <button id="enterBtn" class="btn">🚀 Войти в ChaClub</button>
+  <button class="btn" onclick="show('mainScreen')">🚀 Войти</button>
 </div>
 
 <div id="mainScreen" class="screen">
   <h1>📜 Лента</h1>
-  <button id="profileBtn" class="btn secondary">👤 Профиль</button>
+  <div id="feed"></div>
+  <button class="btn" onclick="newPost()">✨ Новый пост</button>
+  <button class="btn secondary" onclick="show('guideScreen')">🍃 Чайный гайд</button>
+  <button class="btn secondary" onclick="show('profileScreen')">👤 Профиль</button>
 </div>
 
 <div id="profileScreen" class="screen">
   <h1>👤 Профиль</h1>
   <p id="profileName"></p>
-  <button id="backBtn" class="btn secondary">← Назад</button>
+  <p id="profileRole"></p>
+  <button class="btn secondary" onclick="show('mainScreen')">← Назад</button>
+</div>
+
+<div id="guideScreen" class="screen">
+  <h1>🍃 Чайный гайд</h1>
+  <div id="guideList"></div>
+  <button id="addGuideBtn" class="btn">➕ Добавить статью</button>
+  <button class="btn secondary" onclick="show('mainScreen')">← Назад</button>
+</div>
+
+<div id="addGuideScreen" class="screen">
+  <h1>➕ Новая статья</h1>
+  <input id="guideTitle" placeholder="Заголовок">
+  <textarea id="guideText" placeholder="Текст статьи"></textarea>
+  <button class="btn" onclick="saveGuide()">Сохранить</button>
+  <button class="btn secondary" onclick="show('guideScreen')">← Назад</button>
 </div>
 
 </div>
 
 <script>
-/* ===== TELEGRAM ===== */
-const tg = window.Telegram?.WebApp || null;
-if (tg) {
-  tg.ready();
-  tg.expand();
-}
+const tg=window.Telegram?.WebApp||null;
+if(tg){tg.ready();tg.expand()}
 
-/* ===== STATE ===== */
-const app = {
-  user: tg?.initDataUnsafe?.user || {
-    username: "guest_" + Math.floor(Math.random() * 1000)
-  }
+const ADMINS=["your_username_here"]; // ← ВПИШИ СВОЙ USERNAME
+
+const storage={
+  save:(k,v)=>localStorage.setItem(k,JSON.stringify(v)),
+  load:(k)=>JSON.parse(localStorage.getItem(k)||"null")
 };
 
-/* ===== INIT ===== */
-window.addEventListener("DOMContentLoaded", init);
+const app={
+  user:tg?.initDataUnsafe?.user||{username:"guest_"+Math.floor(Math.random()*1000)},
+  posts:storage.load("posts")||[],
+  guides:storage.load("guides")||[],
+  role:"user"
+};
 
-function init() {
-  bindUI();
-  updateWelcome();
-  showScreen("welcomeScreen");
+app.role = ADMINS.includes(app.user.username) ? "admin" : "user";
+
+welcomeUser.textContent="@"+app.user.username;
+
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.style.display="none");
+  document.getElementById(id).style.display="block";
 }
 
-/* ===== UI ===== */
-function bindUI() {
-  document.getElementById("enterBtn").onclick = () => {
-    showScreen("mainScreen");
-  };
-
-  document.getElementById("profileBtn").onclick = () => {
-    document.getElementById("profileName").textContent =
-      "@" + app.user.username;
-    showScreen("profileScreen");
-  };
-
-  document.getElementById("backBtn").onclick = () => {
-    showScreen("mainScreen");
-  };
+function renderFeed(){
+  feed.innerHTML=app.posts.map((p,i)=>`
+    <div class="post">
+      <div class="author">@${p.author}</div>
+      <div>${p.text}</div>
+      ${app.role==="admin"?`<button onclick="delPost(${i})">🗑</button>`:""}
+    </div>
+  `).join("")||"<p>Пусто ☕</p>";
 }
 
-function showScreen(id) {
-  document.querySelectorAll(".screen").forEach(s => {
-    s.style.display = "none";
-  });
-  document.getElementById(id).style.display = "block";
+function newPost(){
+  const t=prompt("Текст поста");
+  if(!t)return;
+  app.posts.unshift({author:app.user.username,text:t});
+  storage.save("posts",app.posts);
+  renderFeed();
 }
 
-/* ===== LOGIC ===== */
-function updateWelcome() {
-  document.getElementById("welcomeUser").textContent =
-    "@" + app.user.username;
+function delPost(i){
+  if(!confirm("Удалить пост?"))return;
+  app.posts.splice(i,1);
+  storage.save("posts",app.posts);
+  renderFeed();
 }
+
+function renderProfile(){
+  profileName.textContent="@"+app.user.username;
+  profileRole.textContent="Роль: "+app.role;
+}
+
+function renderGuide(){
+  guideList.innerHTML=app.guides.map(g=>`
+    <div class="card">
+      <strong>${g.title}</strong>
+      <p>${g.text}</p>
+    </div>
+  `).join("")||"<p>Пока нет статей 🍵</p>";
+  addGuideBtn.style.display = app.role==="admin"?"block":"none";
+}
+
+function saveGuide(){
+  const t=guideTitle.value.trim();
+  const c=guideText.value.trim();
+  if(!t||!c)return alert("Заполни всё");
+  app.guides.unshift({title:t,text:c});
+  storage.save("guides",app.guides);
+  guideTitle.value="";guideText.value="";
+  renderGuide();
+  show("guideScreen");
+}
+
+show("welcomeScreen");
+renderFeed();
+renderProfile();
+renderGuide();
 </script>
-
 </body>
 </html>
