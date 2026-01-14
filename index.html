@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>🍵 Чайный Клуб - ChuClub</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -20,10 +20,9 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f8f4e8 0%, #e8f5e8 30%, #fffaf0 70%, #f0f8f0 100%);
+            background: linear-gradient(135deg, #1e2a44 0%, #2d3e50 30%, #f8f4e8 70%, #e8f5e8 100%);
             min-height: 100vh;
-            color: #3a4a40;
-            position: relative;
+            color: #2d4030;
         }
 
         body::before {
@@ -33,11 +32,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(120,200,150,0.1) 0%, transparent 40%),
-                radial-gradient(circle at 70% 70%, rgba(200,150,100,0.08) 0%, transparent 40%);
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(107,142,74,0.15) 0%, transparent 40%),
+                radial-gradient(circle at 70% 70%, rgba(200,150,100,0.1) 0%, transparent 40%);
             z-index: -1;
-            pointer-events: none;
         }
 
         .container {
@@ -45,11 +43,10 @@
             height: 100vh;
             max-width: 100%;
             margin: 0;
-            background: rgba(255,255,255,0.98);
+            background: rgba(255,255,255,0.97);
             backdrop-filter: blur(20px);
             position: relative;
             overflow: hidden;
-            box-shadow: inset 0 0 50px rgba(255,255,255,0.5);
         }
 
         .welcome-screen {
@@ -60,71 +57,60 @@
             align-items: center;
             text-align: center;
             padding: 40px 25px;
-            background: linear-gradient(135deg, rgba(248,244,232,0.9) 0%, rgba(232,245,232,0.9) 100%);
-            position: relative;
-        }
-
-        .welcome-screen::before {
-            content: '🍵';
-            position: absolute;
-            font-size: 200px;
-            top: -50px;
-            right: -50px;
-            opacity: 0.1;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+            background: linear-gradient(135deg, rgba(30,46,68,0.1) 0%, rgba(248,244,232,0.9) 100%);
         }
 
         .tea-logo {
             font-family: 'Playfair Display', serif;
-            font-size: 38px;
+            font-size: 40px;
             font-weight: 700;
-            background: linear-gradient(135deg, #6b8e4a, #9bb85c, #a8c9a8);
+            background: linear-gradient(135deg, #4a6f3a, #7ba05c, #9bb85c);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 20px;
-            text-shadow: 0 2px 10px rgba(107,142,74,0.3);
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(74,111,58,0.3);
+            animation: logoGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes logoGlow {
+            from { filter: drop-shadow(0 0 5px rgba(74,111,58,0.3)); }
+            to { filter: drop-shadow(0 0 20px rgba(74,111,58,0.5)); }
         }
 
         .welcome-subtitle {
-            font-size: 18px;
-            color: #5a6f4e;
-            margin-bottom: 40px;
-            line-height: 1.5;
-            max-width: 300px;
+            font-size: 17px;
+            color: #4a5d40;
+            margin-bottom: 45px;
+            line-height: 1.6;
+            max-width: 320px;
         }
 
         .nav-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            gap: 22px;
             padding: 0 20px;
             width: 100%;
             flex: 1;
-            max-width: 360px;
+            max-width: 380px;
         }
 
         .tea-btn {
-            background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(248,255,248,0.9));
-            border: 2px solid rgba(107,142,74,0.3);
-            padding: 25px 20px;
-            border-radius: 25px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(248,255,248,0.9));
+            border: 2px solid rgba(74,111,58,0.25);
+            padding: 28px 20px;
+            border-radius: 28px;
             font-size: 16px;
             font-weight: 500;
-            color: #3a4a40;
+            color: #2d4030;
             cursor: pointer;
-            transition: all 0.4s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             backdrop-filter: blur(15px);
-            box-shadow: 0 10px 30px rgba(107,142,74,0.15);
+            box-shadow: 0 12px 35px rgba(74,111,58,0.18);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             position: relative;
             overflow: hidden;
         }
@@ -133,27 +119,22 @@
             content: '';
             position: absolute;
             top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(107,142,74,0.1), rgba(154,184,92,0.1));
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s;
         }
 
         .tea-btn:hover::before {
-            opacity: 1;
+            left: 100%;
         }
 
         .tea-btn:hover {
-            transform: translateY(-8px);
-            border-color: #6b8e4a;
-            box-shadow: 0 20px 40px rgba(107,142,74,0.25);
+            transform: translateY(-10px) scale(1.02);
+            border-color: #4a6f3a;
+            box-shadow: 0 25px 50px rgba(74,111,58,0.3);
             color: #2d4030;
-        }
-
-        .tea-btn-icon {
-            font-size: 28px;
         }
 
         .section {
@@ -161,12 +142,12 @@
             height: 100vh;
             overflow-y: auto;
             padding: 25px;
-            animation: fadeInTea 0.5s ease-out;
+            animation: slideInTea 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        @keyframes fadeInTea {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes slideInTea {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .section.active {
@@ -177,229 +158,183 @@
             position: fixed;
             top: 20px;
             left: 20px;
-            background: rgba(255,255,255,0.9);
-            border: 2px solid rgba(107,142,74,0.3);
+            background: rgba(255,255,255,0.92);
+            border: 2px solid rgba(74,111,58,0.3);
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            color: #3a4a40;
+            width: 52px;
+            height: 52px;
+            color: #2d4030;
             font-size: 20px;
             font-weight: 500;
             cursor: pointer;
             z-index: 1000;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
         .back-btn:hover {
             background: #f8f4e8;
-            border-color: #6b8e4a;
+            border-color: #4a6f3a;
             transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(74,111,58,0.3);
         }
 
         .section-header {
             display: flex;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid rgba(107,142,74,0.2);
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 3px solid rgba(74,111,58,0.25);
             position: sticky;
             top: 0;
             background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             z-index: 10;
+            border-radius: 20px;
         }
 
         .section-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 15px;
-            background: linear-gradient(135deg, #6b8e4a, #9bb85c);
+            width: 55px;
+            height: 55px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #4a6f3a, #7ba05c);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            margin-right: 18px;
+            font-size: 26px;
+            margin-right: 20px;
             color: white;
-            box-shadow: 0 8px 25px rgba(107,142,74,0.3);
+            box-shadow: 0 12px 35px rgba(74,111,58,0.4);
         }
 
         .section-title {
             font-family: 'Playfair Display', serif;
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 600;
-            color: #3a4a40;
+            color: #2d4030;
         }
 
         .tea-card {
-            background: rgba(255,255,255,0.85);
-            border-radius: 25px;
-            padding: 30px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(107,142,74,0.15);
-            backdrop-filter: blur(15px);
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            background: rgba(255,255,255,0.9);
+            border-radius: 28px;
+            padding: 35px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(74,111,58,0.18);
+            backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.1);
         }
 
         .tea-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(107,142,74,0.15);
-            border-color: rgba(107,142,74,0.3);
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(74,111,58,0.2);
+            border-color: rgba(74,111,58,0.3);
         }
 
         .tea-name {
             font-family: 'Playfair Display', serif;
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 600;
-            color: #3a4a40;
-            margin-bottom: 15px;
-        }
-
-        .tea-brew {
-            background: linear-gradient(135deg, rgba(107,142,74,0.05), rgba(154,184,92,0.05));
-            padding: 20px;
-            border-radius: 20px;
-            border-left: 5px solid #6b8e4a;
-            margin-top: 20px;
+            color: #2d4030;
+            margin-bottom: 18px;
         }
 
         .profile-grid {
             display: grid;
-            grid-template-columns: 90px 1fr;
-            gap: 25px;
+            grid-template-columns: 95px 1fr;
+            gap: 30px;
             align-items: center;
-            margin-bottom: 35px;
-            background: rgba(255,255,255,0.8);
-            padding: 30px;
-            border-radius: 25px;
-            border: 1px solid rgba(107,142,74,0.15);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+            background: rgba(255,255,255,0.9);
+            padding: 35px;
+            border-radius: 28px;
+            border: 1px solid rgba(74,111,58,0.15);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.1);
         }
 
         .profile-avatar {
-            width: 90px;
-            height: 90px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, #9bb85c, #a8c9a8);
+            width: 95px;
+            height: 95px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #7ba05c, #9bb85c);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            font-size: 35px;
             font-weight: 600;
             color: white;
-            position: relative;
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(155,184,92,0.3);
+            box-shadow: 0 15px 40px rgba(123,160,92,0.4);
+            transition: all 0.3s ease;
+            position: relative;
         }
 
         .profile-avatar:hover {
             transform: scale(1.05);
-        }
-
-        .input-group {
-            margin-bottom: 25px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 500;
-            color: #4a5d40;
-        }
-
-        .input-group input, .input-group textarea {
-            width: 100%;
-            padding: 18px 20px;
-            border: 2px solid rgba(107,142,74,0.2);
-            border-radius: 20px;
-            font-size: 16px;
-            background: rgba(255,255,255,0.9);
-            color: #3a4a40;
-            transition: all 0.3s ease;
-            font-family: inherit;
-        }
-
-        .input-group input:focus, .input-group textarea:focus {
-            outline: none;
-            border-color: #6b8e4a;
-            box-shadow: 0 0 0 4px rgba(107,142,74,0.1);
+            box-shadow: 0 20px 50px rgba(123,160,92,0.5);
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #6b8e4a, #9bb85c);
+            background: linear-gradient(135deg, #4a6f3a, #7ba05c);
             color: white;
             border: none;
-            padding: 20px;
-            border-radius: 25px;
+            padding: 22px;
+            border-radius: 28px;
             font-size: 17px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             width: 100%;
-            box-shadow: 0 10px 30px rgba(107,142,74,0.3);
+            box-shadow: 0 15px 45px rgba(74,111,58,0.35);
             font-family: inherit;
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(107,142,74,0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 25px 60px rgba(74,111,58,0.45);
         }
 
         .post {
-            background: rgba(255,255,255,0.9);
-            border-radius: 25px;
-            padding: 25px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(107,142,74,0.1);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            background: rgba(255,255,255,0.92);
+            border-radius: 28px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(74,111,58,0.12);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
         }
 
         .post:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(107,142,74,0.15);
-        }
-
-        .post-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 15px;
-            background: linear-gradient(135deg, #6b8e4a, #9bb85c);
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 18px;
-            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 25px 55px rgba(74,111,58,0.18);
         }
 
         .action-btn {
-            background: rgba(107,142,74,0.1);
-            border: 1px solid rgba(107,142,74,0.3);
-            padding: 12px 18px;
-            border-radius: 20px;
+            background: rgba(74,111,58,0.12);
+            border: 1px solid rgba(74,111,58,0.3);
+            padding: 14px 20px;
+            border-radius: 22px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             font-size: 15px;
             font-weight: 500;
-            color: #3a4a40;
+            color: #2d4030;
             transition: all 0.3s ease;
             flex: 1;
         }
 
         .action-btn:hover {
-            background: rgba(107,142,74,0.2);
-            transform: translateY(-1px);
+            background: rgba(74,111,58,0.22);
+            transform: translateY(-2px);
         }
 
         .action-btn.active {
-            background: rgba(107,142,74,0.3);
-            border-color: #6b8e4a;
+            background: linear-gradient(135deg, #4a6f3a, #7ba05c);
+            color: white;
+            border-color: #4a6f3a;
         }
 
         .modal {
@@ -409,9 +344,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(58,74,64,0.8);
+            background: rgba(45,64,48,0.85);
             z-index: 2000;
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
         }
 
         .modal-content {
@@ -420,13 +355,13 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(255,255,255,0.98);
-            padding: 35px;
-            border-radius: 30px;
-            border: 1px solid rgba(107,142,74,0.2);
+            padding: 40px;
+            border-radius: 32px;
+            border: 1px solid rgba(74,111,58,0.25);
             max-width: 95%;
             max-height: 85%;
             overflow-y: auto;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.25);
         }
     </style>
 </head>
@@ -434,28 +369,28 @@
     <div class="container" id="app">
         <!-- Приветственный экран -->
         <div id="welcomeScreen" class="welcome-screen">
-            <div class="tea-logo">Чайный Клуб</div>
-            <p class="welcome-subtitle">Добро пожаловать в уютный мир китайских чаев и чайных традиций</p>
+            <div class="tea-logo">🍵 Чайный Клуб</div>
+            <p class="welcome-subtitle">Добро пожаловать в мир изысканных китайских чаев и чайных традиций</p>
             <div class="nav-grid">
                 <button class="tea-btn" onclick="showSection('teas')">
-                    <div class="tea-btn-icon">🍵</div>
-                    Виды чая
+                    <div style="font-size: 32px;">🍵</div>
+                    <div style="font-weight: 600;">Виды чая</div>
                 </button>
                 <button class="tea-btn" onclick="showSection('meditations')">
-                    <div class="tea-btn-icon">🧘</div>
-                    Медитации
+                    <div style="font-size: 32px;">🧘</div>
+                    <div style="font-weight: 600;">Медитации</div>
                 </button>
                 <button class="tea-btn" onclick="showSection('feed')">
-                    <div class="tea-btn-icon">💬</div>
-                    Общий чат
+                    <div style="font-size: 32px;">💬</div>
+                    <div style="font-weight: 600;">Чат</div>
                 </button>
                 <button class="tea-btn" onclick="showSection('discussions')">
-                    <div class="tea-btn-icon">🗣️</div>
-                    Обсуждения
+                    <div style="font-size: 32px;">🗣️</div>
+                    <div style="font-weight: 600;">Обсуждения</div>
                 </button>
                 <button class="tea-btn" onclick="showSection('profile')" style="grid-column: span 2;">
-                    <div class="tea-btn-icon">👤</div>
-                    Мой профиль
+                    <div style="font-size: 32px;">👤</div>
+                    <div style="font-weight: 600;">Мой профиль</div>
                 </button>
             </div>
         </div>
@@ -467,7 +402,7 @@
         <div id="teas" class="section">
             <div class="section-header">
                 <div class="section-icon">🍵</div>
-                <h2 class="section-title">Виды чая</h2>
+                <h2 class="section-title">Виды китайского чая</h2>
             </div>
             <div id="teaList"></div>
         </div>
@@ -485,26 +420,12 @@
                 <div class="section-icon">💬</div>
                 <h2 class="section-title">Общий чат</h2>
             </div>
-            <div id="postsList" style="max-height: 60vh; overflow-y: auto; margin-bottom: 25px;"></div>
-            <div class="input-group">
-                <textarea id="newPost" placeholder="Поделитесь впечатлениями о чае..." rows="3"></textarea>
+            <div id="postsList" style="max-height: 60vh; overflow-y: auto; margin-bottom: 30px;"></div>
+            <div class="input-group" style="margin-bottom: 25px;">
+                <textarea id="newPost" placeholder="Поделитесь своими чайными впечатлениями..." rows="3" 
+                    style="width: 100%; padding: 20px; border: 2px solid rgba(74,111,58,0.2); border-radius: 25px; font-size: 16px; background: rgba(255,255,255,0.9); resize: vertical;"></textarea>
             </div>
             <button class="btn-primary" onclick="addPost()">Опубликовать пост</button>
-        </div>
-
-        <div id="discussions" class="section">
-            <div class="section-header">
-                <div class="section-icon">🗣️</div>
-                <h2 class="section-title">Обсуждения</h2>
-            </div>
-            <div class="input-group">
-                <input type="text" id="newDiscussion" placeholder="Название обсуждения">
-            </div>
-            <div class="input-group">
-                <textarea id="discussionDesc" placeholder="Описание темы..." rows="2"></textarea>
-            </div>
-            <button class="btn-primary" onclick="createDiscussion()">Создать обсуждение</button>
-            <div class="discussions-list" id="discussionsList" style="max-height: 50vh; overflow-y: auto;"></div>
         </div>
 
         <div id="profile" class="section">
@@ -514,97 +435,106 @@
             </div>
             
             <div class="profile-grid">
-                <div class="profile-avatar" id="profileAvatar">
+                <div class="profile-avatar" id="profileAvatar" onclick="tg.showAlert('Смена фото в разработке')">
                     <div id="avatarText">К</div>
                 </div>
                 <div class="profile-info">
-                    <h3 id="profileName" style="font-family: 'Playfair Display', serif; font-size: 24px;">Клим Чайный</h3>
-                    <p id="profileBio" style="color: #5a6f4e; margin-top: 5px;">Любитель китайского чая</p>
+                    <h3 id="profileName" style="font-family: 'Playfair Display', serif; font-size: 26px; margin-bottom: 8px;">Клим Чайный</h3>
+                    <p id="profileBio" style="color: #5a6f4e; font-size: 16px;">Любитель китайского чая из Краснодара</p>
                 </div>
             </div>
 
-            <div class="input-group">
-                <label>Имя</label>
-                <input type="text" id="editName">
+            <div class="input-group" style="margin-bottom: 25px;">
+                <label style="display: block; margin-bottom: 10px; font-weight: 500; color: #4a5d40;">Имя</label>
+                <input type="text" id="editName" style="width: 100%; padding: 20px; border: 2px solid rgba(74,111,58,0.2); border-radius: 25px; font-size: 16px; background: rgba(255,255,255,0.9);">
             </div>
-            <div class="input-group">
-                <label>О себе</label>
-                <textarea id="editBio" rows="3"></textarea>
+            <div class="input-group" style="margin-bottom: 30px;">
+                <label style="display: block; margin-bottom: 10px; font-weight: 500; color: #4a5d40;">О себе</label>
+                <textarea id="editBio" rows="3" style="width: 100%; padding: 20px; border: 2px solid rgba(74,111,58,0.2); border-radius: 25px; font-size: 16px; background: rgba(255,255,255,0.9); resize: vertical;"></textarea>
             </div>
-            <button class="btn-primary" onclick="saveProfile()">Сохранить изменения</button>
-
-            <div style="margin-top: 40px;">
-                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 20px;">Мои подписки</h3>
-                <div id="subscriptionsList"></div>
-            </div>
+            <button class="btn-primary" onclick="saveProfile()">Сохранить профиль</button>
         </div>
 
-        <!-- Модал комментариев -->
+        <!-- Модальное окно комментариев -->
         <div id="commentsModal" class="modal">
             <div class="modal-content">
-                <div class="section-header" style="justify-content: space-between;">
+                <div class="section-header" style="justify-content: space-between; margin-bottom: 30px;">
                     <div style="display: flex; align-items: center;">
                         <div class="section-icon">💬</div>
                         <h2 class="section-title" id="modalTitle">Комментарии</h2>
                     </div>
-                    <button class="back-btn" onclick="closeComments()" style="position: static; margin-left: auto; background: rgba(255,255,255,0.7);">×</button>
+                    <button class="back-btn" onclick="closeComments()" style="position: static; margin-left: auto; background: rgba(255,255,255,0.8);">×</button>
                 </div>
-                <div id="commentsList" style="max-height: 50vh; overflow-y: auto; margin-bottom: 25px;"></div>
-                <div class="input-group">
-                    <textarea id="newComment" placeholder="Написать комментарий..." rows="2"></textarea>
+                <div id="commentsList" style="max-height: 50vh; overflow-y: auto; margin-bottom: 30px;"></div>
+                <div class="input-group" style="margin-bottom: 25px;">
+                    <textarea id="newComment" placeholder="Написать комментарий..." rows="2" 
+                        style="width: 100%; padding: 20px; border: 2px solid rgba(74,111,58,0.2); border-radius: 25px; font-size: 16px; background: rgba(255,255,255,0.9);"></textarea>
                 </div>
-                <button class="btn-primary" onclick="addComment()">Отправить</button>
+                <button class="btn-primary" onclick="addComment()">Отправить комментарий</button>
             </div>
         </div>
     </div>
 
     <script>
+        // Telegram WebApp
         let tg = window.Telegram.WebApp;
         tg.expand();
         tg.requestViewport();
 
+        // Данные приложения
         let currentUser = {
             id: tg.initDataUnsafe?.user?.id || 12345,
-            name: tg.initDataUnsafe?.user?.first_name + ' ' + (tg.initDataUnsafe?.user?.last_name || '') || 'Клим Чайный',
-            bio: 'Любитель китайского чая',
-            avatar: null
+            name: (tg.initDataUnsafe?.user?.first_name || '') + ' ' + (tg.initDataUnsafe?.user?.last_name || '') || 'Клим Чайный',
+            bio: 'Любитель китайского чая из Краснодара'
         };
 
-        let posts = [
-            {id: 1, userId: 1, user: 'Чай Мастер', avatar: 'Ч', text: 'Шу Пуэр 2018 года раскрылся великолепно! Насыщенный вкус с нотками чернослива и земли.', likes: 12, liked: false, comments: []},
-            {id: 2, userId: 2, user: 'Листок', avatar: 'Л', text: 'Лапсанг Сушонг - удивительный копченый аромат. Идеально для вечернего чаепития!', likes: 8, liked: false, comments: []},
-        ];
-
-        let discussions = [
-            {id: 1, title: 'Лучший Пуэр 2025', description: 'Обсуждаем самые интересные пуэры этого года', messages: [], creatorId: 1},
-            {id: 2, title: 'Зелёный чай или улун?', description: 'Что предпочитаете для утреннего ритуала?', messages: [], creatorId: 2},
-        ];
-
-        let teas = [
-            {name: 'Зелёный чай', description: 'Свежий вкус с травяными нотками. Минимальная ферментация сохраняет природную свежесть.', brewing: '75-85°C • 1-3 минуты • Гайвань'},
-            {name: 'Белый чай', description: 'Нежный, сладковатый вкус с цветочными оттенками. Весенний сбор без ферментации.', brewing: '75-85°C • 1-2 минуты • Стеклянный чайник'},
-            {name: 'Улун', description: 'Богатый вкус от цветочного до фруктового. Частично ферментированный.', brewing: '85-95°C • 20-60 секунд • Малые пиалы'},
-            {name: 'Пуэр', description: 'Глубокий землистый вкус. Постферментация придаёт уникальные нотки.', brewing: '95-100°C • 10-30 секунд • Чайник 150 мл'}
-        ];
-
-        let subscriptions = ['Чай Мастер', 'Листок', 'Зеленый Дракон', 'Пуэр Любитель'];
         let currentPostId = null;
-        const ADMIN_ID = 6902824637;
-        const meditations = [
-            {title: 'Утренний ритуал', artist: 'Chinmaya Dunster', duration: '6:52', src: 'https://ramayoga.ru/wp-content/uploads/2020/03/Chinmaya_Dunster_-_Scent_Meditation_-_Klub_yogi_OUM_RU_oum_ru.mp3'},
-            {title: 'Вечерний покой', artist: 'Поющие чаши Тибета', duration: '7:04', src: 'https://ramayoga.ru/wp-content/uploads/2020/03/Chinmaya_Dunster_-_Touch_Meditation_-_Klub_yogi_OUM_RU_oum_ru.mp3'},
-            {title: 'Гармония сердца', artist: 'Vamadeva', duration: '4:11', src: 'https://ramayoga.ru/wp-content/uploads/2020/03/Vamadeva_-_Napohnennost_oum_ru.mp3'},
-            {title: 'Гаятри мантры', artist: 'Chinmaya Dunster', duration: '10:05', src: 'https://ramayoga.ru/wp-content/uploads/2020/03/Chinmaya_Dunster_-_Gayatri_-_Klub_yogi_OUM_RU_oum_ru.mp3'}
+
+        // Данные чаев (восстановлено из рабочего кода)
+        let teas = [
+            {
+                name: 'Зелёный чай',
+                description: 'Зелёный чай получают из листьев чайного куста путем минимальной ферментации (около 1 дня). Свежий травяной вкус с лёгкой горчинкой.',
+                brewing: 'Температура воды: 75-85°C<br>Время заваривания: 1-3 минуты<br>Посуда: Гайвань или чашки по 50-100 мл'
+            },
+            {
+                name: 'Белый чай',
+                description: 'Белый чай собирают весной с чайных кустов, подвергая листья минимальной обработке. Нежный сладковатый вкус с цветочными нотками.',
+                brewing: 'Температура воды: 75-85°C<br>Время заваривания: 1-2 минуты<br>Посуда: Гайвань или стеклянный чайник'
+            },
+            {
+                name: 'Улун',
+                description: 'Улуны занимают промежуточное положение между зелёным и красным чаем. Богатый вкус от цветочного до фруктового.',
+                brewing: 'Температура воды: 85-95°C<br>Время заваривания: 20-60 секунд<br>Посуда: Маленькие пиалы и гайвань'
+            },
+            {
+                name: 'Пуэр',
+                description: 'Пуэр получают из листьев чайного дерева, собранных в провинции Юньнань. Постферментация придаёт глубокий землистый вкус.',
+                brewing: 'Температура воды: 95-100°C<br>Время заваривания: 10-30 секунд<br>Посуда: Гайвань или чайник 150 мл'
+            }
         ];
 
+        // Посты
+        let posts = [
+            {id: 1, userId: 1, user: 'Чай Мастер', avatar: 'Ч', text: 'Сегодня заваривал Шу Пуэр 2018 года. Насыщенный вкус с нотками чернослива и земли!', likes: 12, liked: false, comments: []},
+            {id: 2, userId: 2, user: 'Листок', avatar: 'Л', text: 'Кто пробовал Лапсанг Сушонг? Удивительный копченый аромат, идеально для вечера!', likes: 8, liked: false, comments: []}
+        ];
+
+        // Медитации с рабочими ссылками
+        let meditations = [
+            {title: '🌿 Утренний ритуал', artist: 'Chinmaya Dunster', duration: '6:52', src: 'https://ramayoga.ru/wp-content/uploads/2020/03/Chinmaya_Dunster_-_Scent_Meditation_-_Klub_yogi_OUM_RU_oum_ru.mp3'},
+            {title: '🍃 Вечерний покой', artist: 'Поющие чаши', duration: '7:04', src: 'https://ramayoga.ru/wp-content/uploads/2020/03/Vamadeva_-_Napohnennost_oum_ru.mp3'},
+            {title: '💚 Гармония сердца', artist: 'Vamadeva', duration: '4:11', src: 'https://ramayoga.ru/wp-content/uploads/2020/03/Chinmaya_Dunster_-_Touch_Meditation_-_Klub_yogi_OUM_RU_oum_ru.mp3'},
+            {title: '🌟 Гаятри мантры', artist: 'Chinmaya Dunster', duration: '10:05', src: 'https://ramayoga.ru/wp-content/uploads/2020/03/Chinmaya_Dunster_-_Gayatri_-_Klub_yogi_OUM_RU_oum_ru.mp3'}
+        ];
+
+        // Инициализация
         document.addEventListener('DOMContentLoaded', function() {
-            tg.expand();
             updateProfileDisplay();
             renderTeaList();
             renderMeditations();
             renderPosts();
-            renderDiscussions();
-            renderSubscriptions();
+            tg.MainButton.setText('🏠 Главное меню').onClick(showWelcome).show();
         });
 
         function showWelcome() {
@@ -634,51 +564,53 @@
             currentUser.name = document.getElementById('editName').value;
             currentUser.bio = document.getElementById('editBio').value;
             updateProfileDisplay();
-            tg.showAlert('Профиль обновлён!');
+            tg.showAlert('Профиль сохранён!');
+            tg.HapticFeedback.notificationOccurred('success');
         }
 
         function renderTeaList() {
             document.getElementById('teaList').innerHTML = teas.map(tea => `
                 <div class="tea-card">
                     <div class="tea-name">${tea.name}</div>
-                    <p style="line-height: 1.6; color: #5a6f4e;">${tea.description}</p>
-                    <div class="tea-brew">
-                        <div style="font-weight: 600; margin-bottom: 10px;">Способ заваривания:</div>
-                        <div style="font-size: 16px;">${tea.brewing}</div>
+                    <p style="line-height: 1.7; color: #4a5d40; font-size: 16px; margin-bottom: 25px;">${tea.description}</p>
+                    <div style="background: linear-gradient(135deg, rgba(74,111,58,0.08), rgba(123,160,92,0.08)); padding: 25px; border-radius: 22px; border-left: 5px solid #4a6f3a;">
+                        <div style="font-weight: 600; margin-bottom: 15px; font-size: 17px; color: #2d4030;">🍵 Способ заваривания:</div>
+                        <div style="line-height: 1.6; font-size: 16px;">${tea.brewing.replace(/<br>/g, '<br><br>')}</div>
                     </div>
                 </div>
             `).join('');
         }
 
         function renderMeditations() {
-            document.getElementById('meditationsList').innerHTML = meditations.map((med, index) => `
+            document.getElementById('meditationsList').innerHTML = meditations.map(med => `
                 <div class="tea-card">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
-                        <div>
-                            <div style="font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 5px;">${med.title}</div>
-                            <div style="color: #6b8e4a; font-size: 15px;">${med.artist} • ${med.duration}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                        <div style="flex: 1;">
+                            <div style="font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 8px; color: #2d4030;">${med.title}</div>
+                            <div style="color: #6b8e4a; font-size: 16px;">${med.artist} • ${med.duration}</div>
                         </div>
                     </div>
-                    <audio controls style="width: 100%;" preload="metadata" src="${med.src}"></audio>
+                    <audio controls style="width: 100%; height: 50px;" preload="metadata" src="${med.src}"></audio>
                 </div>
             `).join('');
         }
 
         function renderPosts() {
-            document.getElementById('postsList').innerHTML = posts.map(post => {
+            const container = document.getElementById('postsList');
+            container.innerHTML = posts.map(post => {
                 const isOwnPost = post.userId === currentUser.id;
                 return `
                     <div class="post" data-post-id="${post.id}">
-                        <div style="display: flex; align-items: center; margin-bottom: 18px;">
-                            <div class="post-avatar">${post.avatar}</div>
-                            <div>
-                                <strong style="font-weight: 600;">${post.user}</strong>
-                                <div style="font-size: 14px; color: #8a9a7b; margin-top: 2px;">${Math.floor(Math.random()*3)+1} ч. назад</div>
+                        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                            <div style="width: 55px; height: 55px; border-radius: 18px; background: linear-gradient(135deg, #4a6f3a, #7ba05c); margin-right: 18px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 20px; color: white;">${post.avatar}</div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; font-size: 18px; margin-bottom: 5px;">${post.user}</div>
+                                <div style="font-size: 14px; color: #8a9a7b;">${Math.floor(Math.random()*3)+1} ч. назад</div>
                             </div>
-                            ${isOwnPost ? `<button class="action-btn" style="margin-left: auto; padding: 8px 15px; font-size: 14px;" onclick="deletePost(${post.id})">Удалить</button>` : ''}
+                            ${isOwnPost ? `<button class="action-btn" style="margin-left: auto; padding: 10px 18px; font-size: 14px; background: rgba(220,53,69,0.15); border-color: rgba(220,53,69,0.4);" onclick="deletePost(${post.id})">🗑️ Удалить</button>` : ''}
                         </div>
-                        <div style="line-height: 1.6; margin-bottom: 20px;">${post.text}</div>
-                        <div style="display: flex; gap: 15px;">
+                        <div style="line-height: 1.7; font-size: 16px; margin-bottom: 25px; color: #3a4a40;">${post.text}</div>
+                        <div style="display: flex; gap: 18px; margin-bottom: ${post.comments.length > 0 ? '20px' : '0'};">
                             <button class="action-btn ${post.liked ? 'active' : ''}" onclick="toggleLike(${post.id})">
                                 ❤️ ${post.likes}
                             </button>
@@ -687,16 +619,17 @@
                             </button>
                         </div>
                         ${post.comments.length > 0 ? `
-                            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(107,142,74,0.2);">
+                            <div style="padding: 20px; background: rgba(248,255,248,0.6); border-radius: 22px; border-left: 4px solid #7ba05c;">
                                 ${post.comments.slice(-2).map(c => `
-                                    <div style="display: flex; gap: 10px; margin-bottom: 10px; padding: 12px; background: rgba(248,255,248,0.5); border-radius: 15px;">
-                                        <div style="width: 30px; height: 30px; border-radius: 50%; background: #9bb85c; display: flex; align-items: center; justify-content: center; font-size: 12px; color: white; font-weight: 600;">${c.user[0]}</div>
-                                        <div>
-                                            <div style="font-weight: 500;">${c.user}:</div>
-                                            <div style="font-size: 14px;">${c.text}</div>
+                                    <div style="display: flex; gap: 12px; margin-bottom: 12px; padding: 15px; background: rgba(255,255,255,0.7); border-radius: 18px;">
+                                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #9bb85c; display: flex; align-items: center; justify-content: center; font-size: 14px; color: white; font-weight: 600;">${c.user[0]}</div>
+                                        <div style="flex: 1;">
+                                            <div style="font-weight: 500; margin-bottom: 4px;">${c.user}</div>
+                                            <div style="font-size: 15px;">${c.text}</div>
                                         </div>
                                     </div>
                                 `).join('')}
+                                ${post.comments.length > 2 ? `<div style="text-align: center; font-size: 14px; color: #8a9a7b; padding-top: 10px; border-top: 1px solid rgba(107,142,74,0.2);">и ещё ${post.comments.length-2} комментариев...</div>` : ''}
                             </div>
                         ` : ''}
                     </div>
@@ -706,20 +639,26 @@
 
         function addPost() {
             const text = document.getElementById('newPost').value.trim();
-            if (!text) return;
+            if (!text) {
+                tg.showAlert('Напишите текст поста');
+                return;
+            }
+            
             posts.unshift({
                 id: Date.now(),
                 userId: currentUser.id,
                 user: currentUser.name,
                 avatar: currentUser.name[0] || 'К',
-                text,
+                text: text,
                 likes: 0,
                 liked: false,
                 comments: []
             });
+            
             document.getElementById('newPost').value = '';
             renderPosts();
             tg.HapticFeedback.notificationOccurred('success');
+            tg.showAlert('Пост опубликован!');
         }
 
         function toggleLike(postId) {
@@ -727,37 +666,37 @@
             post.liked = !post.liked;
             post.likes += post.liked ? 1 : -1;
             renderPosts();
+            tg.HapticFeedback.impactOccurred('light');
         }
 
         function deletePost(postId) {
-            if (confirm('Удалить пост?')) {
+            if (confirm('Удалить ваш пост?')) {
                 posts = posts.filter(p => p.id !== postId);
                 renderPosts();
+                tg.HapticFeedback.notificationOccurred('error');
             }
         }
 
         function openComments(postId) {
             currentPostId = postId;
             const post = posts.find(p => p.id === postId);
-            document.getElementById('modalTitle').textContent = `Комментарии к посту ${post.user}`;
+            document.getElementById('modalTitle').textContent = `Комментарии • ${post.user}`;
             renderComments();
             document.getElementById('commentsModal').style.display = 'block';
-            document.body.style.overflow = 'hidden';
         }
 
         function closeComments() {
             document.getElementById('commentsModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
         }
 
         function renderComments() {
             const post = posts.find(p => p.id === currentPostId);
             document.getElementById('commentsList').innerHTML = post.comments.map(comment => `
-                <div style="display: flex; gap: 12px; padding: 15px; background: rgba(248,255,248,0.7); border-radius: 20px; margin-bottom: 12px;">
-                    <div style="width: 35px; height: 35px; border-radius: 50%; background: #9bb85c; display: flex; align-items: center; justify-content: center; font-size: 14px; color: white; font-weight: 600;">${comment.user[0]}</div>
+                <div style="display: flex; gap: 15px; padding: 18px; background: rgba(248,255,248,0.8); border-radius: 25px; margin-bottom: 15px; border-left: 4px solid #7ba05c;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #4a6f3a, #7ba05c); display: flex; align-items: center; justify-content: center; font-size: 16px; color: white; font-weight: 600;">${comment.user[0]}</div>
                     <div style="flex: 1;">
-                        <div style="font-weight: 500; margin-bottom: 4px;">${comment.user}</div>
-                        <div>${comment.text}</div>
+                        <div style="font-weight: 500; margin-bottom: 6px; font-size: 16px;">${comment.user}</div>
+                        <div style="line-height: 1.5;">${comment.text}</div>
                     </div>
                 </div>
             `).join('');
@@ -766,60 +705,24 @@
         function addComment() {
             const text = document.getElementById('newComment').value.trim();
             if (!text || !currentPostId) return;
+            
             const post = posts.find(p => p.id === currentPostId);
             post.comments.push({
                 id: Date.now(),
                 user: currentUser.name,
-                text
+                text: text
             });
+            
             document.getElementById('newComment').value = '';
             renderComments();
             renderPosts();
+            tg.HapticFeedback.notificationOccurred('success');
         }
 
-        function createDiscussion() {
-            const title = document.getElementById('newDiscussion').value.trim();
-            if (!title) return;
-            discussions.push({
-                id: Date.now(),
-                title,
-                description: document.getElementById('discussionDesc').value.trim() || '',
-                messages: [],
-                creatorId: currentUser.id
-            });
-            document.getElementById('newDiscussion').value = '';
-            document.getElementById('discussionDesc').value = '';
-            renderDiscussions();
-            tg.showAlert('Обсуждение создано!');
-        }
-
-        function renderDiscussions() {
-            document.getElementById('discussionsList').innerHTML = discussions.map(disc => `
-                <div class="tea-card" style="cursor: pointer;" onclick="tg.showAlert('Чат обсуждения в разработке')">
-                    <div style="font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 8px;">${disc.title}</div>
-                    <div style="color: #6b8e4a; margin-bottom: 12px;">${disc.description}</div>
-                    <div style="font-size: 14px; opacity: 0.8;">💬 ${disc.messages.length} сообщений</div>
-                </div>
-            `).join('');
-        }
-
-        function renderSubscriptions() {
-            document.getElementById('subscriptionsList').innerHTML = subscriptions.map(sub => `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px; background: rgba(255,255,255,0.7); border-radius: 20px; margin-bottom: 15px; border: 1px solid rgba(107,142,74,0.1);">
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <div style="width: 45px; height: 45px; border-radius: 12px; background: linear-gradient(135deg, #6b8e4a, #9bb85c); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 16px;">${sub[0]}</div>
-                        <div>${sub}</div>
-                    </div>
-                    <button class="action-btn" style="padding: 10px 18px;">Отписаться</button>
-                </div>
-            `).join('');
-        }
-
+        // Модалка закрывается по клику вне области
         document.getElementById('commentsModal').addEventListener('click', function(e) {
             if (e.target === this) closeComments();
         });
-
-        tg.MainButton.setText('🏠 Главное меню').onClick(showWelcome).show();
     </script>
 </body>
 </html>
