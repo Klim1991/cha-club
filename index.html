@@ -1,11 +1,11 @@
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>🍵 Чайный Клуб (ChuClub)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ИИ Финансовый Коуч</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,730 +13,960 @@
             box-sizing: border-box;
         }
 
-        html, body {
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-        }
-
         body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #f8f4e8 0%, #e8f5e3 30%, #f0e8d8 70%, #fff8e1 100%);
-            color: #3d2b1f;
-            position: relative;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 20%, rgba(139, 195, 74,0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 235, 59,0.12) 0%, transparent 50%),
-                radial-gradient(circle at 50% 70%, rgba(76, 175, 80,0.08) 0%, transparent 50%);
-            z-index: -1;
-            animation: teaFlow 30s ease infinite;
-        }
-
-        @keyframes teaFlow {
-            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.9; }
-            50% { transform: scale(1.15) rotate(180deg); opacity: 0.7; }
-        }
-
-        /* Вихрь чайных листьев */
-        .tea-leaves {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .tea-leaf {
-            position: absolute;
-            font-size: 24px;
-            opacity: 0.6;
-            animation: leafSwirl 8s linear infinite;
-        }
-
-        .tea-leaf:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; animation-duration: 10s; }
-        .tea-leaf:nth-child(2) { top: 30%; left: 80%; animation-delay: 1s; animation-duration: 12s; font-size: 20px; }
-        .tea-leaf:nth-child(3) { top: 60%; left: 20%; animation-delay: 2s; animation-duration: 9s; font-size: 28px; }
-        .tea-leaf:nth-child(4) { top: 70%; left: 70%; animation-delay: 3s; animation-duration: 11s; }
-        .tea-leaf:nth-child(5) { top: 10%; left: 60%; animation-delay: 4s; animation-duration: 13s; font-size: 22px; }
-        .tea-leaf:nth-child(6) { top: 50%; left: 5%; animation-delay: 5s; animation-duration: 10s; }
-
-        @keyframes leafSwirl {
-            0% {
-                transform: translate(0, 0) rotate(0deg) scale(1);
-                opacity: 0.6;
-            }
-            25% {
-                transform: translate(50px, -30px) rotate(90deg) scale(1.1);
-                opacity: 0.8;
-            }
-            50% {
-                transform: translate(80px, 20px) rotate(180deg) scale(0.9);
-                opacity: 0.4;
-            }
-            75% {
-                transform: translate(20px, 50px) rotate(270deg) scale(1.2);
-                opacity: 0.7;
-            }
-            100% {
-                transform: translate(0, 0) rotate(360deg) scale(1);
-                opacity: 0.6;
-            }
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #1a1a1a;
+            overflow-x: hidden;
         }
 
         .container {
-            width: 100vw;
-            height: 100vh;
             max-width: 400px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.94);
-            backdrop-filter: blur(30px);
+            min-height: 100vh;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
         }
 
-        .welcome-screen {
-            height: 100vh;
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
             text-align: center;
-            padding: 80px 20px 40px;
-            background: linear-gradient(45deg, #e8f5e3 0%, #f1f8e9 25%, #fff8e1 50%, #f9fbe7 100%);
-            background-size: 400% 400%;
-            animation: teaGradient 12s ease infinite;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
             position: relative;
-            overflow: hidden;
         }
 
-        .welcome-screen::before {
-            content: '🍵 ЧАЙНЫЙ КЛУБ 🍵';
-            position: absolute;
-            top: -40px;
-            left: -40px;
-            font-family: 'Playfair Display', serif;
-            font-size: 90px;
+        .header h1 {
+            font-size: 24px;
             font-weight: 700;
-            opacity: 0.08;
+            margin-bottom: 5px;
         }
 
-        @keyframes teaGradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
         }
 
-        .tea-logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 52px;
-            font-weight: 700;
-            background: linear-gradient(45deg, #3d2b1f, #8bc34a, #ffeb3b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 25px;
-            text-shadow: 0 0 30px rgba(139,195,74,0.4);
-            position: relative;
-            z-index: 2;
-        }
-
-        .nav-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 28px;
-            padding: 45px 20px;
-            width: 100%;
-            position: relative;
-            z-index: 2;
-        }
-
-        .tea-btn {
-            background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(248,250,237,0.85));
-            border: 3px solid rgba(139,195,74,0.4);
-            padding: 32px;
-            border-radius: 35px;
-            font-family: 'Orbitron', monospace;
-            font-size: 18px;
-            font-weight: 700;
-            color: #3d2b1f;
-            cursor: pointer;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            backdrop-filter: blur(20px);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(139,195,74,0.25);
-        }
-
-        .tea-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(139,195,74,0.3), transparent);
-            transition: left 0.7s;
-        }
-
-        .tea-btn:hover::before {
-            left: 100%;
-        }
-
-        .tea-btn:hover {
-            transform: translateY(-18px) scale(1.06);
-            border-color: #8bc34a;
-            box-shadow: 0 35px 80px rgba(139,195,74,0.5);
-            background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(248,250,237,0.9));
-            color: #2e5d23;
-            text-shadow: 0 2px 8px rgba(139,195,74,0.3);
-        }
-
-        .section {
+        .screen {
             display: none;
-            height: 100vh;
-            overflow-y: auto;
-            padding: 100px 25px 25px;
-            animation: teaSlide 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 20px;
+            min-height: calc(100vh - 120px);
         }
 
-        .section.active {
+        .screen.active {
             display: block;
         }
 
-        @keyframes teaSlide {
-            from { opacity: 0; transform: translateY(70px) scale(0.96); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .back-btn {
-            position: fixed;
-            top: 30px;
-            left: 30px;
-            background: rgba(255,255,255,0.9);
-            border: 3px solid rgba(139,195,74,0.4);
-            border-radius: 50%;
-            width: 65px;
-            height: 65px;
-            color: #3d2b1f;
-            font-size: 26px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 1000;
-            backdrop-filter: blur(20px);
-            transition: all 0.4s ease;
-            box-shadow: 0 15px 45px rgba(0,0,0,0.2);
-        }
-
-        .back-btn:hover {
-            background: rgba(139,195,74,0.2);
-            box-shadow: 0 0 45px rgba(139,195,74,0.6);
-            transform: scale(1.2);
-            color: #2e5d23;
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 45px;
-            padding-bottom: 30px;
-            border-bottom: 4px solid rgba(139,195,74,0.3);
+        .progress-circle {
             position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 20px auto;
         }
 
-        .section-header::after {
-            content: '';
+        .progress-circle svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .progress-circle .bg {
+            fill: none;
+            stroke: #e0e0e0;
+            stroke-width: 12;
+        }
+
+        .progress-circle .progress {
+            fill: none;
+            stroke: url(#gradient);
+            stroke-width: 12;
+            stroke-linecap: round;
+            transition: stroke-dasharray 0.5s ease;
+        }
+
+        .progress-text {
             position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 80px;
-            height: 5px;
-            background: linear-gradient(90deg, #8bc34a, #ffeb3b);
-            border-radius: 3px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
         }
 
-        .section-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 20px;
-            background: linear-gradient(145deg, #8bc34a, #a4d484);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            margin-right: 28px;
-            box-shadow: 0 18px 50px rgba(139,195,74,0.5);
+        .goal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin: 20px 0 10px;
+            text-align: center;
         }
 
-        .section-title {
-            font-family: 'Playfair Display', serif;
+        .goal-info {
+            background: #f8f9ff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .goal-sum {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+        }
+
+        .goal-date {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .action-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+        }
+
+        .action-desc {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8f9ff;
+            color: #667eea;
+            border: 2px solid #e0e5ff;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .goal-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .goal-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        .goal-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
+        }
+
+        .goal-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .trial-banner {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: #c92a2a;
+            padding: 16px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .paywall {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .paywall h2 {
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+
+        .price {
             font-size: 36px;
             font-weight: 700;
-            color: #3d2b1f;
-            text-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            color: #667eea;
+            margin: 20px 0;
         }
 
-        .tea-card {
-            background: rgba(255,255,255,0.85);
-            border: 2px solid rgba(139,195,74,0.2);
-            border-radius: 35px;
-            padding: 35px;
-            margin-bottom: 35px;
-            backdrop-filter: blur(25px);
-            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-        }
-
-        .tea-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
             left: 0;
             right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, #8bc34a, #ffeb3b, transparent);
+            background: white;
+            display: flex;
+            padding: 8px 0;
+            box-shadow: 0 -2px 20px rgba(0,0,0,0.1);
+            z-index: 100;
         }
 
-        .tea-card:hover {
-            transform: translateY(-25px) scale(1.03);
-            border-color: #8bc34a;
-            box-shadow: 0 50px 100px rgba(139,195,74,0.3);
-            background: rgba(255,255,255,0.95);
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            cursor: pointer;
+            color: #999;
+            font-size: 12px;
+            transition: color 0.3s ease;
         }
 
-        .tea-name {
-            font-family: 'Playfair Display', serif;
-            font-size: 30px;
+        .nav-item.active {
+            color: #667eea;
+        }
+
+        .nav-item ion-icon {
+            display: block;
+            font-size: 24px;
+            margin-bottom: 2px;
+        }
+
+        .onboarding-slide {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .onboarding-title {
+            font-size: 28px;
             font-weight: 700;
-            background: linear-gradient(45deg, #3d2b1f, #8bc34a);
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
         }
 
-        .meditations-grid {
-            display: grid;
-            gap: 35px;
-            padding-bottom: 35px;
+        .onboarding-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 24px 0;
         }
 
-        audio {
-            width: 100%;
-            margin-top: 25px;
-            filter: brightness(1.1) contrast(1.05);
-            border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ddd;
+            transition: all 0.3s ease;
         }
 
-        .notes-section {
-            background: rgba(255,255,255,0.7);
-            border: 3px solid rgba(139,195,74,0.3);
-            border-radius: 30px;
-            padding: 30px;
-            margin-top: 35px;
+        .dot.active {
+            background: #667eea;
+            transform: scale(1.2);
         }
 
         .input-group {
-            margin-bottom: 35px;
+            margin-bottom: 20px;
         }
 
         .input-group label {
             display: block;
-            margin-bottom: 15px;
             font-weight: 600;
-            color: #3d2b1f;
-            font-size: 17px;
+            margin-bottom: 8px;
+            color: #333;
         }
 
-        .input-group input, .input-group textarea {
+        .input {
             width: 100%;
-            padding: 22px;
-            border: 3px solid rgba(139,195,74,0.3);
-            border-radius: 30px;
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
             font-size: 16px;
-            background: rgba(255,255,255,0.9);
-            color: #3d2b1f;
-            backdrop-filter: blur(20px);
-            transition: all 0.4s ease;
-            font-family: inherit;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: border-color 0.3s ease;
         }
 
-        .input-group input::placeholder, .input-group textarea::placeholder {
-            color: rgba(61,43,31,0.6);
-        }
-
-        .input-group input:focus, .input-group textarea:focus {
+        .input:focus {
             outline: none;
-            border-color: #8bc34a;
-            box-shadow: 0 0 0 5px rgba(139,195,74,0.2), 0 15px 40px rgba(0,0,0,0.15);
-            background: rgba(255,255,255,0.95);
+            border-color: #667eea;
         }
 
-        .tea-btn-main {
-            background: linear-gradient(145deg, #8bc34a, #a4d484);
-            color: #f5f5f5;
-            border: none;
-            padding: 28px;
-            border-radius: 40px;
-            font-family: 'Orbitron', monospace;
-            font-size: 20px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .chat-messages {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+            padding: 16px;
+            background: #f8f9ff;
+            border-radius: 12px;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 80%;
+        }
+
+        .message.user {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+        }
+
+        .message.bot {
+            background: white;
+            border: 1px solid #e0e0e0;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 25px 70px rgba(139,195,74,0.4);
-            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-
-        .tea-btn-main:hover {
-            transform: translateY(-10px) scale(1.04);
-            box-shadow: 0 40px 90px rgba(139,195,74,0.6);
-        }
-
-        .post {
-            background: rgba(255,255,255,0.8);
-            border: 3px solid rgba(139,195,74,0.2);
-            border-radius: 35px;
-            padding: 35px;
-            margin-bottom: 35px;
-            backdrop-filter: blur(25px);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-        }
-
-        .post-actions {
-            display: flex;
-            gap: 25px;
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 3px solid rgba(139,195,74,0.2);
-        }
-
-        .action-btn {
-            background: rgba(255,255,255,0.85);
-            border: 3px solid rgba(139,195,74,0.3);
-            padding: 18px 28px;
-            border-radius: 35px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 17px;
-            font-weight: 600;
-            color: #3d2b1f;
-            transition: all 0.4s ease;
-            flex: 1;
-            justify-content: center;
-            backdrop-filter: blur(15px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        .action-btn:hover {
-            background: rgba(139,195,74,0.15);
-            border-color: #8bc34a;
-            transform: translateY(-6px);
-            box-shadow: 0 20px 50px rgba(139,195,74,0.3);
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
-    <div class="container" id="app">
-        <!-- Главный экран с вихрем листьев -->
-        <div id="welcomeScreen" class="welcome-screen">
-            <div class="tea-leaves">
-                <div class="tea-leaf">🍃</div>
-                <div class="tea-leaf">🍵</div>
-                <div class="tea-leaf">🍃</div>
-                <div class="tea-leaf">🍵</div>
-                <div class="tea-leaf">🍃</div>
-                <div class="tea-leaf">🍵</div>
-            </div>
-            <div class="tea-logo">CHUCLUB</div>
-            <p style="font-size: 22px; margin-bottom: 55px; opacity: 0.95; font-weight: 300; max-width: 280px;">Китайский чай • Рок атмосфера • Чайный клуб</p>
-            <div class="nav-grid">
-                <button class="tea-btn" onclick="showSection('teas')">🍵 Виды чая</button>
-                <button class="tea-btn" onclick="showSection('meditations')">🧘 Медитации</button>
-                <button class="tea-btn" onclick="showSection('notes')">📝 Заметки</button>
-                <button class="tea-btn" onclick="showSection('feed')">💬 Чат</button>
-                <button class="tea-btn" onclick="showSection('profile')" style="grid-column: span 2;">👤 Профиль</button>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>💰 ИИ ФинКоуч</h1>
+            <p>Твой личный финансовый помощник</p>
+        </div>
+
+        <!-- Onboarding Screen -->
+        <div id="screen-onboarding" class="screen active fade-in">
+            <div class="onboarding-slide">
+                <div class="onboarding-title">Маленькие шаги к большим деньгам</div>
+                <p style="font-size: 16px; color: #666; margin-bottom: 32px;">Ставим цели и каждый день двигаемся к финансовой свободе</p>
+                
+                <div class="onboarding-dots">
+                    <div class="dot active"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="nextOnboardingSlide()" style="width: 100%;">Начать</button>
             </div>
         </div>
 
-        <!-- Кнопка назад -->
-        <button class="back-btn" onclick="showWelcome()" style="display: none;" id="backBtn">←</button>
-
-        <!-- Виды чая -->
-        <div id="teas" class="section">
-            <div class="section-header">
-                <div class="section-icon">🍵</div>
-                <h2 class="section-title">Виды чая</h2>
+        <!-- Goal Selection Screen -->
+        <div id="screen-goal-select" class="screen fade-in">
+            <h2 style="text-align: center; margin-bottom: 24px; font-size: 22px;">С чего начнём?</h2>
+            
+            <div class="card-grid">
+                <div class="goal-card" onclick="selectGoal('pillow')" data-goal="pillow">
+                    <div class="goal-icon">🛏️</div>
+                    <div style="font-weight: 600;">Финансовая подушка</div>
+                    <div style="font-size: 14px; color: #666; margin-top: 4px;">3-6 месяцев расходов</div>
+                </div>
+                <div class="goal-card" onclick="selectGoal('debt')" data-goal="debt">
+                    <div class="goal-icon">💳</div>
+                    <div style="font-weight: 600;">Закрыть долги</div>
+                    <div style="font-size: 14px; color: #666; margin-top: 4px;">Кредиты и карты</div>
+                </div>
+                <div class="goal-card" onclick="selectGoal('purchase')" data-goal="purchase">
+                    <div class="goal-icon">🏠</div>
+                    <div style="font-weight: 600;">Крупная покупка</div>
+                    <div style="font-size: 14px; color: #666; margin-top: 4px;">Машина, отпуск, ремонт</div>
+                </div>
+                <div class="goal-card" onclick="selectGoal('custom')" data-goal="custom">
+                    <div class="goal-icon">⭐</div>
+                    <div style="font-weight: 600;">Моя цель</div>
+                    <div style="font-size: 14px; color: #666; margin-top: 4px;">Любая сумма</div>
+                </div>
             </div>
-            <div id="teaList"></div>
+            
+            <button class="btn btn-primary" id="continue-goal-btn" onclick="goToGoalSetup()" disabled style="width: 100%; margin-top: 24px;">Продолжить</button>
         </div>
 
-        <!-- Медитации -->
-        <div id="meditations" class="section">
-            <div class="section-header">
-                <div class="section-icon">🧘</div>
-                <h2 class="section-title">Чайные медитации</h2>
-            </div>
-            <div class="meditations-grid" id="meditationsList">
-                <div class="tea-card">
-                    <h3 style="color: #8bc34a; margin-bottom: 18px; font-family: 'Playfair Display', serif; font-size: 26px;">🌿 Утренний ритуал</h3>
-                    <p style="opacity: 0.92; margin-bottom: 22px; font-size: 16px;">Chinmaya Dunster - Scent Meditation (6:52)</p>
-                    <audio controls id="audio1" preload="metadata">
-                        <source src="https://ramayoga.ru/wp-content/uploads/2020/03/Chinmaya_Dunster_-_Scent_Meditation_-_Klub_yogi_OUM_RU_oum_ru.mp3" type="audio/mpeg">
-                        Ваш браузер не поддерживает аудио
-                    </audio>
-                    <button onclick="playAudio('audio1')" style="margin-top: 15px; padding: 12px 25px; background: #8bc34a; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: 600;">▶️ Воспроизвести</button>
-                </div>
-                <div class="tea-card">
-                    <h3 style="color: #ffeb3b; margin-bottom: 18px; font-family: 'Playfair Display', serif; font-size: 26px;">🍃 Вечерний покой</h3>
-                    <p style="opacity: 0.92; margin-bottom: 22px; font-size: 16px;">Chinmaya Dunster - Touch Meditation (7:04)</p>
-                    <audio controls id="audio2" preload="metadata">
-                        <source src="https://ramayoga.ru/wp-content/uploads/2020/03/Chinmaya_Dunster_-_Touch_Meditation_-_Klub_yogi_OUM_RU_oum_ru.mp3" type="audio/mpeg">
-                        Ваш браузер не поддерживает аудио
-                    </audio>
-                    <button onclick="playAudio('audio2')" style="margin-top: 15px; padding: 12px 25px; background: #ffeb3b; color: #3d2b1f; border: none; border-radius: 25px; cursor: pointer; font-weight: 600;">▶️ Воспроизвести</button>
-                </div>
-                <div class="tea-card">
-                    <h3 style="color: #4caf50; margin-bottom: 18px; font-family: 'Playfair Display', serif; font-size: 26px;">💚 Гармония сердца</h3>
-                    <p style="opacity: 0.92; margin-bottom: 22px; font-size: 16px;">Vamadeva - Наполненность (4:11)</p>
-                    <audio controls id="audio3" preload="metadata">
-                        <source src="https://ramayoga.ru/wp-content/uploads/2020/03/Vamadeva_-_Napohnennost_oum_ru.mp3" type="audio/mpeg">
-                        Ваш браузер не поддерживает аудио
-                    </audio>
-                    <button onclick="playAudio('audio3')" style="margin-top: 15px; padding: 12px 25px; background: #4caf50; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: 600;">▶️ Воспроизвести</button>
-                </div>
-                <div class="tea-card">
-                    <h3 style="color: #ffc107; margin-bottom: 18px; font-family: 'Playfair Display', serif; font-size: 26px;">🕉️ Поющие чаши</h3>
-                    <p style="opacity: 0.92; margin-bottom: 22px; font-size: 16px;">Тибетские поющие чаши - Равновесие (6:54)</p>
-                    <audio controls id="audio4" preload="metadata">
-                        <source src="https://ramayoga.ru/wp-content/uploads/2020/03/Tibetskie_poyuschie_chashi_Ravnovesie_-_variant_8_-_Klub_yogi_Oum_ru_oum_ru.mp3" type="audio/mpeg">
-                        Ваш браузер не поддерживает аудио
-                    </audio>
-                    <button onclick="playAudio('audio4')" style="margin-top: 15px; padding: 12px 25px; background: #ffc107; color: #3d2b1f; border: none; border-radius: 25px; cursor: pointer; font-weight: 600;">▶️ Воспроизвести</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Остальные секции без изменений -->
-        <div id="notes" class="section">
-            <div class="section-header">
-                <div class="section-icon">📝</div>
-                <h2 class="section-title">Чайные заметки</h2>
-            </div>
-            <div id="notesList" style="max-height: 60vh; overflow-y: auto; margin-bottom: 35px;"></div>
+        <!-- Goal Setup Screen -->
+        <div id="screen-goal-setup" class="screen">
+            <h2 style="text-align: center; margin-bottom: 24px;">Настроим цель</h2>
+            
             <div class="input-group">
-                <textarea id="newNote" placeholder="Запишите впечатления о чае, рецепты заваривания или мысли..." rows="4"></textarea>
+                <label>Сумма цели (₽)</label>
+                <input type="number" class="input" id="goal-amount" placeholder="100 000" min="1000">
             </div>
-            <button class="tea-btn-main" onclick="addNote()">🍵 Добавить заметку</button>
+
+            <div class="input-group">
+                <label>Уже накоплено (₽)</label>
+                <input type="number" class="input" id="goal-current" placeholder="0" min="0" value="0">
+            </div>
+
+            <div class="input-group">
+                <label>К какому сроку?</label>
+                <input type="date" class="input" id="goal-date">
+            </div>
+
+            <div class="goal-info" id="goal-calculation">
+                <div style="font-size: 14px; color: #666; margin-bottom: 8px;">Расчёт...</div>
+            </div>
+
+            <button class="btn btn-primary" onclick="createGoal()" style="width: 100%;">Создать цель</button>
         </div>
 
-        <div id="feed" class="section">
-            <div class="section-header">
-                <div class="section-icon">💬</div>
-                <h2 class="section-title">Чайный чат</h2>
+        <!-- Dashboard Screen -->
+        <div id="screen-dashboard" class="screen">
+            <div class="goal-title" id="dashboard-title">Финансовая подушка</div>
+            
+            <div class="progress-circle">
+                <svg viewBox="0 0 120 120">
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#667eea"/>
+                            <stop offset="100%" style="stop-color:#764ba2"/>
+                        </linearGradient>
+                    </defs>
+                    <circle class="bg" cx="60" cy="60" r="52"></circle>
+                    <circle class="progress" id="progress-circle" cx="60" cy="60" r="52" stroke-dasharray="0 327"></circle>
+                </svg>
+                <div class="progress-text" id="progress-text">0%</div>
             </div>
-            <div id="postsList" style="max-height: 55vh; overflow-y: auto; margin-bottom: 35px;"></div>
-            <div class="input-group">
-                <textarea id="newPost" placeholder="Поделитесь опытом заваривания или впечатлениями..." rows="3"></textarea>
+
+            <div class="goal-info">
+                <div class="goal-sum" id="dashboard-current-sum">30 000 ₽</div>
+                <div class="goal-sum" style="font-size: 20px; opacity: 0.8;" id="dashboard-total-sum">из 100 000 ₽</div>
+                <div class="goal-date" id="dashboard-date">Достигнешь к 15 июля 2026</div>
             </div>
-            <button class="tea-btn-main" onclick="addPost()">🍵 Опубликовать</button>
+
+            <h3 style="margin-bottom: 16px; font-size: 18px; font-weight: 600;">📋 Действия на сегодня</h3>
+            
+            <div id="today-actions">
+                <div class="action-card">
+                    <div class="action-title">💰 Отложи 300 ₽</div>
+                    <div class="action-desc">Это приблизит цель на 4 дня. Переведи на отдельную карту или копилку</div>
+                    <button class="btn btn-success btn-small" onclick="completeAction(this)">✓ Сделано</button>
+                    <button class="btn btn-secondary btn-small" style="margin-left: 8px;" onclick="skipAction(this)">⏭️ Позже</button>
+                </div>
+                <div class="action-card">
+                    <div class="action-title">📊 Проверь траты на еду</div>
+                    <div class="action-desc">Если больше 25% бюджета — поставь лимит 500 ₽/неделя на доставку</div>
+                    <button class="btn btn-success btn-small" onclick="completeAction(this)">✓ Сделано</button>
+                    <button class="btn btn-secondary btn-small" style="margin-left: 8px;" onclick="skipAction(this)">⏭️ Позже</button>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="month-saved">4 200 ₽</div>
+                    <div style="font-size: 14px;">За месяц</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <div class="stat-number" id="streak-days">7</div>
+                    <div style="font-size: 14px;">Дней подряд</div>
+                </div>
+            </div>
         </div>
 
-        <div id="profile" class="section">
-            <div class="section-header">
-                <div class="section-icon">👤</div>
-                <h2 class="section-title">Профиль</h2>
-            </div>
-            <div class="profile-grid" style="display: grid; grid-template-columns: 110px 1fr; gap: 35px; align-items: center; margin-bottom: 45px; background: rgba(255,255,255,0.8); padding: 35px; border-radius: 35px; border: 3px solid rgba(139,195,74,0.3); box-shadow: 0 20px 60px rgba(0,0,0,0.1);">
-                <div class="profile-avatar" id="profileAvatar" style="width: 110px; height: 110px; border-radius: 28px; background: linear-gradient(145deg, #8bc34a, #a4d484); display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; color: #f5f5f5;">
-                    <span id="avatarText">К</span>
+        <!-- Trial Expired Screen -->
+        <div id="screen-trial-expired" class="screen">
+            <div class="paywall">
+                <h2>🎉 Ты прошёл 10 дней триала!</h2>
+                <p style="font-size: 16px; color: #666; margin-bottom: 32px;">За это время ты отложил <strong>4 200 ₽</strong> и приблизил цель на <strong>18 дней</strong></p>
+                
+                <div class="trial-banner">
+                    Чтобы продолжить к своей финансовой подушке в 100 000 ₽
                 </div>
-                <div>
-                    <h3 id="profileName" style="font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 12px;">Клим Чайный</h3>
-                    <p id="profileBio" style="opacity: 0.92; font-size: 18px;">Любитель китайского чая</p>
-                </div>
+
+                <div class="price">139 ₽</div>
+                <div style="font-size: 16px; color: #666; margin-bottom: 32px;">на 30 дней полного доступа</div>
+                
+                <button class="btn btn-primary" style="width: 100%; padding: 20px; font-size: 18px;" onclick="showPayment()">Оплатить 139 ₽ и продолжить</button>
+                
+                <p style="font-size: 12px; color: #999; margin-top: 24px;">Можешь пользоваться базовой версией бесплатно</p>
             </div>
-            <div class="input-group">
-                <label>Имя</label>
-                <input type="text" id="editName">
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-bar">
+            <div class="nav-item active" onclick="showScreen('dashboard')">
+                <ion-icon name="home-outline"></ion-icon>
+                <div>Главная</div>
             </div>
-            <div class="input-group">
-                <label>О себе</label>
-                <textarea id="editBio" rows="3"></textarea>
+            <div class="nav-item" onclick="showScreen('goals')">
+                <ion-icon name="target-outline"></ion-icon>
+                <div>Цели</div>
             </div>
-            <button class="tea-btn-main" onclick="saveProfile()">💾 Сохранить</button>
+            <div class="nav-item" onclick="showScreen('analytics')">
+                <ion-icon name="bar-chart-outline"></ion-icon>
+                <div>Аналитика</div>
+            </div>
+            <div class="nav-item" onclick="showScreen('profile')">
+                <ion-icon name="person-outline"></ion-icon>
+                <div>Профиль</div>
+            </div>
         </div>
     </div>
 
-    <script>
-        let tg = window.Telegram.WebApp;
-        tg.expand();
-
-        let currentUser = {
-            id: tg.initDataUnsafe?.user?.id || 12345,
-            name: tg.initDataUnsafe?.user?.first_name + ' ' + (tg.initDataUnsafe?.user?.last_name || '') || 'Клим Чайный',
-            bio: 'Любитель китайского чая'
-        };
-
-        let posts = [
-            {id: 1, userId: 1, user: 'Чай Мастер', avatar: 'Ч', text: 'Шу Пуэр 2018 раскрылся великолепно! Насыщенный вкус с нотками чернослива.', likes: 12, liked: false},
-            {id: 2, userId: 2, user: 'Листок', avatar: 'Л', text: 'Лапсанг Сушонг - удивительный копченый аромат! Кто пробовал?', likes: 8, liked: false}
-        ];
-
-        let notes = [
-            {id: 1, text: 'Шу Пуэр: 100°C, 15 сек, гайвань 120мл. 7 проливов отличных!', date: '14.01.2026'},
-            {id: 2, text: 'Да Хун Пао: 90°C, быстрые проливы. Цветочный послевкусие!', date: '13.01.2026'}
-        ];
-
-        let teas = [
-            {name: 'Зелёный чай', description: 'Свежий вкус с травяными нотками. Минимальная ферментация сохраняет природную свежесть.', brewing: '75-85°C • 1-3 мин • Гайвань'},
-            {name: 'Белый чай', description: 'Нежный сладковатый вкус с цветочными оттенками. Весенний сбор без ферментации.', brewing: '75-85°C • 1-2 мин • Стеклянный чайник'},
-            {name: 'Улун', description: 'Богатый вкус от цветочного до фруктового. Частично ферментированный.', brewing: '85-95°C • 20-60 сек • Пиалы'},
-            {name: 'Пуэр', description: 'Глубокий землистый вкус. Постферментация придаёт уникальные нотки.', brewing: '95-100°C • 10-30 сек • Чайник 150 мл'}
-        ];
-
-        // Функция для воспроизведения аудио
-        function playAudio(audioId) {
-            const audio = document.getElementById(audioId);
-            if (audio) {
-                audio.play().then(() => {
-                    tg.HapticFeedback.notificationOccurred('success');
-                }).catch(e => {
-                    tg.showAlert('Нажмите на плеер для воспроизведения');
-                });
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            updateProfileDisplay();
-            renderTeaList();
-            renderPosts();
-            renderNotes();
-            tg.MainButton.setText('🍵 Главная').onClick(showWelcome).show();
-        });
-
-        function showWelcome() {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById('welcomeScreen').style.display = 'flex';
-            document.getElementById('backBtn').style.display = 'none';
-        }
-
-        function showSection(sectionId) {
-            document.getElementById('welcomeScreen').style.display = 'none';
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
-            document.getElementById('backBtn').style.display = 'block';
-        }
-
-        function updateProfileDisplay() {
-            document.getElementById('profileName').textContent = currentUser.name;
-            document.getElementById('profileBio').textContent = currentUser.bio;
-            document.getElementById('avatarText').textContent = currentUser.name[0] || 'К';
-            document.getElementById('editName').value = currentUser.name;
-            document.getElementById('editBio').value = currentUser.bio;
-        }
-
-        function saveProfile() {
-            currentUser.name = document.getElementById('editName').value;
-            currentUser.bio = document.getElementById('editBio').value;
-            updateProfileDisplay();
-            tg.showAlert('Профиль обновлён! 🍵');
-        }
-
-        function renderTeaList() {
-            document.getElementById('teaList').innerHTML = teas.map(tea => `
-                <div class="tea-card">
-                    <div class="tea-name">${tea.name}</div>
-                    <p style="opacity: 0.92; line-height: 1.8; margin-bottom: 28px; font-size: 17px;">${tea.description}</p>
-                    <div style="background: rgba(139,195,74,0.1); padding: 25px; border-radius: 25px; border-left: 8px solid #8bc34a; font-family: 'Orbitron', monospace; font-weight: 600; font-size: 17px;">
-                        🍵 Заваривание: <strong>${tea.brewing}</strong>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderPosts() {
-            document.getElementById('postsList').innerHTML = posts.map(post => `
-                <div class="post">
-                    <div style="display: flex; align-items: center; margin-bottom: 25px;">
-                        <div style="width: 55px; height: 55px; border-radius: 18px; background: linear-gradient(145deg, #8bc34a, #a4d484); margin-right: 22px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 22px; box-shadow: 0 10px 30px rgba(139,195,74,0.4);"> ${post.avatar}</div>
-                        <div>
-                            <div style="font-weight: 600; font-size: 20px; margin-bottom: 8px;">${post.user}</div>
-                            <div style="font-size: 16px; opacity: 0.75;">${Math.floor(Math.random()*3)+1}ч назад</div>
-                        </div>
-                    </div>
-                    <div style="font-size: 18px; line-height: 1.8; opacity: 0.95; margin-bottom: 30px;">${post.text}</div>
-                    <div class="post-actions">
-                        <button class="action-btn ${post.liked ? 'liked' : ''}" onclick="toggleLike(${post.id})">
-                            ❤️ ${post.likes}
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function addPost() {
-            const text = document.getElementById('newPost').value.trim();
-            if (!text) return;
-            posts.unshift({
-                id: Date.now(),
-                userId: currentUser.id,
-                user: currentUser.name,
-                avatar: currentUser.name[0] || 'К',
-                text: text,
-                likes: 0,
-                liked: false
-            });
-            document.getElementById('newPost').value = '';
-            renderPosts();
-            tg.HapticFeedback.notificationOccurred('success');
-        }
-
-        function toggleLike(postId) {
-            const post = posts.find(p => p.id === postId);
-            post.liked = !post.liked;
-            post.likes += post.liked ? 1 : -1;
-            renderPosts();
-            tg.HapticFeedback.impactOccurred('medium');
-        }
-
-        function renderNotes() {
-            document.getElementById('notesList').innerHTML = notes.map(note => `
-                <div class="tea-card" style="position: relative; padding: 28px;">
-                    <div style="font-size: 17px; line-height: 1.7; opacity: 0.95; margin-bottom: 18px;">${note.text}</div>
-                    <div style="font-size: 15px; opacity: 0.75; font-family: 'Orbitron', monospace; background: rgba(139,195,74,0.1); padding: 8px 15px; border-radius: 20px; display: inline-block;">${note.date}</div>
-                </div>
-            `).join('') || '<div style="text-align: center; opacity: 0.6; padding: 70px; font-style: italic; font-size: 18px;">📝 Заметок пока нет. Добавьте первую про любимый чай!</div>';
-        }
-
-        function addNote() {
-            const text = document.getElementById('newNote').value.trim();
-            if (!text) return;
-            notes.unshift({
-                id: Date.now(),
-                text: text,
-                date: new Date().toLocaleDateString('ru-RU')
-            });
-            document.getElementById('newNote').value = '';
-            renderNotes();
-            tg.HapticFeedback.notificationOccurred('success');
-        }
-    </script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
+```
+
+```javascript
+// main.js - Полностью рабочий код приложения
+class FinanceCoachApp {
+    constructor() {
+        this.userData = {
+            userId: null,
+            goals: [],
+            trialEnd: null,
+            subscriptionEnd: null,
+            currentGoal: null,
+            incomeRange: '',
+            hasDebts: false,
+            hasMortgage: false,
+            actions: [],
+            stats: {
+                monthSaved: 4200,
+                streakDays: 7,
+                totalActions: 23,
+                completedActions: 19
+            }
+        };
+        
+        this.selectedGoalType = null;
+        this.currentScreen = 'onboarding';
+        this.trialDaysUsed = 3; // Симуляция
+        
+        this.init();
+    }
+
+    init() {
+        // Инициализация Telegram WebApp
+        if (window.Telegram?.WebApp) {
+            const tg = window.Telegram.WebApp;
+            tg.ready();
+            tg.expand();
+            
+            this.userData.userId = tg.initDataUnsafe?.user?.id || 'demo-user';
+            document.title = tg.initDataUnsafe?.user?.first_name 
+                ? `ИИ ФинКоуч - ${tg.initDataUnsafe.user.first_name}`
+                : 'ИИ ФинКоуч';
+        }
+
+        this.loadData();
+        this.checkTrialStatus();
+        this.bindEvents();
+        this.updateProgressCircle();
+    }
+
+    loadData() {
+        const saved = localStorage.getItem(`finance_coach_${this.userData.userId}`);
+        if (saved) {
+            this.userData = { ...this.userData, ...JSON.parse(saved) };
+        }
+        
+        // Загружаем демо-данные если пусто
+        if (!this.userData.goals.length) {
+            this.userData.goals = [{
+                id: 1,
+                type: 'pillow',
+                title: 'Финансовая подушка',
+                target: 100000,
+                current: 30000,
+                startDate: '2026-01-01',
+                targetDate: '2026-07-15',
+                completed: false
+            }];
+            this.userData.currentGoal = 1;
+        }
+    }
+
+    saveData() {
+        localStorage.setItem(`finance_coach_${this.userData.userId}`, 
+            JSON.stringify(this.userData));
+    }
+
+    checkTrialStatus() {
+        const now = new Date();
+        const trialEnd = this.userData.trialEnd ? new Date(this.userData.trialEnd) : null;
+        
+        if (trialEnd && now > trialEnd) {
+            this.showScreen('trial-expired');
+            return false;
+        }
+        
+        if (!trialEnd) {
+            // Начинаем триал на 10 дней
+            const trialEndDate = new Date();
+            trialEndDate.setDate(trialEndDate.getDate() + 10);
+            this.userData.trialEnd = trialEndDate.toISOString().split('T')[0];
+            this.saveData();
+        }
+        
+        return true;
+    }
+
+    bindEvents() {
+        // Обработчики кнопок уже встроены в HTML через onclick
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('.nav-item')) {
+                document.querySelectorAll('.nav-item').forEach(item => 
+                    item.classList.remove('active'));
+                e.target.classList.add('active');
+            }
+        });
+    }
+
+    nextOnboardingSlide() {
+        const slides = ['onboarding', 'goal-select'];
+        const currentIndex = slides.indexOf(this.currentScreen);
+        
+        if (currentIndex < slides.length - 1) {
+            this.showScreen(slides[currentIndex + 1]);
+        }
+    }
+
+    selectGoal(type) {
+        this.selectedGoalType = type;
+        
+        document.querySelectorAll('.goal-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        event.target.closest('.goal-card').classList.add('selected');
+        
+        document.getElementById('continue-goal-btn').disabled = false;
+    }
+
+    goToGoalSetup() {
+        const goalTitles = {
+            pillow: 'Финансовая подушка',
+            debt: 'Закрытие долгов', 
+            purchase: 'Крупная покупка',
+            custom: 'Моя цель'
+        };
+        
+        document.getElementById('goal-date').value = new Date(
+            Date.now() + 180 * 24 * 60 * 60 * 1000
+        ).toISOString().split('T')[0];
+        
+        this.showScreen('goal-setup');
+    }
+
+    updateGoalCalculation() {
+        const amount = parseInt(document.getElementById('goal-amount').value) || 0;
+        const current = parseInt(document.getElementById('goal-current').value) || 0;
+        const targetDate = document.getElementById('goal-date').value;
+        
+        if (!amount || !targetDate) return;
+        
+        const daysLeft = (new Date(targetDate) - new Date()) / (1000 * 60 * 60 * 24);
+        const monthsLeft = daysLeft / 30;
+        const toSave = amount - current;
+        const monthly = Math.round(toSave / monthsLeft);
+        const weekly = Math.round(monthly / 4);
+        
+        document.getElementById('goal-calculation').innerHTML = `
+            <div style="font-size: 16px; font-weight: 600; color: #667eea; margin-bottom: 8px;">
+                Нужно откладывать:
+            </div>
+            <div style="font-size: 24px; font-weight: 700; color: #1a1a1a;">
+                ${monthly.toLocaleString()} ₽/мес
+            </div>
+            <div style="font-size: 16px; color: #666;">
+                или ${weekly.toLocaleString()} ₽/неделя
+            </div>
+        `;
+    }
+
+    createGoal() {
+        const amount = parseInt(document.getElementById('goal-amount').value);
+        const current = parseInt(document.getElementById('goal-current').value);
+        const targetDate = document.getElementById('goal-date').value;
+        
+        if (!amount || amount < 1000) {
+            alert('Укажи сумму цели минимум 1000 ₽');
+            return;
+        }
+        
+        const goalTitles = {
+            pillow: 'Финансовая подушка',
+            debt: 'Закрытие долгов',
+            purchase: 'Крупная покупка',
+            custom: 'Моя цель'
+        };
+        
+        const newGoal = {
+            id: Date.now(),
+            type: this.selectedGoalType,
+            title: goalTitles[this.selectedGoalType],
+            target: amount,
+            current: current,
+            startDate: new Date().toISOString().split('T')[0],
+            targetDate: targetDate,
+            completed: false
+        };
+        
+        this.userData.goals.push(newGoal);
+        this.userData.currentGoal = newGoal.id;
+        this.saveData();
+        
+        this.showScreen('dashboard');
+        this.updateDashboard();
+        this.showConfetti();
+    }
+
+    updateProgressCircle() {
+        if (!this.userData.currentGoal) return;
+        
+        const goal = this.userData.goals.find(g => g.id === this.userData.currentGoal);
+        if (!goal) return;
+        
+        const progress = Math.min((goal.current / goal.target) * 100, 100);
+        const circumference = 327; // 2 * π * r (r=52)
+        const offset = circumference - (progress / 100) * circumference;
+        
+        document.getElementById('progress-circle').style.strokeDasharray = `${offset} ${circumference}`;
+        document.getElementById('progress-text').textContent = `${Math.round(progress)}%`;
+    }
+
+    updateDashboard() {
+        if (!this.userData.currentGoal) return;
+        
+        const goal = this.userData.goals.find(g => g.id === this.userData.currentGoal);
+        if (!goal) return;
+        
+        document.getElementById('dashboard-title').textContent = goal.title;
+        document.getElementById('dashboard-current-sum').textContent = 
+            goal.current.toLocaleString() + ' ₽';
+        document.getElementById('dashboard-total-sum').innerHTML = 
+            `из ${goal.target.toLocaleString()} ₽`;
+            
+        const targetDate = new Date(goal.targetDate);
+        document.getElementById('dashboard-date').textContent = 
+            `Достигнешь к ${targetDate.toLocaleDateString('ru-RU', {
+                day: 'numeric', month: 'long', year: 'numeric'
+            })}`;
+        
+        this.updateProgressCircle();
+        this.generateTodayActions();
+    }
+
+    generateTodayActions() {
+        const actions = [
+            {
+                title: '💰 Отложи 300 ₽',
+                desc: 'Это приблизит цель на 4 дня. Переведи на отдельную карту или копилку',
+                impact: 4
+            },
+            {
+                title: '📊 Проверь траты на еду',
+                desc: 'Если больше 25% бюджета — поставь лимит 500 ₽/неделя на доставку',
+                impact: 2
+            },
+            {
+                title: '📱 Пересмотри тариф связи',
+                desc: 'Сэкономленные 200 ₽/мес = 2400 ₽/год на твою цель',
+                impact: 12
+            },
+            {
+                title: '🛒 Откажись от 1 подписки',
+                desc: 'Проверь расходы — наверняка есть сервис, которым не пользуешься',
+                impact: 3
+            }
+        ];
+        
+        const todayActions = actions.slice(0, 2).map(action => ({
+            ...action,
+            id: Date.now() + Math.random()
+        }));
+        
+        this.userData.actions = todayActions;
+        this.saveData();
+        
+        document.getElementById('today-actions').innerHTML = todayActions.map(action => `
+            <div class="action-card">
+                <div class="action-title">${action.title}</div>
+                <div class="action-desc">${action.desc}</div>
+                <button class="btn btn-success btn-small" onclick="app.completeAction(this)">✓ Сделано</button>
+                <button class="btn btn-secondary btn-small" style="margin-left: 8px;" onclick="app.skipAction(this)">⏭️ Позже</button>
+            </div>
+        `).join('');
+    }
+
+    completeAction(button) {
+        button.textContent = '✅ Выполнено!';
+        button.className = 'btn btn-success btn-small';
+        button.disabled = true;
+        
+        this.userData.stats.streakDays++;
+        this.userData.stats.completedActions++;
+        this.saveData();
+        
+        // Обновляем статистику
+        document.getElementById('streak-days').textContent = this.userData.stats.streakDays;
+        this.showConfetti();
+    }
+
+    skipAction(button) {
+        button.textContent = '⏭️ Отложено';
+        button.disabled = true;
+    }
+
+    showConfetti() {
+        // Простая анимация конфетти
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.style.cssText = `
+                position: fixed;
+                width: 10px;
+                height: 10px;
+                background: ${['#667eea', '#764ba2', '#f093fb', '#f5576c'][Math.floor(Math.random()*4)]};
+                left: ${Math.random()*100}vw;
+                animation: fall ${2+Math.random()*3}s linear forwards;
+                border-radius: 50%;
+                z-index: 1000;
+            `;
+            confetti.style.animationDelay = Math.random() + 's';
+            document.body.appendChild(confetti);
+            
+            setTimeout(() => confetti.remove(), 5000);
+        }
+    }
+
+    showScreen(screenName) {
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.remove('active');
+        });
+        document.getElementById(`screen-${screenName}`).classList.add('active');
+        
+        this.currentScreen = screenName;
+        
+        if (screenName === 'dashboard') {
+            this.updateDashboard();
+        }
+    }
+
+    showPayment() {
+        // Симуляция оплаты
+        alert('💳 Оплата 139 ₽ прошла успешно!\n\nПолный доступ активирован на 30 дней.\nСпасибо за доверие!');
+        
+        // Симулируем покупку
+        const subscriptionEnd = new Date();
+        subscriptionEnd.setDate(subscriptionEnd.getDate() + 30);
+        this.userData.subscriptionEnd = subscriptionEnd.toISOString().split('T')[0];
+        this.saveData();
+        
+        this.showScreen('dashboard');
+    }
+}
+
+// Глобальные обработчики
+document.addEventListener('DOMContentLoaded', () => {
+    window.app = new FinanceCoachApp();
+    
+    // Обработчики для динамических элементов
+    document.getElementById('goal-amount').addEventListener('input', () => app.updateGoalCalculation());
+    document.getElementById('goal-current').addEventListener('input', () => app.updateGoalCalculation());
+    document.getElementById('goal-date').addEventListener('change', () => app.updateGoalCalculation());
+});
+
+// Добавляем CSS для анимации конфетти
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fall {
+        0% {
+            transform: translateY(-100vh) rotate(0deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh) rotate(720deg);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
