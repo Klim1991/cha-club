@@ -1,171 +1,632 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🍵 ChaClub</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чайный Клуб (ChuClub)</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
 
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:linear-gradient(135deg,#f3f3ef,#e6f4ea);
-  color:#2d5016;
-}
-.container{max-width:420px;margin:0 auto;padding:16px}
-.screen{
-  display:none;background:#fff;border-radius:20px;padding:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,.15)
-}
-h1{text-align:center;margin-bottom:10px}
-.btn{
-  width:100%;padding:14px;margin-top:10px;border-radius:16px;
-  border:none;font-size:15px;font-weight:700;cursor:pointer;
-  background:linear-gradient(135deg,#2e8b57,#3cb371);color:#fff
-}
-.btn.secondary{
-  background:linear-gradient(135deg,#d2b48c,#f4a460)
-}
-.post,.card{
-  background:#f8faf8;border-radius:14px;padding:12px;margin-top:10px;
-  box-shadow:0 4px 14px rgba(0,0,0,.08)
-}
-.author{font-weight:700;cursor:pointer}
-.admin{color:#b22222;font-weight:700}
-input,textarea{
-  width:100%;padding:10px;border-radius:12px;
-  border:1px solid #ccc;margin-top:8px
-}
-</style>
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-screen {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: linear-gradient(45deg, #ff9a9e, #fecfef, #fecfef, #ff9a9e);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .tea-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        h1 {
+            font-size: 28px;
+            background: linear-gradient(45deg, #d299c2, #fef9d7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border: none;
+            padding: 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .section {
+            display: none;
+            padding: 20px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.8);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: #4a5568;
+            margin-left: 15px;
+        }
+
+        .tea-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .tea-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+
+        .tea-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .tea-brew {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 15px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .profile-info h3 {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .profile-info p {
+            color: #666;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input-group input:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .post {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .post-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            color: white;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: #f7fafc;
+        }
+
+        .admin-panel {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .feed-item {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .subscription-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .subscriber-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 0;
+            }
+        }
+    </style>
 </head>
-
 <body>
-<div class="container">
+    <div class="container" id="app">
+        <!-- Приветственный экран -->
+        <div id="welcomeScreen" class="welcome-screen">
+            <div class="tea-icon">🍵</div>
+            <h1>Чайный Клуб</h1>
+            <p class="subtitle">Добро пожаловать в мир изысканных китайских чаев</p>
+            <div class="nav-grid">
+                <button class="nav-btn" onclick="showSection('teas')">Виды чая</button>
+                <button class="nav-btn" onclick="showSection('meditations')">Медитации</button>
+                <button class="nav-btn" onclick="showSection('feed')">Общий чат</button>
+                <button class="nav-btn" onclick="showSection('profile')">Профиль</button>
+            </div>
+        </div>
 
-<div id="welcomeScreen" class="screen">
-  <h1>🍵 ChaClub</h1>
-  <p style="text-align:center">
-    Добро пожаловать,<br><strong id="welcomeUser">@user</strong>
-  </p>
-  <button class="btn" onclick="show('mainScreen')">🚀 Войти</button>
-</div>
+        <!-- Кнопка назад -->
+        <button class="back-btn" onclick="showWelcome()" style="display: none;" id="backBtn">←</button>
 
-<div id="mainScreen" class="screen">
-  <h1>📜 Лента</h1>
-  <div id="feed"></div>
-  <button class="btn" onclick="newPost()">✨ Новый пост</button>
-  <button class="btn secondary" onclick="show('guideScreen')">🍃 Чайный гайд</button>
-  <button class="btn secondary" onclick="show('profileScreen')">👤 Профиль</button>
-</div>
+        <!-- Разделы -->
+        <div id="teas" class="section">
+            <div class="section-header">
+                <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">🍵</div>
+                <h2 class="section-title">Виды чая и заваривание</h2>
+            </div>
+            <div id="teaList"></div>
+        </div>
 
-<div id="profileScreen" class="screen">
-  <h1>👤 Профиль</h1>
-  <p id="profileName"></p>
-  <p id="profileRole"></p>
-  <button class="btn secondary" onclick="show('mainScreen')">← Назад</button>
-</div>
+        <div id="meditations" class="section">
+            <div class="section-header">
+                <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">🧘</div>
+                <h2 class="section-title">Чайные медитации</h2>
+            </div>
+            <div class="meditations-grid">
+                <div class="tea-card">
+                    <h3>🌿 Утренний ритуал</h3>
+                    <p>10 минутная медитация для гармоничного начала дня</p>
+                    <audio controls style="width: 100%; margin-top: 10px;"></audio>
+                </div>
+                <div class="tea-card">
+                    <h3>🍃 Вечерний покой</h3>
+                    <p>Расслабляющая медитация перед сном</p>
+                    <audio controls style="width: 100%; margin-top: 10px;"></audio>
+                </div>
+            </div>
+        </div>
 
-<div id="guideScreen" class="screen">
-  <h1>🍃 Чайный гайд</h1>
-  <div id="guideList"></div>
-  <button id="addGuideBtn" class="btn">➕ Добавить статью</button>
-  <button class="btn secondary" onclick="show('mainScreen')">← Назад</button>
-</div>
+        <div id="feed" class="section">
+            <div class="section-header">
+                <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white;">💬</div>
+                <h2 class="section-title">Общий чат</h2>
+            </div>
+            <div id="postsList" style="max-height: 400px; overflow-y: auto; margin-bottom: 20px;"></div>
+            <div class="input-group">
+                <textarea id="newPost" placeholder="Поделитесь своими мыслями о чае..." rows="3"></textarea>
+            </div>
+            <button class="btn" onclick="addPost()">Опубликовать</button>
+        </div>
 
-<div id="addGuideScreen" class="screen">
-  <h1>➕ Новая статья</h1>
-  <input id="guideTitle" placeholder="Заголовок">
-  <textarea id="guideText" placeholder="Текст статьи"></textarea>
-  <button class="btn" onclick="saveGuide()">Сохранить</button>
-  <button class="btn secondary" onclick="show('guideScreen')">← Назад</button>
-</div>
+        <div id="profile" class="section">
+            <div class="section-header">
+                <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white;">👤</div>
+                <h2 class="section-title">Личный кабинет</h2>
+            </div>
+            
+            <div class="profile-grid">
+                <div class="profile-avatar" id="profileAvatar">К</div>
+                <div class="profile-info">
+                    <h3 id="profileName">Клим Чайный</h3>
+                    <p id="profileBio">Любитель китайского чая из Краснодара</p>
+                </div>
+            </div>
 
-</div>
+            <div class="input-group">
+                <label>Имя</label>
+                <input type="text" id="editName" value="Клим Чайный">
+            </div>
+            <div class="input-group">
+                <label>О себе</label>
+                <textarea id="editBio" rows="3">Любитель китайского чая из Краснодара</textarea>
+            </div>
+            <button class="btn" onclick="saveProfile()">Сохранить</button>
 
-<script>
-const tg=window.Telegram?.WebApp||null;
-if(tg){tg.ready();tg.expand()}
+            <div style="margin-top: 30px;">
+                <h3 style="margin-bottom: 15px;">Мои подписки (5)</h3>
+                <div class="subscription-list" id="subscriptionsList"></div>
+            </div>
+        </div>
 
-const ADMINS=["your_username_here"]; // ← ВПИШИ СВОЙ USERNAME
-
-const storage={
-  save:(k,v)=>localStorage.setItem(k,JSON.stringify(v)),
-  load:(k)=>JSON.parse(localStorage.getItem(k)||"null")
-};
-
-const app={
-  user:tg?.initDataUnsafe?.user||{username:"guest_"+Math.floor(Math.random()*1000)},
-  posts:storage.load("posts")||[],
-  guides:storage.load("guides")||[],
-  role:"user"
-};
-
-app.role = ADMINS.includes(app.user.username) ? "admin" : "user";
-
-welcomeUser.textContent="@"+app.user.username;
-
-function show(id){
-  document.querySelectorAll(".screen").forEach(s=>s.style.display="none");
-  document.getElementById(id).style.display="block";
-}
-
-function renderFeed(){
-  feed.innerHTML=app.posts.map((p,i)=>`
-    <div class="post">
-      <div class="author">@${p.author}</div>
-      <div>${p.text}</div>
-      ${app.role==="admin"?`<button onclick="delPost(${i})">🗑</button>`:""}
+        <div id="adminPanel" class="section" style="display: none;">
+            <div class="section-header">
+                <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white;">⚙️</div>
+                <h2 class="section-title">Админ панель</h2>
+            </div>
+            <div class="admin-panel">
+                <h3>Рекламные баннеры</h3>
+                <div class="input-group">
+                    <input type="text" id="adLink" placeholder="Ссылка на рекламу">
+                </div>
+                <button class="btn" onclick="addAd()">Добавить баннер</button>
+            </div>
+            <div id="adsList"></div>
+        </div>
     </div>
-  `).join("")||"<p>Пусто ☕</p>";
-}
 
-function newPost(){
-  const t=prompt("Текст поста");
-  if(!t)return;
-  app.posts.unshift({author:app.user.username,text:t});
-  storage.save("posts",app.posts);
-  renderFeed();
-}
+    <script>
+        // Инициализация Telegram WebApp
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.enableClosingConfirmation();
 
-function delPost(i){
-  if(!confirm("Удалить пост?"))return;
-  app.posts.splice(i,1);
-  storage.save("posts",app.posts);
-  renderFeed();
-}
+        // Данные пользователей и постов
+        let currentUser = {
+            id: tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : 12345,
+            name: tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name + ' ' + (tg.initDataUnsafe.user.last_name || '') : 'Клим Чайный',
+            bio: 'Любитель китайского чая из Краснодара',
+            avatar: 'К'
+        };
 
-function renderProfile(){
-  profileName.textContent="@"+app.user.username;
-  profileRole.textContent="Роль: "+app.role;
-}
+        let posts = [
+            {id: 1, user: 'Чай Мастер', avatar: 'Ч', text: 'Сегодня заваривал Шу Пуэр 2018 года. Насыщенный вкус с нотками чернослива!', likes: 12, comments: 3},
+            {id: 2, user: 'Листок', avatar: 'Л', text: 'Кто пробовал Лапсанг Сушонг? Удивительный копченый аромат!', likes: 8, comments: 2},
+        ];
 
-function renderGuide(){
-  guideList.innerHTML=app.guides.map(g=>`
-    <div class="card">
-      <strong>${g.title}</strong>
-      <p>${g.text}</p>
-    </div>
-  `).join("")||"<p>Пока нет статей 🍵</p>";
-  addGuideBtn.style.display = app.role==="admin"?"block":"none";
-}
+        let teas = [
+            {
+                name: 'Зелёный чай',
+                description: 'Зелёный чай получают из листьев чайного куста путем минимальной ферментации (около 1 дня).',
+                brewing: 'Температура воды: 75-85°C<br>Время заваривания: 1-3 минуты<br>Посуда: Гаунань ху или чашки по 50-100 мл'
+            },
+            {
+                name: 'Белый чай',
+                description: 'Белый чай собирают весной с чайных кустов, подвергая листья минимальной обработке.',
+                brewing: 'Температура воды: 75-85°C<br>Время заваривания: 1-2 минуты<br>Посуда: Гаунань ху или стеклянный чайник'
+            },
+            {
+                name: 'Улун',
+                description: 'Улуны (или вулуны) занимают промежуточное положение между зелёным и красным чаем.',
+                brewing: 'Температура воды: 85-95°C<br>Время заваривания: 20-60 секунд<br>Посуда: Маленькие пиалы и гайвань'
+            },
+            {
+                name: 'Пуэр',
+                description: 'Пуэр получают из листьев чайного дерева, собранных в провинции Юньнань.',
+                brewing: 'Температура воды: 95-100°C<br>Время заваривания: 10-30 секунд<br>Посуда: Гайвань или чайник 150 мл'
+            }
+        ];
 
-function saveGuide(){
-  const t=guideTitle.value.trim();
-  const c=guideText.value.trim();
-  if(!t||!c)return alert("Заполни всё");
-  app.guides.unshift({title:t,text:c});
-  storage.save("guides",app.guides);
-  guideTitle.value="";guideText.value="";
-  renderGuide();
-  show("guideScreen");
-}
+        let subscriptions = ['Чай Мастер', 'Листок', 'Зеленый Дракон', 'Пуэр Любитель', 'Улун Королева'];
+        let ads = [];
 
-show("welcomeScreen");
-renderFeed();
-renderProfile();
-renderGuide();
-</script>
+        const ADMIN_ID = 6902824637;
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProfileDisplay();
+            renderTeaList();
+            renderPosts();
+            renderSubscriptions();
+            
+            if (currentUser.id == ADMIN_ID) {
+                document.querySelector('.profile-grid').innerHTML += 
+                    '<button class="btn" onclick="showSection(\'adminPanel\')" style="margin-top: 15px; background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);">Админ панель</button>';
+            }
+        });
+
+        function showWelcome() {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('welcomeScreen').style.display = 'block';
+            document.getElementById('backBtn').style.display = 'none';
+        }
+
+        function showSection(sectionId) {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            document.getElementById('backBtn').style.display = 'block';
+        }
+
+        function updateProfileDisplay() {
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileBio').textContent = currentUser.bio;
+            document.getElementById('profileAvatar').textContent = currentUser.avatar || currentUser.name[0];
+            document.getElementById('editName').value = currentUser.name;
+            document.getElementById('editBio').value = currentUser.bio;
+        }
+
+        function saveProfile() {
+            currentUser.name = document.getElementById('editName').value;
+            currentUser.bio = document.getElementById('editBio').value;
+            currentUser.avatar = currentUser.name[0];
+            updateProfileDisplay();
+            tg.showAlert('Профиль сохранён!');
+        }
+
+        function renderTeaList() {
+            const container = document.getElementById('teaList');
+            container.innerHTML = teas.map(tea => `
+                <div class="tea-card">
+                    <div class="tea-name">${tea.name}</div>
+                    <p>${tea.description}</p>
+                    <div class="tea-brew">
+                        <strong>Как заваривать:</strong><br>${tea.brewing}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPosts() {
+            const container = document.getElementById('postsList');
+            container.innerHTML = posts.map(post => `
+                <div class="post">
+                    <div class="post-header">
+                        <div class="post-avatar">${post.avatar}</div>
+                        <div>
+                            <strong>${post.user}</strong><br>
+                            <small>2 часа назад</small>
+                        </div>
+                    </div>
+                    <p>${post.text}</p>
+                    <div class="post-actions">
+                        <button class="action-btn" onclick="likePost(${post.id})">❤️ ${post.likes}</button>
+                        <button class="action-btn" onclick="commentPost(${post.id})">💬 ${post.comments}</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addPost() {
+            const text = document.getElementById('newPost').value.trim();
+            if (!text) return;
+            
+            posts.unshift({
+                id: Date.now(),
+                user: currentUser.name,
+                avatar: currentUser.avatar,
+                text: text,
+                likes: 0,
+                comments: 0
+            });
+            
+            document.getElementById('newPost').value = '';
+            renderPosts();
+            tg.HapticFeedback.notificationOccurred('success');
+        }
+
+        function likePost(id) {
+            const post = posts.find(p => p.id === id);
+            post.likes++;
+            renderPosts();
+            tg.HapticFeedback.impactOccurred('light');
+        }
+
+        function commentPost(id) {
+            tg.showAlert('Комментарии в разработке');
+        }
+
+        function renderSubscriptions() {
+            const container = document.getElementById('subscriptionsList');
+            container.innerHTML = subscriptions.map(sub => `
+                <div class="subscriber-item">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">${sub[0]}</div>
+                        <div>${sub}</div>
+                    </div>
+                    <button class="action-btn" onclick="unsubscribe('${sub}')">Отписаться</button>
+                </div>
+            `).join('');
+        }
+
+        function unsubscribe(name) {
+            const index = subscriptions.indexOf(name);
+            if (index > -1) {
+                subscriptions.splice(index, 1);
+                renderSubscriptions();
+            }
+        }
+
+        function addAd() {
+            const link = document.getElementById('adLink').value.trim();
+            if (!link) return;
+            
+            ads.push({id: Date.now(), link: link});
+            document.getElementById('adLink').value = '';
+            renderAds();
+            tg.showAlert('Реклама добавлена!');
+        }
+
+        function renderAds() {
+            const container = document.getElementById('adsList');
+            container.innerHTML = ads.map(ad => `
+                <div class="feed-item">
+                    <strong>Рекламный баннер:</strong> ${ad.link}
+                    <button class="action-btn" onclick="removeAd(${ad.id})" style="float: right; background: #ff6b6b; color: white;">Удалить</button>
+                </div>
+            `).join('') || '<p style="text-align: center; color: #666; padding: 40px;">Рекламные баннеры пока не добавлены</p>';
+        }
+
+        function removeAd(id) {
+            ads = ads.filter(ad => ad.id !== id);
+            renderAds();
+        }
+
+        // Обработка кнопки Telegram
+        tg.MainButton.setText('В меню').onClick(showWelcome).show();
+    </script>
 </body>
 </html>
