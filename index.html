@@ -2,10 +2,10 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Чайный Клуб (ChuClub) 🔥</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>🍵 Чайный Клуб - ChuClub</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,12 +13,17 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
         body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8f4e8 0%, #e8f5e8 30%, #fffaf0 70%, #f0f8f0 100%);
             min-height: 100vh;
-            color: #fff;
-            overflow-x: hidden;
+            color: #3a4a40;
+            position: relative;
         }
 
         body::before {
@@ -28,134 +33,140 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(120,119,198,0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255,119,198,0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(120,219,255,0.2) 0%, transparent 50%);
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(120,200,150,0.1) 0%, transparent 40%),
+                radial-gradient(circle at 70% 70%, rgba(200,150,100,0.08) 0%, transparent 40%);
             z-index: -1;
-            animation: bgShift 20s ease infinite;
-        }
-
-        @keyframes bgShift {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.1) rotate(180deg); }
+            pointer-events: none;
         }
 
         .container {
-            max-width: 400px;
-            margin: 0 auto;
-            min-height: 100vh;
-            background: rgba(26, 26, 46, 0.95);
+            width: 100%;
+            height: 100vh;
+            max-width: 100%;
+            margin: 0;
+            background: rgba(255,255,255,0.98);
             backdrop-filter: blur(20px);
             position: relative;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+            box-shadow: inset 0 0 50px rgba(255,255,255,0.5);
         }
 
         .welcome-screen {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            padding: 80px 20px 40px;
-            background: linear-gradient(45deg, #ff006e 0%, #8338ec 25%, #3a86ff 50%, #06ffa5 100%);
-            background-size: 400% 400%;
-            animation: gradientShift 8s ease infinite;
+            padding: 40px 25px;
+            background: linear-gradient(135deg, rgba(248,244,232,0.9) 0%, rgba(232,245,232,0.9) 100%);
             position: relative;
-            overflow: hidden;
         }
 
         .welcome-screen::before {
-            content: '🔥 CHUCLUB 🔥';
+            content: '🍵';
             position: absolute;
+            font-size: 200px;
             top: -50px;
-            left: -50px;
-            font-family: 'Orbitron', monospace;
-            font-size: 120px;
-            font-weight: 900;
+            right: -50px;
             opacity: 0.1;
-            animation: neonGlow 2s ease-in-out infinite alternate;
+            animation: float 6s ease-in-out infinite;
         }
 
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
         }
 
-        @keyframes neonGlow {
-            from { text-shadow: 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #ff00ff; }
-            to { text-shadow: 0 0 10px #fff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff; }
-        }
-
-        .rock-logo {
-            font-family: 'Orbitron', monospace;
-            font-size: 42px;
-            font-weight: 900;
-            background: linear-gradient(45deg, #fff, #ff6b6b, #4ecdc4, #45b7d1);
+        .tea-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 38px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6b8e4a, #9bb85c, #a8c9a8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 15px;
-            text-shadow: 0 0 30px rgba(255,255,255,0.5);
-            animation: logoPulse 2s ease-in-out infinite;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(107,142,74,0.3);
         }
 
-        @keyframes logoPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        .welcome-subtitle {
+            font-size: 18px;
+            color: #5a6f4e;
+            margin-bottom: 40px;
+            line-height: 1.5;
+            max-width: 300px;
         }
 
         .nav-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
-            padding: 30px 20px;
+            padding: 0 20px;
+            width: 100%;
+            flex: 1;
+            max-width: 360px;
         }
 
-        .rock-btn {
-            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            border: 2px solid rgba(255,255,255,0.3);
-            padding: 25px;
+        .tea-btn {
+            background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(248,255,248,0.9));
+            border: 2px solid rgba(107,142,74,0.3);
+            padding: 25px 20px;
             border-radius: 25px;
-            font-family: 'Orbitron', monospace;
             font-size: 16px;
-            font-weight: 700;
-            color: #fff;
+            font-weight: 500;
+            color: #3a4a40;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(107,142,74,0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
             position: relative;
             overflow: hidden;
         }
 
-        .rock-btn::before {
+        .tea-btn::before {
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(107,142,74,0.1), rgba(154,184,92,0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        .rock-btn:hover::before {
-            left: 100%;
+        .tea-btn:hover::before {
+            opacity: 1;
         }
 
-        .rock-btn:hover {
-            transform: translateY(-10px) scale(1.05);
-            border-color: #ff6b6b;
-            box-shadow: 0 20px 40px rgba(255,107,107,0.4);
-            text-shadow: 0 0 20px #ff6b6b;
+        .tea-btn:hover {
+            transform: translateY(-8px);
+            border-color: #6b8e4a;
+            box-shadow: 0 20px 40px rgba(107,142,74,0.25);
+            color: #2d4030;
+        }
+
+        .tea-btn-icon {
+            font-size: 28px;
         }
 
         .section {
             display: none;
+            height: 100vh;
+            overflow-y: auto;
             padding: 25px;
-            animation: slideInRock 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: fadeInTea 0.5s ease-out;
         }
 
-        @keyframes slideInRock {
-            from { opacity: 0; transform: translateY(50px) scale(0.9); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+        @keyframes fadeInTea {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .section.active {
@@ -166,23 +177,24 @@
             position: fixed;
             top: 20px;
             left: 20px;
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.9);
+            border: 2px solid rgba(107,142,74,0.3);
             border-radius: 50%;
-            width: 55px;
-            height: 55px;
-            color: #fff;
-            font-size: 22px;
-            font-weight: bold;
+            width: 50px;
+            height: 50px;
+            color: #3a4a40;
+            font-size: 20px;
+            font-weight: 500;
             cursor: pointer;
             z-index: 1000;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
 
         .back-btn:hover {
-            background: rgba(255,107,107,0.3);
-            box-shadow: 0 0 30px rgba(255,107,107,0.5);
+            background: #f8f4e8;
+            border-color: #6b8e4a;
             transform: scale(1.1);
         }
 
@@ -191,76 +203,66 @@
             align-items: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 2px solid rgba(255,255,255,0.2);
-            position: relative;
-        }
-
-        .section-header::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+            border-bottom: 2px solid rgba(107,142,74,0.2);
+            position: sticky;
+            top: 0;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            z-index: 10;
         }
 
         .section-icon {
             width: 50px;
             height: 50px;
             border-radius: 15px;
-            background: linear-gradient(145deg, #ff6b6b, #4ecdc4);
+            background: linear-gradient(135deg, #6b8e4a, #9bb85c);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;
-            margin-right: 20px;
-            box-shadow: 0 10px 30px rgba(255,107,107,0.4);
+            font-size: 24px;
+            margin-right: 18px;
+            color: white;
+            box-shadow: 0 8px 25px rgba(107,142,74,0.3);
         }
 
         .section-title {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Playfair Display', serif;
             font-size: 26px;
-            font-weight: 700;
-            color: #fff;
+            font-weight: 600;
+            color: #3a4a40;
         }
 
-        .rock-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+        .tea-card {
+            background: rgba(255,255,255,0.85);
             border-radius: 25px;
-            padding: 25px;
+            padding: 30px;
             margin-bottom: 25px;
+            border: 1px solid rgba(107,142,74,0.15);
             backdrop-filter: blur(15px);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
         }
 
-        .rock-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #ff6b6b, #4ecdc4, transparent);
-        }
-
-        .rock-card:hover {
-            transform: translateY(-15px) scale(1.02);
-            border-color: #ff6b6b;
-            box-shadow: 0 30px 60px rgba(255,107,107,0.3);
+        .tea-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(107,142,74,0.15);
+            border-color: rgba(107,142,74,0.3);
         }
 
         .tea-name {
-            font-family: 'Orbitron', monospace;
-            font-size: 22px;
-            font-weight: 700;
-            background: linear-gradient(45deg, #fff, #ff6b6b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: #3a4a40;
             margin-bottom: 15px;
+        }
+
+        .tea-brew {
+            background: linear-gradient(135deg, rgba(107,142,74,0.05), rgba(154,184,92,0.05));
+            padding: 20px;
+            border-radius: 20px;
+            border-left: 5px solid #6b8e4a;
+            margin-top: 20px;
         }
 
         .profile-grid {
@@ -269,62 +271,31 @@
             gap: 25px;
             align-items: center;
             margin-bottom: 35px;
-            background: rgba(255,255,255,0.05);
-            padding: 25px;
+            background: rgba(255,255,255,0.8);
+            padding: 30px;
             border-radius: 25px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(107,142,74,0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
         }
 
         .profile-avatar {
             width: 90px;
             height: 90px;
             border-radius: 20px;
-            background: linear-gradient(145deg, #ff6b6b, #4ecdc4);
+            background: linear-gradient(135deg, #9bb85c, #a8c9a8);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 35px;
-            font-weight: bold;
-            color: #fff;
+            font-size: 32px;
+            font-weight: 600;
+            color: white;
             position: relative;
             cursor: pointer;
-            box-shadow: 0 15px 40px rgba(255,107,107,0.4);
-            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(155,184,92,0.3);
         }
 
         .profile-avatar:hover {
             transform: scale(1.05);
-            box-shadow: 0 20px 50px rgba(255,107,107,0.6);
-        }
-
-        .profile-avatar img {
-            width: 100%;
-            height: 100%;
-            border-radius: 20px;
-            object-fit: cover;
-        }
-
-        .profile-info h3 {
-            font-family: 'Orbitron', monospace;
-            font-size: 24px;
-            margin-bottom: 8px;
-            color: #fff;
-        }
-
-        .avatar-upload {
-            position: absolute;
-            bottom: -5px;
-            right: -5px;
-            width: 30px;
-            height: 30px;
-            background: #ff6b6b;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            cursor: pointer;
-            border: 2px solid #fff;
         }
 
         .input-group {
@@ -334,179 +305,101 @@
         .input-group label {
             display: block;
             margin-bottom: 10px;
-            font-weight: 600;
-            color: rgba(255,255,255,0.9);
-            font-size: 15px;
+            font-weight: 500;
+            color: #4a5d40;
         }
 
         .input-group input, .input-group textarea {
             width: 100%;
-            padding: 18px;
-            border: 2px solid rgba(255,255,255,0.2);
+            padding: 18px 20px;
+            border: 2px solid rgba(107,142,74,0.2);
             border-radius: 20px;
             font-size: 16px;
-            background: rgba(255,255,255,0.05);
-            color: #fff;
-            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.9);
+            color: #3a4a40;
             transition: all 0.3s ease;
-        }
-
-        .input-group input::placeholder, .input-group textarea::placeholder {
-            color: rgba(255,255,255,0.5);
+            font-family: inherit;
         }
 
         .input-group input:focus, .input-group textarea:focus {
             outline: none;
-            border-color: #ff6b6b;
-            box-shadow: 0 0 0 4px rgba(255,107,107,0.2);
-            background: rgba(255,255,255,0.08);
+            border-color: #6b8e4a;
+            box-shadow: 0 0 0 4px rgba(107,142,74,0.1);
         }
 
-        .rock-btn-main {
-            background: linear-gradient(145deg, #ff6b6b, #4ecdc4);
-            color: #fff;
+        .btn-primary {
+            background: linear-gradient(135deg, #6b8e4a, #9bb85c);
+            color: white;
             border: none;
             padding: 20px;
-            border-radius: 30px;
-            font-family: 'Orbitron', monospace;
-            font-size: 18px;
-            font-weight: 700;
+            border-radius: 25px;
+            font-size: 17px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s ease;
             width: 100%;
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(107,142,74,0.3);
+            font-family: inherit;
         }
 
-        .rock-btn-main:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(255,107,107,0.5);
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(107,142,74,0.4);
         }
 
         .post {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.9);
             border-radius: 25px;
             padding: 25px;
             margin-bottom: 25px;
-            backdrop-filter: blur(15px);
-            position: relative;
+            border: 1px solid rgba(107,142,74,0.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
         }
 
-        .post-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
+        .post:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(107,142,74,0.15);
         }
 
         .post-avatar {
             width: 50px;
             height: 50px;
             border-radius: 15px;
-            background: linear-gradient(145deg, #ff6b6b, #4ecdc4);
+            background: linear-gradient(135deg, #6b8e4a, #9bb85c);
             margin-right: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
+            font-weight: 600;
             font-size: 18px;
-            color: #fff;
-        }
-
-        .post-actions {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            color: white;
         }
 
         .action-btn {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 12px 20px;
-            border-radius: 25px;
+            background: rgba(107,142,74,0.1);
+            border: 1px solid rgba(107,142,74,0.3);
+            padding: 12px 18px;
+            border-radius: 20px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
             font-size: 15px;
-            font-weight: 600;
-            color: #fff;
+            font-weight: 500;
+            color: #3a4a40;
             transition: all 0.3s ease;
             flex: 1;
-            justify-content: center;
         }
 
         .action-btn:hover {
-            background: rgba(255,107,107,0.3);
-            border-color: #ff6b6b;
-            transform: translateY(-2px);
+            background: rgba(107,142,74,0.2);
+            transform: translateY(-1px);
         }
 
-        .action-btn.liked {
-            background: rgba(255,107,107,0.4);
-            border-color: #ff6b6b;
-        }
-
-        .delete-btn {
-            background: rgba(255,107,107,0.4) !important;
-            border-color: #ff6b6b !important;
-            color: #fff !important;
-            font-size: 14px !important;
-            padding: 8px 15px !important;
-            width: auto !important;
-        }
-
-        .comments-section {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .comment {
-            background: rgba(255,255,255,0.02);
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 10px;
-            border-left: 3px solid #4ecdc4;
-        }
-
-        .discussions-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .discussion-item {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .discussion-item:hover {
-            background: rgba(255,107,107,0.1);
-            border-color: #ff6b6b;
-            transform: translateX(10px);
-        }
-
-        .subscription-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .subscriber-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-            margin-bottom: 15px;
-            border: 1px solid rgba(255,255,255,0.1);
+        .action-btn.active {
+            background: rgba(107,142,74,0.3);
+            border-color: #6b8e4a;
         }
 
         .modal {
@@ -516,9 +409,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(58,74,64,0.8);
             z-index: 2000;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
         }
 
         .modal-content {
@@ -526,13 +419,14 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(26, 26, 46, 0.95);
-            padding: 30px;
-            border-radius: 25px;
-            border: 1px solid rgba(255,255,255,0.2);
-            max-width: 90%;
-            max-height: 80%;
+            background: rgba(255,255,255,0.98);
+            padding: 35px;
+            border-radius: 30px;
+            border: 1px solid rgba(107,142,74,0.2);
+            max-width: 95%;
+            max-height: 85%;
             overflow-y: auto;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.2);
         }
     </style>
 </head>
@@ -540,14 +434,29 @@
     <div class="container" id="app">
         <!-- Приветственный экран -->
         <div id="welcomeScreen" class="welcome-screen">
-            <div class="rock-logo">CHUCLUB</div>
-            <p style="font-size: 18px; margin-bottom: 40px; opacity: 0.9;">Рок-н-Ролл китайского чая 🔥🍵</p>
+            <div class="tea-logo">Чайный Клуб</div>
+            <p class="welcome-subtitle">Добро пожаловать в уютный мир китайских чаев и чайных традиций</p>
             <div class="nav-grid">
-                <button class="rock-btn" onclick="showSection('teas')">🍵 ЧАЙ</button>
-                <button class="rock-btn" onclick="showSection('meditations')">🧘 МЕДИТАЦИИ</button>
-                <button class="rock-btn" onclick="showSection('feed')">💥 ЧАТ</button>
-                <button class="rock-btn" onclick="showSection('discussions')">🗣️ ДИСКУССИИ</button>
-                <button class="rock-btn" onclick="showSection('profile')" style="grid-column: span 2;">⚡ ПРОФИЛЬ</button>
+                <button class="tea-btn" onclick="showSection('teas')">
+                    <div class="tea-btn-icon">🍵</div>
+                    Виды чая
+                </button>
+                <button class="tea-btn" onclick="showSection('meditations')">
+                    <div class="tea-btn-icon">🧘</div>
+                    Медитации
+                </button>
+                <button class="tea-btn" onclick="showSection('feed')">
+                    <div class="tea-btn-icon">💬</div>
+                    Общий чат
+                </button>
+                <button class="tea-btn" onclick="showSection('discussions')">
+                    <div class="tea-btn-icon">🗣️</div>
+                    Обсуждения
+                </button>
+                <button class="tea-btn" onclick="showSection('profile')" style="grid-column: span 2;">
+                    <div class="tea-btn-icon">👤</div>
+                    Мой профиль
+                </button>
             </div>
         </div>
 
@@ -558,7 +467,7 @@
         <div id="teas" class="section">
             <div class="section-header">
                 <div class="section-icon">🍵</div>
-                <h2 class="section-title">ЧАЙНЫЙ КОДЕКС</h2>
+                <h2 class="section-title">Виды чая</h2>
             </div>
             <div id="teaList"></div>
         </div>
@@ -566,81 +475,71 @@
         <div id="meditations" class="section">
             <div class="section-header">
                 <div class="section-icon">🧘</div>
-                <h2 class="section-title">МЕДИТАЦИИ</h2>
+                <h2 class="section-title">Чайные медитации</h2>
             </div>
-            <div class="meditations-grid">
-                <div class="rock-card">
-                    <h3 style="color: #4ecdc4; margin-bottom: 10px;">🌿 Утренний ритуал</h3>
-                    <p style="opacity: 0.9;">10 минутная медитация для взрывного начала дня</p>
-                    <audio controls style="width: 100%; margin-top: 15px;"></audio>
-                </div>
-                <div class="rock-card">
-                    <h3 style="color: #ff6b6b; margin-bottom: 10px;">🍃 Вечерний покой</h3>
-                    <p style="opacity: 0.9;">Расслабляющая медитация перед сном</p>
-                    <audio controls style="width: 100%; margin-top: 15px;"></audio>
-                </div>
-            </div>
+            <div id="meditationsList"></div>
         </div>
 
         <div id="feed" class="section">
             <div class="section-header">
-                <div class="section-icon">💥</div>
-                <h2 class="section-title">ОБЩИЙ ЧАТ</h2>
+                <div class="section-icon">💬</div>
+                <h2 class="section-title">Общий чат</h2>
             </div>
-            <div id="postsList" style="max-height: 450px; overflow-y: auto; margin-bottom: 25px;"></div>
+            <div id="postsList" style="max-height: 60vh; overflow-y: auto; margin-bottom: 25px;"></div>
             <div class="input-group">
-                <textarea id="newPost" placeholder="🔥 Выложи свой чайный вайб..." rows="3"></textarea>
+                <textarea id="newPost" placeholder="Поделитесь впечатлениями о чае..." rows="3"></textarea>
             </div>
-            <button class="rock-btn-main" onclick="addPost()">ВЗРЫВНУТЬ ЧАТ 💣</button>
+            <button class="btn-primary" onclick="addPost()">Опубликовать пост</button>
         </div>
 
         <div id="discussions" class="section">
             <div class="section-header">
                 <div class="section-icon">🗣️</div>
-                <h2 class="section-title">ДИСКУССИИ</h2>
+                <h2 class="section-title">Обсуждения</h2>
             </div>
             <div class="input-group">
-                <input type="text" id="newDiscussion" placeholder="Название новой дискуссии...">
-                <textarea id="discussionDesc" placeholder="Описание темы..." rows="2" style="margin-top: 10px;"></textarea>
+                <input type="text" id="newDiscussion" placeholder="Название обсуждения">
             </div>
-            <button class="rock-btn-main" onclick="createDiscussion()">🔥 СОЗДАТЬ ДИСКУССИЮ</button>
-            <div class="discussions-list" id="discussionsList"></div>
+            <div class="input-group">
+                <textarea id="discussionDesc" placeholder="Описание темы..." rows="2"></textarea>
+            </div>
+            <button class="btn-primary" onclick="createDiscussion()">Создать обсуждение</button>
+            <div class="discussions-list" id="discussionsList" style="max-height: 50vh; overflow-y: auto;"></div>
         </div>
 
         <div id="profile" class="section">
             <div class="section-header">
-                <div class="section-icon">⚡</div>
-                <h2 class="section-title">РОК-ПРОФИЛЬ</h2>
+                <div class="section-icon">👤</div>
+                <h2 class="section-title">Мой профиль</h2>
             </div>
             
             <div class="profile-grid">
                 <div class="profile-avatar" id="profileAvatar">
                     <div id="avatarText">К</div>
-                    <div class="avatar-upload" onclick="uploadAvatar()">📸</div>
                 </div>
                 <div class="profile-info">
-                    <h3 id="profileName">Клим Чайный</h3>
-                    <p id="profileBio" style="opacity: 0.9; margin-top: 5px;">Рок-н-роллер китайского чая 🔥</p>
+                    <h3 id="profileName" style="font-family: 'Playfair Display', serif; font-size: 24px;">Клим Чайный</h3>
+                    <p id="profileBio" style="color: #5a6f4e; margin-top: 5px;">Любитель китайского чая</p>
                 </div>
             </div>
 
             <div class="input-group">
-                <label>🚀 Имя</label>
-                <input type="text" id="editName" value="Клим Чайный">
+                <label>Имя</label>
+                <input type="text" id="editName">
             </div>
             <div class="input-group">
-                <label>💥 О себе</label>
-                <textarea id="editBio" rows="3">Рок-н-роллер китайского чая 🔥</textarea>
+                <label>О себе</label>
+                <textarea id="editBio" rows="3"></textarea>
             </div>
-            <button class="rock-btn-main" onclick="saveProfile()">💾 СОХРАНИТЬ ПРОФИЛЬ</button>
+            <button class="btn-primary" onclick="saveProfile()">Сохранить изменения</button>
 
             <div style="margin-top: 40px;">
-                <h3 style="font-family: 'Orbitron', monospace; margin-bottom: 20px;">Подписки (5)</h3>
-                <div class="subscription-list" id="subscriptionsList"></div>
+                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 20px;">Мои подписки</h3>
+                <div id="subscriptionsList"></div>
             </div>
         </div>
 
-        <!-- Модальное окно комментариев -->
+        <!-- Модал комментариев -->
         <div id="commentsModal" class="modal">
             <div class="modal-content">
                 <div class="section-header" style="justify-content: space-between;">
@@ -648,57 +547,61 @@
                         <div class="section-icon">💬</div>
                         <h2 class="section-title" id="modalTitle">Комментарии</h2>
                     </div>
-                    <button class="back-btn" onclick="closeComments()" style="position: static; margin-left: auto;">×</button>
+                    <button class="back-btn" onclick="closeComments()" style="position: static; margin-left: auto; background: rgba(255,255,255,0.7);">×</button>
                 </div>
-                <div id="commentsList"></div>
+                <div id="commentsList" style="max-height: 50vh; overflow-y: auto; margin-bottom: 25px;"></div>
                 <div class="input-group">
-                    <textarea id="newComment" placeholder="Взрывной комментарий..." rows="2"></textarea>
+                    <textarea id="newComment" placeholder="Написать комментарий..." rows="2"></textarea>
                 </div>
-                <button class="rock-btn-main" onclick="addComment()">💥 ОТПРАВИТЬ</button>
+                <button class="btn-primary" onclick="addComment()">Отправить</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Инициализация Telegram WebApp
         let tg = window.Telegram.WebApp;
         tg.expand();
+        tg.requestViewport();
 
-        // Данные
         let currentUser = {
             id: tg.initDataUnsafe?.user?.id || 12345,
             name: tg.initDataUnsafe?.user?.first_name + ' ' + (tg.initDataUnsafe?.user?.last_name || '') || 'Клим Чайный',
-            bio: 'Рок-н-роллер китайского чая 🔥',
-            avatar: null,
-            avatarUrl: null
+            bio: 'Любитель китайского чая',
+            avatar: null
         };
 
         let posts = [
-            {id: 1, userId: 1, user: 'Чай Мастер', avatar: 'Ч', text: 'Сегодня заваривал Шу Пуэр 2018 года. Насыщенный вкус с нотками чернослива! 🔥', likes: 12, liked: false, comments: []},
-            {id: 2, userId: 2, user: 'Листок', avatar: 'Л', text: 'Кто пробовал Лапсанг Сушонг? Удивительный копченый аромат! 💥', likes: 8, liked: false, comments: []},
+            {id: 1, userId: 1, user: 'Чай Мастер', avatar: 'Ч', text: 'Шу Пуэр 2018 года раскрылся великолепно! Насыщенный вкус с нотками чернослива и земли.', likes: 12, liked: false, comments: []},
+            {id: 2, userId: 2, user: 'Листок', avatar: 'Л', text: 'Лапсанг Сушонг - удивительный копченый аромат. Идеально для вечернего чаепития!', likes: 8, liked: false, comments: []},
         ];
 
         let discussions = [
-            {id: 1, title: 'Лучший Пуэр 2025', description: 'Обсуждаем самые крутые пуэры этого года!', messages: [], creatorId: 1},
-            {id: 2, title: 'Зелёный чай vs Улун', description: 'Что круче для утреннего ритуала?', messages: [], creatorId: 2},
+            {id: 1, title: 'Лучший Пуэр 2025', description: 'Обсуждаем самые интересные пуэры этого года', messages: [], creatorId: 1},
+            {id: 2, title: 'Зелёный чай или улун?', description: 'Что предпочитаете для утреннего ритуала?', messages: [], creatorId: 2},
         ];
 
         let teas = [
-            {name: 'Зелёный чай', description: 'Зелёный чай получают из листьев чайного куста путем минимальной ферментации.', brewing: '75-85°C • 1-3 мин • Гаунань ху'},
-            {name: 'Белый чай', description: 'Белый чай собирают весной с чайных кустов, подвергая листья минимальной обработке.', brewing: '75-85°C • 1-2 мин • Стеклянный чайник'},
-            {name: 'Улун', description: 'Улуны занимают промежуточное положение между зелёным и красным чаем.', brewing: '85-95°C • 20-60 сек • Гайвань'},
-            {name: 'Пуэр', description: 'Пуэр получают из листьев чайного дерева из провинции Юньнань.', brewing: '95-100°C • 10-30 сек • Чайник 150 мл'}
+            {name: 'Зелёный чай', description: 'Свежий вкус с травяными нотками. Минимальная ферментация сохраняет природную свежесть.', brewing: '75-85°C • 1-3 минуты • Гайвань'},
+            {name: 'Белый чай', description: 'Нежный, сладковатый вкус с цветочными оттенками. Весенний сбор без ферментации.', brewing: '75-85°C • 1-2 минуты • Стеклянный чайник'},
+            {name: 'Улун', description: 'Богатый вкус от цветочного до фруктового. Частично ферментированный.', brewing: '85-95°C • 20-60 секунд • Малые пиалы'},
+            {name: 'Пуэр', description: 'Глубокий землистый вкус. Постферментация придаёт уникальные нотки.', brewing: '95-100°C • 10-30 секунд • Чайник 150 мл'}
         ];
 
         let subscriptions = ['Чай Мастер', 'Листок', 'Зеленый Дракон', 'Пуэр Любитель'];
         let currentPostId = null;
-        let currentDiscussionId = null;
         const ADMIN_ID = 6902824637;
+        const meditations = [
+            {title: 'Утренний ритуал', artist: 'Chinmaya Dunster', duration: '6:52', src: 'https://ramayoga.ru/wp-content/uploads/2020/03/Chinmaya_Dunster_-_Scent_Meditation_-_Klub_yogi_OUM_RU_oum_ru.mp3'},
+            {title: 'Вечерний покой', artist: 'Поющие чаши Тибета', duration: '7:04', src: 'https://ramayoga.ru/wp-content/uploads/2020/03/Chinmaya_Dunster_-_Touch_Meditation_-_Klub_yogi_OUM_RU_oum_ru.mp3'},
+            {title: 'Гармония сердца', artist: 'Vamadeva', duration: '4:11', src: 'https://ramayoga.ru/wp-content/uploads/2020/03/Vamadeva_-_Napohnennost_oum_ru.mp3'},
+            {title: 'Гаятри мантры', artist: 'Chinmaya Dunster', duration: '10:05', src: 'https://ramayoga.ru/wp-content/uploads/2020/03/Chinmaya_Dunster_-_Gayatri_-_Klub_yogi_OUM_RU_oum_ru.mp3'}
+        ];
 
-        // Инициализация
         document.addEventListener('DOMContentLoaded', function() {
+            tg.expand();
             updateProfileDisplay();
             renderTeaList();
+            renderMeditations();
             renderPosts();
             renderDiscussions();
             renderSubscriptions();
@@ -706,7 +609,7 @@
 
         function showWelcome() {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById('welcomeScreen').style.display = 'block';
+            document.getElementById('welcomeScreen').style.display = 'flex';
             document.getElementById('backBtn').style.display = 'none';
             document.getElementById('commentsModal').style.display = 'none';
         }
@@ -722,41 +625,41 @@
         function updateProfileDisplay() {
             document.getElementById('profileName').textContent = currentUser.name;
             document.getElementById('profileBio').textContent = currentUser.bio;
-            const avatarText = document.getElementById('avatarText');
-            const avatarDiv = document.getElementById('profileAvatar');
-            
-            if (currentUser.avatarUrl) {
-                avatarText.style.display = 'none';
-                avatarDiv.innerHTML = `<img src="${currentUser.avatarUrl}" alt="Avatar"><div class="avatar-upload" onclick="uploadAvatar()">📸</div>`;
-            } else {
-                avatarText.textContent = currentUser.name[0] || 'К';
-                avatarText.style.display = 'flex';
-            }
-            
+            document.getElementById('avatarText').textContent = currentUser.name[0] || 'К';
             document.getElementById('editName').value = currentUser.name;
             document.getElementById('editBio').value = currentUser.bio;
-        }
-
-        function uploadAvatar() {
-            tg.showAlert('Функция загрузки фото через Telegram Camera');
-            // В реальной версии: tg.showOpenCamera или tg.CloudStorage
         }
 
         function saveProfile() {
             currentUser.name = document.getElementById('editName').value;
             currentUser.bio = document.getElementById('editBio').value;
             updateProfileDisplay();
-            tg.showAlert('Профиль взорван! 🔥');
+            tg.showAlert('Профиль обновлён!');
         }
 
         function renderTeaList() {
             document.getElementById('teaList').innerHTML = teas.map(tea => `
-                <div class="rock-card">
+                <div class="tea-card">
                     <div class="tea-name">${tea.name}</div>
-                    <p style="opacity: 0.9; line-height: 1.6;">${tea.description}</p>
-                    <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 15px; font-family: 'Orbitron', monospace;">
-                        🔥 ${tea.brewing}
+                    <p style="line-height: 1.6; color: #5a6f4e;">${tea.description}</p>
+                    <div class="tea-brew">
+                        <div style="font-weight: 600; margin-bottom: 10px;">Способ заваривания:</div>
+                        <div style="font-size: 16px;">${tea.brewing}</div>
                     </div>
+                </div>
+            `).join('');
+        }
+
+        function renderMeditations() {
+            document.getElementById('meditationsList').innerHTML = meditations.map((med, index) => `
+                <div class="tea-card">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                        <div>
+                            <div style="font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 5px;">${med.title}</div>
+                            <div style="color: #6b8e4a; font-size: 15px;">${med.artist} • ${med.duration}</div>
+                        </div>
+                    </div>
+                    <audio controls style="width: 100%;" preload="metadata" src="${med.src}"></audio>
                 </div>
             `).join('');
         }
@@ -766,17 +669,17 @@
                 const isOwnPost = post.userId === currentUser.id;
                 return `
                     <div class="post" data-post-id="${post.id}">
-                        <div class="post-header">
+                        <div style="display: flex; align-items: center; margin-bottom: 18px;">
                             <div class="post-avatar">${post.avatar}</div>
                             <div>
-                                <strong style="font-family: 'Orbitron', monospace;">${post.user}</strong><br>
-                                <small style="opacity: 0.7;">${Math.floor(Math.random()*3)+1}ч назад</small>
+                                <strong style="font-weight: 600;">${post.user}</strong>
+                                <div style="font-size: 14px; color: #8a9a7b; margin-top: 2px;">${Math.floor(Math.random()*3)+1} ч. назад</div>
                             </div>
-                            ${isOwnPost ? `<button class="action-btn delete-btn" onclick="deletePost(${post.id})">🗑️</button>` : ''}
+                            ${isOwnPost ? `<button class="action-btn" style="margin-left: auto; padding: 8px 15px; font-size: 14px;" onclick="deletePost(${post.id})">Удалить</button>` : ''}
                         </div>
-                        <p style="line-height: 1.6; opacity: 0.95;">${post.text}</p>
-                        <div class="post-actions">
-                            <button class="action-btn ${post.liked ? 'liked' : ''}" onclick="toggleLike(${post.id})">
+                        <div style="line-height: 1.6; margin-bottom: 20px;">${post.text}</div>
+                        <div style="display: flex; gap: 15px;">
+                            <button class="action-btn ${post.liked ? 'active' : ''}" onclick="toggleLike(${post.id})">
                                 ❤️ ${post.likes}
                             </button>
                             <button class="action-btn" onclick="openComments(${post.id})">
@@ -784,13 +687,16 @@
                             </button>
                         </div>
                         ${post.comments.length > 0 ? `
-                            <div class="comments-section">
+                            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(107,142,74,0.2);">
                                 ${post.comments.slice(-2).map(c => `
-                                    <div class="comment">
-                                        <strong>${c.user}:</strong> ${c.text}
+                                    <div style="display: flex; gap: 10px; margin-bottom: 10px; padding: 12px; background: rgba(248,255,248,0.5); border-radius: 15px;">
+                                        <div style="width: 30px; height: 30px; border-radius: 50%; background: #9bb85c; display: flex; align-items: center; justify-content: center; font-size: 12px; color: white; font-weight: 600;">${c.user[0]}</div>
+                                        <div>
+                                            <div style="font-weight: 500;">${c.user}:</div>
+                                            <div style="font-size: 14px;">${c.text}</div>
+                                        </div>
                                     </div>
                                 `).join('')}
-                                ${post.comments.length > 2 ? `<small style="opacity: 0.7;">и еще ${post.comments.length-2}...</small>` : ''}
                             </div>
                         ` : ''}
                     </div>
@@ -801,18 +707,16 @@
         function addPost() {
             const text = document.getElementById('newPost').value.trim();
             if (!text) return;
-            
             posts.unshift({
                 id: Date.now(),
                 userId: currentUser.id,
                 user: currentUser.name,
                 avatar: currentUser.name[0] || 'К',
-                text: text,
+                text,
                 likes: 0,
                 liked: false,
                 comments: []
             });
-            
             document.getElementById('newPost').value = '';
             renderPosts();
             tg.HapticFeedback.notificationOccurred('success');
@@ -823,11 +727,10 @@
             post.liked = !post.liked;
             post.likes += post.liked ? 1 : -1;
             renderPosts();
-            tg.HapticFeedback.impactOccurred('medium');
         }
 
         function deletePost(postId) {
-            if (confirm('Удалить свой взрывной пост? 💥')) {
+            if (confirm('Удалить пост?')) {
                 posts = posts.filter(p => p.id !== postId);
                 renderPosts();
             }
@@ -836,21 +739,26 @@
         function openComments(postId) {
             currentPostId = postId;
             const post = posts.find(p => p.id === postId);
-            document.getElementById('modalTitle').textContent = `${post.user} - Комментарии`;
+            document.getElementById('modalTitle').textContent = `Комментарии к посту ${post.user}`;
             renderComments();
             document.getElementById('commentsModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
         }
 
         function closeComments() {
             document.getElementById('commentsModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
         }
 
         function renderComments() {
             const post = posts.find(p => p.id === currentPostId);
             document.getElementById('commentsList').innerHTML = post.comments.map(comment => `
-                <div class="comment">
-                    <strong style="font-family: 'Orbitron', monospace;">${comment.user}:</strong> 
-                    <span style="opacity: 0.9;">${comment.text}</span>
+                <div style="display: flex; gap: 12px; padding: 15px; background: rgba(248,255,248,0.7); border-radius: 20px; margin-bottom: 12px;">
+                    <div style="width: 35px; height: 35px; border-radius: 50%; background: #9bb85c; display: flex; align-items: center; justify-content: center; font-size: 14px; color: white; font-weight: 600;">${comment.user[0]}</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 500; margin-bottom: 4px;">${comment.user}</div>
+                        <div>${comment.text}</div>
+                    </div>
                 </div>
             `).join('');
         }
@@ -858,75 +766,60 @@
         function addComment() {
             const text = document.getElementById('newComment').value.trim();
             if (!text || !currentPostId) return;
-            
             const post = posts.find(p => p.id === currentPostId);
             post.comments.push({
                 id: Date.now(),
                 user: currentUser.name,
-                text: text
+                text
             });
-            
             document.getElementById('newComment').value = '';
             renderComments();
             renderPosts();
-            tg.HapticFeedback.notificationOccurred('success');
-        }
-
-        function renderDiscussions() {
-            document.getElementById('discussionsList').innerHTML = discussions.map(disc => `
-                <div class="discussion-item" onclick="openDiscussion(${disc.id})">
-                    <h3 style="font-family: 'Orbitron', monospace; margin-bottom: 10px; color: #fff;">${disc.title}</h3>
-                    <p style="opacity: 0.9; margin-bottom: 15px;">${disc.description}</p>
-                    <div style="opacity: 0.7;">💬 ${disc.messages.length} сообщений</div>
-                </div>
-            `).join('') || '<div style="text-align: center; opacity: 0.5; padding: 60px;">Пока нет дискуссий... Создай первую! 🔥</div>';
         }
 
         function createDiscussion() {
             const title = document.getElementById('newDiscussion').value.trim();
-            const desc = document.getElementById('discussionDesc').value.trim();
             if (!title) return;
-            
             discussions.push({
                 id: Date.now(),
                 title,
-                description: desc || 'Взрывная дискуссия!',
+                description: document.getElementById('discussionDesc').value.trim() || '',
                 messages: [],
                 creatorId: currentUser.id
             });
-            
             document.getElementById('newDiscussion').value = '';
             document.getElementById('discussionDesc').value = '';
             renderDiscussions();
-            tg.showAlert('Дискуссия создана! 💥');
+            tg.showAlert('Обсуждение создано!');
         }
 
-        function renderSubscriptions() {
-            document.getElementById('subscriptionsList').innerHTML = subscriptions.map(sub => `
-                <div class="subscriber-item">
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <div style="width: 45px; height: 45px; border-radius: 12px; background: linear-gradient(145deg, #ff6b6b, #4ecdc4); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 16px;">${sub[0]}</div>
-                        <div>${sub}</div>
-                    </div>
-                    <button class="action-btn" onclick="unsubscribe('${sub}')">Отписаться</button>
+        function renderDiscussions() {
+            document.getElementById('discussionsList').innerHTML = discussions.map(disc => `
+                <div class="tea-card" style="cursor: pointer;" onclick="tg.showAlert('Чат обсуждения в разработке')">
+                    <div style="font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 8px;">${disc.title}</div>
+                    <div style="color: #6b8e4a; margin-bottom: 12px;">${disc.description}</div>
+                    <div style="font-size: 14px; opacity: 0.8;">💬 ${disc.messages.length} сообщений</div>
                 </div>
             `).join('');
         }
 
-        function unsubscribe(name) {
-            const index = subscriptions.indexOf(name);
-            if (index > -1) {
-                subscriptions.splice(index, 1);
-                renderSubscriptions();
-            }
+        function renderSubscriptions() {
+            document.getElementById('subscriptionsList').innerHTML = subscriptions.map(sub => `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px; background: rgba(255,255,255,0.7); border-radius: 20px; margin-bottom: 15px; border: 1px solid rgba(107,142,74,0.1);">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="width: 45px; height: 45px; border-radius: 12px; background: linear-gradient(135deg, #6b8e4a, #9bb85c); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 16px;">${sub[0]}</div>
+                        <div>${sub}</div>
+                    </div>
+                    <button class="action-btn" style="padding: 10px 18px;">Отписаться</button>
+                </div>
+            `).join('');
         }
 
-        // Блокировка прокрутки модалки
         document.getElementById('commentsModal').addEventListener('click', function(e) {
             if (e.target === this) closeComments();
         });
 
-        tg.MainButton.setText('🔥 Главное меню').onClick(showWelcome).show();
+        tg.MainButton.setText('🏠 Главное меню').onClick(showWelcome).show();
     </script>
 </body>
 </html>
